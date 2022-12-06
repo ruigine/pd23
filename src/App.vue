@@ -1,24 +1,21 @@
 <template>
   <v-app>
     <!-- Fixed Rendering -->
-    <Navbar />
+
 
     <!-- Dynamic Rendering -->
     <v-main>
       <router-view />
+      Hello Word
     </v-main>
   </v-app>
 </template>
 
 <script>
-import { onBeforeMount } from "vue";
-import { useStore } from "vuex";
-import Navbar from "./components/Navbar.vue";
 
 export default {
   name: "App",
   components: {
-    Navbar,
   },
   data() {
     return {
