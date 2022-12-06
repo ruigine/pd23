@@ -10,28 +10,28 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
-    name: "games",
+    path: "/games",
+    name: "Games",
     component: Games,
   },
   {
-    path: "/",
-    name: "hoto",
+    path: "/hoto",
+    name: "HOTO",
     component: HOTO,
   },
   {
-    path: "/",
-    name: "login",
+    path: "/login",
+    name: "Login",
     component: Login,
   },
   {
-    path: "/",
-    name: "redeem",
+    path: "/redeem",
+    name: "Redeem",
     component: Redeem,
   },
   {
-    path: "/",
-    name: "tally",
+    path: "/tally",
+    name: "Tally",
     component: Tally,
   },
 ];
