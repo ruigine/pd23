@@ -4,12 +4,29 @@
     </div>
 </template>
 <script>
+    import { db } from "../firebase/firebaseinit";
+    import { collection, getDocs } from "firebase/firestore";
+
     export default {
         data(){
             return {
-    
+                
             }
         },
+        created(){
+            // collection ref
+            const colRef = collection(db, 'schedule')
+
+
+            // real time collection
+            getDocs(colRef)
+            .then((snapshot) => {
+                console.log(snapshot.docs)
+            })
+            .catch(err=>{
+                console.log(err.message);
+            })
+        }
     };
 </script>
 
