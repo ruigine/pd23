@@ -1,10 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Games from "../views/Games.vue";
-import HOTO from "../views/HOTO.vue";
-import Login from "../views/Login.vue";
-import Redeem from "../views/Redeem.vue";
-import Tally from "../views/Tally.vue";
+import Games from "../views/GamesView.vue";
+import HOTO from "../views/HOTOView.vue";
+import Login from "../views/LoginView.vue";
+import Redeem from "../views/RedeemView.vue";
+import Tally from "../views/TallyView.vue";
 
 Vue.use(VueRouter);
 
