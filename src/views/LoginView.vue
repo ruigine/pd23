@@ -3,7 +3,7 @@
         <v-row class="box" align="center" v-if="!$store.state.user">
             <v-col>
                 <h1 class="mb-12">Login</h1>
-                <v-btn class="py-7" @click="dialog=true" dark block>
+                <v-btn class="py-7" @click="dialog=true" block>
                     <v-icon class="mr-3">mdi-google</v-icon>Login with Google
                 </v-btn>
             </v-col>
@@ -18,7 +18,7 @@
             max-width="600"
             v-model="dialog"
         >
-            <v-card dark>
+            <v-card>
                 <v-card-text>
                     <div class="text-h5 pa-12" v-if="!pinWrong">Enter given pin:</div>
                     <div class="text-h5 pa-12" v-else>Incorrect pin!</div>

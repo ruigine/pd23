@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app dark>
+    <v-navigation-drawer v-model="drawer" app>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6" v-if="!$store.state.user">
@@ -85,7 +85,7 @@
     </v-navigation-drawer>
     
 
-    <v-app-bar app dark>
+    <v-app-bar app color="#fff" elevation="1">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>PD23</v-toolbar-title>
