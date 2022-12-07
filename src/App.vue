@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app>
+    <v-navigation-drawer v-model="drawer" app dark>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -36,7 +36,7 @@
     </v-navigation-drawer>
     
 
-    <v-app-bar app>
+    <v-app-bar app dark>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>PD23</v-toolbar-title>
@@ -66,3 +66,10 @@
     }
   }
 </script>
+
+<style>
+  @import 'https://fonts.googleapis.com/css?family=Nunito';
+  * {
+    font-family: 'Nunito';
+  }
+</style>
