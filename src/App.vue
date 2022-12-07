@@ -55,11 +55,11 @@
       return{
         drawer : false,
         items: [
-          { title: 'Login', icon: 'mdi-login', path: '/LoginView'},
-          { title: 'HOTO', icon: 'mdi-account-switch', path: '/HOTOView'},
-          { title: 'Redeem', icon: 'mdi-wallet-giftcard', path: '/RedeemView'},
-          { title: 'Games', icon: 'mdi-controller', path: '/GamesView'},
-          { title: 'Tally', icon: 'mdi-tally-mark-5', path: '/TallyView' },
+          { title: 'Login', icon: 'mdi-login', path: '/login'},
+          { title: 'HOTO', icon: 'mdi-account-switch', path: '/hoto'},
+          { title: 'Redeem', icon: 'mdi-wallet-giftcard', path: '/redeem'},
+          { title: 'Games', icon: 'mdi-controller', path: '/games'},
+          { title: 'Tally', icon: 'mdi-tally-mark-5', path: '/tally' },
           { title: 'Excel', icon: 'mdi-microsoft-excel', path: ''}
         ],
       }
