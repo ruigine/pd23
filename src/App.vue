@@ -3,8 +3,11 @@
     <v-navigation-drawer v-model="drawer" app dark>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="text-h6">
-            PD23
+          <v-list-item-title class="text-h6" v-if="!$store.state.user">
+            Guest
+          </v-list-item-title>
+          <v-list-item-title class="text-h6" v-else>
+            {{$store.state.user.displayName}}
           </v-list-item-title>
           <!-- <v-list-item-subtitle>
             subtext
@@ -17,11 +20,57 @@
       <v-list
         dense
         nav
+        v-if="!$store.state.user"
       >
         <v-list-item
-          v-for="item in items"
+          v-for="item in items0"
           :key="item.title"
           :to="item.path"
+          @click="logout(item.title)"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+
+      <v-list
+        dense
+        nav
+        v-else-if="$store.state.user.email=='michaelong.2021@scis.smu.edu.sg'"
+      >
+        <v-list-item
+          v-for="item in items2"
+          :key="item.title"
+          :to="item.path"
+          @click="logout(item.title)"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+
+      <v-list
+        dense
+        nav
+        v-else
+      >
+        <v-list-item
+          v-for="item in items1"
+          :key="item.title"
+          :to="item.path"
+          @click="logout(item.title)"
           link
         >
           <v-list-item-icon>
@@ -50,18 +99,40 @@
 </template>
 
 <script>
+  import { getAuth, signOut } from "firebase/auth";
+
   export default {
     data(){
       return{
         drawer : false,
-        items: [
-          { title: 'Login', icon: 'mdi-login', path: '/login'},
+        items0: [{ title: 'Login', icon: 'mdi-login', path: '/login'} ],
+        items1: [
+          { title: 'HOTO', icon: 'mdi-account-switch', path: '/hoto'},
+          { title: 'Redeem', icon: 'mdi-wallet-giftcard', path: '/redeem'},
+          { title: 'Games', icon: 'mdi-controller', path: '/games'},
+          { title: 'Logout', icon: 'mdi-logout', path: ''},
+        ],
+        items2: [
           { title: 'HOTO', icon: 'mdi-account-switch', path: '/hoto'},
           { title: 'Redeem', icon: 'mdi-wallet-giftcard', path: '/redeem'},
           { title: 'Games', icon: 'mdi-controller', path: '/games'},
           { title: 'Tally', icon: 'mdi-tally-mark-5', path: '/tally' },
-          { title: 'Excel', icon: 'mdi-microsoft-excel', path: ''}
+          { title: 'Excel', icon: 'mdi-microsoft-excel', path: ''},
+          { title: 'Logout', icon: 'mdi-logout', path: ''},
         ],
+      }
+    },
+    methods: {
+      logout(type) {
+        if (type == "Logout") {
+          const auth = getAuth();
+          signOut(auth).then(() => {
+            // Sign-out successful.
+            this.$store.dispatch("logout");
+          }).catch((error) => {
+            // An error happened.
+          });
+        }
       }
     }
   }

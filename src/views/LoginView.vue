@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-row class="box" align="center" v-if="!user">
+        <v-row class="box" align="center" v-if="!$store.state.user">
             <v-col>
                 <h1 class="mb-12">Login</h1>
                 <v-btn class="py-7" @click="dialog=true" dark block>
@@ -11,9 +11,6 @@
         <v-row class="box" align="center" v-else>
             <v-col>
                 <h1 class="mb-12">Welcome!</h1>
-                <v-btn class="pa-7" @click="drawer = true" dark>
-                    Get Started
-                </v-btn>
             </v-col>
         </v-row>
 
@@ -57,7 +54,6 @@
                 show: false,
                 pin: "",
                 pinWrong: false,
-                user: null,
             }
         },
         methods: {
@@ -72,8 +68,7 @@
                         const credential = GoogleAuthProvider.credentialFromResult(result);
                         const token = credential.accessToken;
                         // The signed-in user info.
-                        this.user = result.user;
-                        console.log(this.user);
+                        this.$store.dispatch("authenticate");
                         // ...
                     }).catch((error) => {
                         // Handle Errors here.
