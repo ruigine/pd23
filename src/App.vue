@@ -4,11 +4,11 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
-            Application
+            PD23
           </v-list-item-title>
-          <v-list-item-subtitle>
+          <!-- <v-list-item-subtitle>
             subtext
-          </v-list-item-subtitle>
+          </v-list-item-subtitle> -->
         </v-list-item-content>
       </v-list-item>
 
@@ -21,6 +21,7 @@
         <v-list-item
           v-for="item in items"
           :key="item.title"
+          :to="item.path"
           link
         >
           <v-list-item-icon>
@@ -38,7 +39,7 @@
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>PD23</v-toolbar-title>
     </v-app-bar>
 
     <v-main>
@@ -54,8 +55,12 @@
       return{
         drawer : false,
         items: [
-          { title: 'Excel', icon: 'mdi-view-dashboard' },
-          { title: 'Tally', icon: 'mdi-help-box' },
+          { title: 'Login', icon: 'mdi-login', path: '/LoginView'},
+          { title: 'HOTO', icon: 'mdi-account-switch', path: '/HOTOView'},
+          { title: 'Redeem', icon: 'mdi-wallet-giftcard', path: '/RedeemView'},
+          { title: 'Games', icon: 'mdi-controller', path: '/GamesView'},
+          { title: 'Tally', icon: 'mdi-tally-mark-5', path: '/TallyView' },
+          { title: 'Excel', icon: 'mdi-microsoft-excel', path: ''}
         ],
       }
     }
