@@ -100,8 +100,16 @@
 
 <script>
   import { getAuth, signOut } from "firebase/auth";
+  import { auth } from "./firebase/firebaseinit"; 
 
   export default {
+    created() {
+      auth.onAuthStateChanged(async (user) => {
+        if (user != null) {
+          this.$store.dispatch("authenticate");
+        }
+      });
+    },
     data(){
       return{
         drawer : false,
