@@ -149,6 +149,6 @@
 <style>
   @import 'https://fonts.googleapis.com/css?family=Nunito';
   * {
-    font-family: 'Nunito';
+    font-family: 'Nunito' !important;
   }
 </style>
