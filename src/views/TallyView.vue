@@ -24,7 +24,9 @@
             v-model="dialog"
             max-width="600"
         >
-            <v-card class="pa-5">           
+            <v-card class="pa-5">   
+                <div class="text-h5 pa-4">Voucher Redemption</div>
+
                 <v-list-item two-line v-for="cat in currCat" :key="cat.name">
                     <v-list-item-content>
                         <v-list-item-title>{{cat.name}}</v-list-item-title>
