@@ -118,8 +118,8 @@
                 location: null,
                 value: [100, 400],
                 options: {
-                    min: 100,
-                    max: 1000,
+                    min: 0,
+                    max: 6020,
                     process: pos => Array.from({length:pos.length/2}, (_,i)=>[pos[2*i], pos[2*i+1]]),
                     enableCross: true
                 }
@@ -139,13 +139,13 @@
         },
         methods: {
             add() {
-                if (this.value[this.value.length-1] + 50 <= this.options.max) {
-                    this.value.push(this.value[this.value.length-1] + 50);
+                if (this.value[this.value.length-1] + 150 <= this.options.max) {
+                    this.value.push(this.value[this.value.length-1] + 150);
                 } else {
                     this.value.push(this.options.max);
                 }
-                if (this.value[this.value.length-1] + 50 <= this.options.max) {
-                    this.value.push(this.value[this.value.length-1] + 50);
+                if (this.value[this.value.length-1] + 150 <= this.options.max) {
+                    this.value.push(this.value[this.value.length-1] + 150);
                 } else {
                     this.value.push(this.options.max);
                 }
