@@ -52,9 +52,6 @@
     import { doc, collection, getDocs, onSnapshot, addDoc, updateDoc, query, where } from "firebase/firestore";
 
     export default {
-        watch: {
-
-        },
         data(){
             return {
                 dialog: false,

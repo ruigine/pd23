@@ -115,12 +115,14 @@
         drawer : false,
         items0: [{ title: 'Login', icon: 'mdi-login', path: '/login'} ],
         items1: [
+          { title: 'Entries', icon: 'mdi-notebook', path: '/entries'},
           { title: 'HOTO', icon: 'mdi-account-switch', path: '/hoto'},
           { title: 'Redeem', icon: 'mdi-wallet-giftcard', path: '/redeem'},
           { title: 'Games', icon: 'mdi-controller', path: '/games'},
           { title: 'Logout', icon: 'mdi-logout', path: ''},
         ],
         items2: [
+          { title: 'Entries', icon: 'mdi-notebook', path: '/entries'},
           { title: 'HOTO', icon: 'mdi-account-switch', path: '/hoto'},
           { title: 'Redeem', icon: 'mdi-wallet-giftcard', path: '/redeem'},
           { title: 'Games', icon: 'mdi-controller', path: '/games'},
