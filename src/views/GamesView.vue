@@ -68,6 +68,38 @@
             })
             this.voucherList = v;
             });
+
+            //populate firebase test data
+                // //check dupes
+                // var exists = [];
+                // const eRef = collection(db, 'vouchers');
+                // getDocs(eRef)
+                // .then((snapshot) => {
+                //     snapshot.docs.forEach((doc) => {
+                //         exists.push(doc.data().serialNum);
+                //     })
+                //     console.log(exists);
+                //     //populate
+                //     for (var i=6001; i<=6020; i++) {
+                //         if (!exists.includes(String(i))) {
+                //             addDoc(collection(db, 'vouchers'), {
+                //                 distributionMethod: "",
+                //                 isAvailable: true,
+                //                 serialNum: String(i),
+                //                 uid: ""
+                //             })
+                //             .then((snapshot) => {
+                            
+                //             })
+                //             .catch(err => {
+                //                 console.log(err);
+                //             })
+                //         }
+                //     }
+                // })
+                // .catch(err => {
+                //     console.log(err);
+                // })       
         },
         methods: {
             submit() {
