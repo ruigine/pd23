@@ -42,7 +42,7 @@
       <v-list
         dense
         nav
-        v-else-if="$store.state.user.email=='michaelong.2021@scis.smu.edu.sg'"
+        v-else-if="$store.state.user.email=='pd23bigboss@gmail.com'"
       >
         <v-list-item
           v-for="item in items2"

@@ -17,7 +17,7 @@ function guardMyroute(to, from, next) {
       next("/login");
     } else {
       console.log(user)
-      if (user.email == 'michaelong.2021@scis.smu.edu.sg') {
+      if (user.email == 'pd23bigboss@gmail.com') {
         next();
       } else {
         if (to.name == "HOTO" || to.name == "Redeem" || to.name == "Games") {
