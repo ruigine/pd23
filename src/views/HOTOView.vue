@@ -180,6 +180,7 @@
 <style lang="css" scoped>
     .box {
         height: calc(100vh - 64px);
-        margin: 0 300px;
+        width: 70%;
+        margin: 0 auto 0 auto;
     }
 </style>

@@ -110,7 +110,7 @@
 
 <style lang="css" scoped>
     .box {
-        width: calc(100%-100px);
-        margin: 100px;
+        width: 80%;
+        margin: 5% auto 5% auto;
     }
 </style>
