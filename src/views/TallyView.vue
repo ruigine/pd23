@@ -8,6 +8,7 @@
             class="elevation-1"
             :search="searchInput"
             @click:row="detail"
+            multi-sort
         >
         <template v-slot:top>
             <v-text-field
@@ -60,7 +61,7 @@
                 {
                     text: 'S/N',
                     align: 'start',
-                    sortable: false,
+                    sortable: true,
                     value: 'serialNum',
                 },
                 { text: 'Available', value: 'isAvailable' },
