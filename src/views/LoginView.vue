@@ -3,7 +3,7 @@
         <v-row class="box" align="center" v-if="!$store.state.user">
             <v-col>
                 <h1 class="mb-12">Login</h1>
-                <v-btn class="py-7" @click="dialog=true" block>
+                <v-btn color="#fff" class="py-7" @click="dialog=true" block>
                     <v-icon class="mr-3">mdi-google</v-icon>Login with Google
                 </v-btn>
             </v-col>
@@ -25,7 +25,7 @@
                     <v-text-field
                         v-model="pin"
                         class="px-12"
-                        solo
+                        color="#000"
                         :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                         :type="show ? 'text' : 'password'"
                         name="input-10-1"
@@ -36,6 +36,7 @@
                 </v-card-text>
                 <v-card-actions class="justify-end">
                 <v-btn
+                    class="ma-6"
                     text
                     @click="login"
                 >Confirm</v-btn>
