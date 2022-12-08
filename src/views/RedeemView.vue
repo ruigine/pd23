@@ -72,7 +72,6 @@
                 matricRules: [
                     m => !!m || 'Field is required',
                     m => m.length == 8 || 'Matriculation number must be 8 digits long',
-                    m => (Number.isNaN(m) == false && Number(m) >= 0) || 'Matriculation number must only consist numbers',
                 ],
                 sNoRules: [
                     s => !!s || 'Field is required',
