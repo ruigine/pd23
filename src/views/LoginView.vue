@@ -70,6 +70,7 @@
                         const token = credential.accessToken;
                         // The signed-in user info.
                         this.$store.dispatch("authenticate");
+                        this.pin = "";
                         // ...
                     }).catch((error) => {
                         // Handle Errors here.
