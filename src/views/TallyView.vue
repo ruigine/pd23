@@ -94,7 +94,11 @@
                     getDocs(query(collection(db, 'voucherRedemption'), where("serialNum", "==", item.serialNum)))
                     .then((snapshot) => {
                         snapshot.docs.forEach((doc) => {
-                            this.curr = { ...doc.data(), id: doc.id, date: new Date(doc.data().timestamp.seconds*1000) }
+                            this.curr = { ...doc.data(), id: doc.id }
+                            
+                            var d = new Date(doc.data().timestamp.seconds*1000);
+                            d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                            this.curr["date"] = d;
                         })
                         this.dialog = true;
                     })
