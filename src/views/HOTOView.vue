@@ -162,7 +162,7 @@
                     serialNums: Array.from({length:this.value.length/2}, (_,i)=>[this.value[2*i], this.value[2*i+1]].join("-")).join(", "),
                     startTime: firebase.firestore.Timestamp.fromDate(new Date(this.startTime)),
                     endTime: firebase.firestore.Timestamp.fromDate(new Date(this.endTime)),
-                    uid: this.$store.state.user.uid
+                    Email: this.$store.state.user.email
                 })
                 .then((snapshot) => {
                     this.dialog = true;

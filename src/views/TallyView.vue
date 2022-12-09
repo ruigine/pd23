@@ -65,7 +65,7 @@
                 },
                 { text: 'Available', value: 'isAvailable' },
                 { text: 'Distribution Method', value: 'distributionMethod' },
-                { text: 'UID', value: 'uid' }
+                { text: 'Email', value: 'email' }
                 ],
                 data: [],
                 curr: {},
@@ -74,7 +74,7 @@
                     {name: "Matriculation Number", value: "matricNum"},
                     {name: "Serial Number", value: "serialNum"},
                     {name: "Date", value: "date"},
-                    {name: "UID", value: "uid"}
+                    {name: "Email", value: "email"}
                 ]
             }
         },

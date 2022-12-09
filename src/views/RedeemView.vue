@@ -115,7 +115,7 @@
                     matricNum: this.matricNo,
                     serialNum: this.sNo,
                     timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
-                    uid: this.$store.state.user.uid
+                    Email: this.$store.state.user.email
                 })
                 .then((snapshot) => {
                     getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNo)))
@@ -128,7 +128,7 @@
                         updateDoc(vRef, {
                             distributionMethod: "Voucher Redemption",
                             isAvailable: false,
-                            uid: this.$store.state.user.uid,
+                            Email: this.$store.state.user.email,
                         })
                         .then((snapshot) => {
                             this.dialog = true;

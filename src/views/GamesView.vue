@@ -86,7 +86,7 @@
                 //                 distributionMethod: "",
                 //                 isAvailable: true,
                 //                 serialNum: String(i),
-                //                 uid: ""
+                //                 email: ""
                 //             })
                 //             .then((snapshot) => {
                             
@@ -113,7 +113,7 @@
                     updateDoc(vRef, {
                         distributionMethod: "Games Redemption",
                         isAvailable: false,
-                        uid: this.$store.state.user.uid,
+                        email: this.$store.state.user.email,
                     })
                     .then((snapshot) => {
                         this.dialog = true;

@@ -243,7 +243,7 @@
                 { text: 'Location', value: 'location' },
                 { text: 'Start Date', value: 'sDate' },
                 { text: 'End Date', value: 'eDate' },
-                { text: 'UID', value: 'uid' },
+                { text: 'Email', value: 'email' },
                 { text: 'Actions', value: 'actions', sortable: false }
                 ],
                 dataHOTO: [],
@@ -257,7 +257,7 @@
                 { text: 'Matriculation No.', value: 'matricNum' },
                 { text: 'Location', value: 'location' },
                 { text: 'Date', value: 'date' },
-                { text: 'UID', value: 'uid' },
+                { text: 'Email', value: 'email' },
                 { text: 'Actions', value: 'actions', sortable: false }
                 ],
                 dataVR: [],
@@ -268,7 +268,7 @@
                     sortable: true,
                     value: 'serialNum',
                 },
-                { text: 'UID', value: 'uid' },
+                { text: 'Email', value: 'email' },
                 { text: 'Actions', value: 'actions', sortable: false }
                 ],
                 dataGames: [],
