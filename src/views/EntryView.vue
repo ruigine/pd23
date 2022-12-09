@@ -44,7 +44,7 @@
                     </template>
                 </v-data-table>
                 
-                <!--Edit HOTO dialog-->
+                <!--Edit HOTO dialog (incomplete)-->
                 <v-dialog
                     max-width="600"
                     v-model="dialogHOTO"
@@ -99,11 +99,11 @@
                                     </v-row>
 
                                     <v-select
-                                        v-model="location"
+                                        v-model="locationHOTO"
                                         color="#000"
                                         :items="items"
                                         label="Location"
-                                        :rules="locRules"
+                                        :rules="locRulesHOTO"
                                         required
                                     ></v-select>
                                 </v-col>
@@ -140,6 +140,7 @@
                 </v-dialog>
             </v-tab-item>
 
+
             <!--Redeem-->
             <v-tab-item>
                 <v-data-table
@@ -163,13 +164,13 @@
                         <v-icon
                             small
                             class="mr-2"
-                            @click="editItem(item)"
+                            @click="editVR(item)"
                         >
                             mdi-pencil
                         </v-icon>
                         <v-icon
                             small
-                            @click="deleteItem(item)"
+                            @click="deleteVR(item)"
                         >
                             mdi-delete
                         </v-icon>
@@ -177,6 +178,82 @@
                 </v-data-table>
             </v-tab-item>
             
+            <!--Edit VR dialog (incomplete)-->
+            <v-dialog
+                max-width="600"
+                v-model="dialogVR"
+            >
+                <v-card>
+                    <v-form v-model="validVR" ref="form">
+                        <v-row class="pa-6 ma-0">
+                            <v-col cols="12">
+                                <h1 class="mb-12">Voucher Redemption</h1>
+                                <v-text-field
+                                    v-model="matricNo"
+                                    color="#000"
+                                    :rules="matricRules"
+                                    :counter="8"
+                                    label="Matriculation Number"
+                                    type="number"
+                                    required
+                                ></v-text-field>
+                                <v-text-field
+                                    v-model="sNo"
+                                    color="#000"
+                                    :rules="sNoRules"
+                                    label="Voucher Serial Number"
+                                    type="number"
+                                    required
+                                ></v-text-field>
+                                <v-select
+                                    v-model="locationVR"
+                                    color="#000"
+                                    :items="items"
+                                    label="Location"
+                                    :rules="locRules"
+                                    required
+                                ></v-select>
+                                <v-text-field
+                                    type="datetime-local"
+                                    color="#000"
+                                    v-model="date"
+                                    label="Date"
+                                    :rules="dateRules"
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-form>
+
+                    <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="close"
+                            >
+                                Cancel
+                            </v-btn>
+                            <v-btn
+                                v-if="validHOTO"
+                                color="blue darken-1"
+                                text
+                                @click="save"
+                            >
+                                Save
+                            </v-btn>
+                            <v-btn
+                                v-else
+                                color="blue darken-1"
+                                text
+                                disabled
+                            >
+                                Save
+                            </v-btn>
+                        </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+
             <!--Games-->
             <v-tab-item>
                 <v-data-table
@@ -285,7 +362,9 @@
                 dialog: false,
                 voucherList: [],
                 validHOTO: false,
-                locRules: [
+                validVR: false,
+                validGames: false,
+                locRulesHOTO: [
                     l => !!l || 'Field is required',
                 ],
                 dateRules: [
@@ -298,14 +377,34 @@
                     e => !!e || 'Field is required',
                 ],
                 items: ['Koufu', 'SOB', 'Connexion'],
-                location: null,
+                locationHOTO: null,
                 value: [],
                 options: {
                     min: 0,
                     max: 6020,
                     process: pos => Array.from({length:pos.length/2}, (_,i)=>[pos[2*i], pos[2*i+1]]),
                     enableCross: true
-                }
+                },
+
+                //VR
+                matricList: [],
+                valid: false,
+                matricNo: '',
+                sNo: '',
+                date: null,
+                matricRules: [
+                    m => !!m || 'Field is required',
+                    m => m.length == 8 || 'Matriculation number must be 8 digits long',
+                    m => this.matricList.includes(m) == false || 'Matriculation number is already in database',
+                ],
+                sNoRules: [
+                    s => !!s || 'Field is required',
+                    s => this.voucherList.includes(s) || 'Voucher does not exist/is unavailable',
+                ],
+                locRules: [
+                    s => !!s || 'Field is required',
+                ],
+                locationVR: null,
             }
         },
         created() {
@@ -343,7 +442,7 @@
             const gRef = collection(db, 'vouchers');
             onSnapshot(gRef, (querySnapshot) => {
             querySnapshot.docs.forEach((doc) => {
-                if (doc.data().distributionMethod == "games") {
+                if (doc.data().distributionMethod == "Games Redemption") {
                     this.dataGames.push({ ...doc.data(), id: doc.id })
                 }
             })
@@ -375,7 +474,7 @@
                 eD = [String(eD.getFullYear()), String(eD.getMonth()+1).padStart(2, '0'), String(eD.getDate()).padStart(2, '0')].join("-") + "T" + [String(eD.getHours()).padStart(2, '0'), String(eD.getMinutes()).padStart(2, '0')].join(":");
                 this.endTime = eD;
 
-                this.location = item.location
+                this.locationHOTO = item.location
 
                 this.dialogHOTO = true;
             },
@@ -406,9 +505,25 @@
             close() {
 
             },
-            deleteItem() {
+            deleteHOTO() {
 
-            }
+            },
+
+            //VR
+            editVR(item) {
+                this.matricNo = item.matricNum;
+                this.sNo = item.serialNum;
+                this.locationVR = item.location;
+
+                var d = new Date(item.timestamp.seconds*1000);
+                d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                this.date = d;
+
+                this.dialogVR = true;
+            },
+            deleteVR() {
+
+            },
         }
     };
 </script>
