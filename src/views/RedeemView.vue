@@ -66,12 +66,14 @@
             return {
                 dialog: false,
                 voucherList: [],
+                matricList: [],
                 valid: false,
                 matricNo: '',
                 sNo: '',
                 matricRules: [
                     m => !!m || 'Field is required',
                     m => m.length == 8 || 'Matriculation number must be 8 digits long',
+                    m => this.matricList.includes(m) == false || 'Matriculation number is already in database',
                 ],
                 sNoRules: [
                     s => !!s || 'Field is required',
@@ -95,6 +97,16 @@
             })
             this.voucherList = v;
             });
+
+            const vrRef = collection(db, 'voucherRedemption');
+            onSnapshot(vrRef, (querySnapshot) => {
+            querySnapshot.docs.forEach((doc) => {
+                this.matricList.push(doc.data().matricNum);
+            })
+            });
+
+            console.log(this.voucherList);
+            console.log(this.matricList);
         },
         methods: {
             submit() {
