@@ -178,7 +178,7 @@
                 </v-data-table>
             </v-tab-item>
             
-            <!--Edit VR dialog (incomplete)-->
+            <!--Edit VR dialog-->
             <v-dialog
                 max-width="600"
                 v-model="dialogVR"
@@ -229,7 +229,7 @@
                         <v-btn
                             color="blue darken-1"
                             text
-                            @click="close"
+                            @click="dialogVR = !dialogVR"
                         >
                             Cancel
                         </v-btn>
@@ -249,6 +249,38 @@
                         >
                             Save
                         </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <!--Success VR-->
+            <v-dialog
+                max-width="600"
+                v-model="successVR"
+            >
+                <v-card>
+                    <v-card-text class="text-center">
+                        <v-icon class="py-12" color="success" size="100" style="opacity: 0.4">mdi-check-circle-outline</v-icon>
+                        <div class="text-h5">Update successful!</div>
+                    </v-card-text>
+                    <v-card-actions class="justify-end">
+                    <v-btn
+                        text
+                        @click="successVR = !successVR"
+                    >Close</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <!--Delete VR-->
+            <v-dialog v-model="dialogDeleteVR" max-width="500px">
+                <v-card>
+                    <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="dialogDeleteVR = !dialogDeleteVR">Cancel</v-btn>
+                    <v-btn color="blue darken-1" text @click="deleteConfirmVR">OK</v-btn>
+                    <v-spacer></v-spacer>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -295,7 +327,7 @@
 </template>
 <script>
     import { db } from "../firebase/firebaseinit";
-    import { doc, collection, getDocs, onSnapshot, addDoc, updateDoc, query, where } from "firebase/firestore";
+    import { doc, collection, getDocs, onSnapshot, addDoc, updateDoc, query, where, deleteDoc } from "firebase/firestore";
     import firebase from 'firebase/compat/app';
     import 'firebase/compat/auth';
     import 'firebase/compat/firestore';
@@ -358,6 +390,12 @@
                 dialogDeleteHOTO: false,
                 dialogDeleteVR: false,
                 dialogDeleteGames: false,
+                delHOTO: null,
+                delVR: null,
+                delGames: null,
+                successHOTO: false,
+                successVR: false,
+                successGames: false,
 
                 //HOTO
                 startTime: null,
@@ -529,7 +567,7 @@
             editVR(item) {
                 this.matricNo = item.matricNum;
                 this.sNo = item.serialNum;
-                this.currVR = [item.matricNum, item.serialNum];
+                this.currVR = [item.matricNum, item.serialNum, item.email];
                 this.locationVR = item.location;
 
                 var d = new Date(item.timestamp.seconds*1000);
@@ -553,39 +591,94 @@
                         timestamp: firebase.firestore.Timestamp.fromDate(new Date(this.date)),
                     })
                     .then((snapshot) => {
-                        getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNo)))
-                        .then((snapshot) => {
-                            var v = "";
-                            snapshot.docs.forEach((doc) => {
-                                v = doc.id;
-                            })
-                            const vRef = doc(db, "vouchers", v);
-                            updateDoc(vRef, {
-                                isAvailable: false,
-                            })
+                        if (this.sNo != this.currVR[1]) {
+                            getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNo)))
                             .then((snapshot) => {
+                                var v = "";
+                                snapshot.docs.forEach((doc) => {
+                                    v = doc.id;
+                                })
+                                const vRef = doc(db, "vouchers", v);
+                                updateDoc(vRef, {
+                                    isAvailable: false,
+                                    distributionMethod: "Voucher Redemption",
+                                    email: this.currVR[2]
+                                })
+                                .then((snapshot) => {
 
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                })
                             })
                             .catch(err => {
                                 console.log(err);
                             })
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
 
-                        getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.currVR[1])))
-                        .then((snapshot) => {
-                            var v = "";
-                            snapshot.docs.forEach((doc) => {
-                                v = doc.id;
+                            getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.currVR[1])))
+                            .then((snapshot) => {
+                                var v = "";
+                                snapshot.docs.forEach((doc) => {
+                                    v = doc.id;
+                                })
+                                const vRef = doc(db, "vouchers", v);
+                                updateDoc(vRef, {
+                                    isAvailable: true,
+                                    email: "",
+                                    distributionMethod: "",
+                                })
+                                .then((snapshot) => {
+                                    this.successVR = true;
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                })
                             })
-                            const vRef = doc(db, "vouchers", v);
+                            .catch(err => {
+                                console.log(err);
+                            })
+                        } else {
+                            this.successVR = true;
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            },
+            deleteVR(item) {
+                this.dialogDeleteVR = true;
+                this.delVR = item;
+            },
+            deleteConfirmVR() {
+                getDocs(query(collection(db, 'voucherRedemption'), where("serialNum", "==", this.delVR.serialNum)))
+                .then((snapshot) => {
+                    var v = "";
+                    snapshot.docs.forEach((doc) => {
+                        v = doc.id;
+                    })
+
+                    deleteDoc(doc(db, 'voucherRedemption', v), {
+                    })
+                    .then((snapshot) => {
+                        getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.delVR.serialNum)))
+                        .then((snapshot) => {
+                            var r = "";
+                            snapshot.docs.forEach((doc) => {
+                                r = doc.id;
+                            })
+                            const vRef = doc(db, "vouchers", r);
                             updateDoc(vRef, {
                                 isAvailable: true,
+                                email: "",
+                                distributionMethod: "",
                             })
                             .then((snapshot) => {
-                                
+                                this.dialogDeleteVR = false;
+                                this.successVR = true;
                             })
                             .catch(err => {
                                 console.log(err);
@@ -602,9 +695,6 @@
                 .catch(err => {
                     console.log(err);
                 })
-            },
-            deleteVR() {
-
             },
         }
     };
