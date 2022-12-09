@@ -1,66 +1,125 @@
 <template>
     <div class="box">
-        <!--HOTO-->
-        <h1 class="mb-12">HOTO</h1>
-        <v-data-table
-            :headers="headersHOTO"
-            :items="dataHOTO"
-            item-key="serialNum"
-            class="elevation-1"
-            :search="searchHOTO"
-            multi-sort
-        >
-            <template v-slot:top>
-                <v-text-field
-                v-model="searchHOTO"
-                color="#000"
-                label="Search..."
-                class="mx-4"
-                ></v-text-field>
-            </template>
-        </v-data-table>
+        <v-tabs v-model="tab" class="mb-12" color="#000">
+            <v-tab><h1>HOTO</h1></v-tab>
+            <v-tab><h1>Redeem</h1></v-tab>
+            <v-tab><h1>Games</h1></v-tab>
+        </v-tabs>
 
+        <v-tabs-items v-model="tab">
+            <!--HOTO-->
+            <v-tab-item>
+                <v-data-table
+                    :headers="headersHOTO"
+                    :items="dataHOTO"
+                    item-key="serialNum"
+                    class="elevation-1"
+                    :search="searchHOTO"
+                    multi-sort
+                >
+                    <template v-slot:top>
+                        <v-text-field
+                        v-model="searchHOTO"
+                        color="#000"
+                        label="Search..."
+                        class="mx-4"
+                        ></v-text-field>
+                    </template>
 
-        <!--Redeem-->
-        <h1 class="my-12">Voucher Redemption</h1>
-        <v-data-table
-            :headers="headersVR"
-            :items="dataVR"
-            item-key="serialNum"
-            class="elevation-1"
-            :search="searchVR"
-            multi-sort
-        >
-            <template v-slot:top>
-                <v-text-field
-                v-model="searchVR"
-                color="#000"
-                label="Search..."
-                class="mx-4"
-                ></v-text-field>
-            </template>
-        </v-data-table>
+                    <!--icons-->
+                    <template v-slot:[`item.actions`]="{ item }">
+                        <v-icon
+                            small
+                            class="mr-2"
+                            @click="editItem(item)"
+                        >
+                            mdi-pencil
+                        </v-icon>
+                        <v-icon
+                            small
+                            @click="deleteItem(item)"
+                        >
+                            mdi-delete
+                        </v-icon>
+                    </template>
+                </v-data-table>
+                <!--Edit HOTO dialog-->
+            </v-tab-item>
 
-        
-        <!--Games-->
-        <h1 class="my-12">Games</h1>
-        <v-data-table
-            :headers="headersGames"
-            :items="dataGames"
-            item-key="serialNum"
-            class="elevation-1"
-            :search="searchGames"
-            multi-sort
-        >
-            <template v-slot:top>
-                <v-text-field
-                v-model="searchGames"
-                color="#000"
-                label="Search..."
-                class="mx-4"
-                ></v-text-field>
-            </template>
-        </v-data-table>
+            <!--Redeem-->
+            <v-tab-item>
+                <v-data-table
+                    :headers="headersVR"
+                    :items="dataVR"
+                    item-key="serialNum"
+                    class="elevation-1"
+                    :search="searchVR"
+                    multi-sort
+                >
+                    <template v-slot:top>
+                        <v-text-field
+                        v-model="searchVR"
+                        color="#000"
+                        label="Search..."
+                        class="mx-4"
+                        ></v-text-field>
+                    </template>
+
+                    <template v-slot:[`item.actions`]="{ item }">
+                        <v-icon
+                            small
+                            class="mr-2"
+                            @click="editItem(item)"
+                        >
+                            mdi-pencil
+                        </v-icon>
+                        <v-icon
+                            small
+                            @click="deleteItem(item)"
+                        >
+                            mdi-delete
+                        </v-icon>
+                    </template>
+                </v-data-table>
+            </v-tab-item>
+            
+            <!--Games-->
+            <v-tab-item>
+                <v-data-table
+                    :headers="headersGames"
+                    :items="dataGames"
+                    item-key="serialNum"
+                    class="elevation-1"
+                    :search="searchGames"
+                    multi-sort
+                >
+                    <template v-slot:top>
+                        <v-text-field
+                        v-model="searchGames"
+                        color="#000"
+                        label="Search..."
+                        class="mx-4"
+                        ></v-text-field>
+                    </template>
+
+                    <template v-slot:[`item.actions`]="{ item }">
+                        <v-icon
+                            small
+                            class="mr-2"
+                            @click="editItem(item)"
+                        >
+                            mdi-pencil
+                        </v-icon>
+                        <v-icon
+                            small
+                            @click="deleteItem(item)"
+                        >
+                            mdi-delete
+                        </v-icon>
+                    </template>
+                </v-data-table>
+            </v-tab-item>
+        </v-tabs-items>
     </div>
 </template>
 <script>
@@ -70,7 +129,7 @@
     export default {
         data(){
             return {
-                dialog: false,
+                tab: null,
                 searchHOTO: "",
                 searchVR: "",
                 searchGames: "",
@@ -84,7 +143,8 @@
                 { text: 'Location', value: 'location' },
                 { text: 'Start Date', value: 'sDate' },
                 { text: 'End Date', value: 'eDate' },
-                { text: 'UID', value: 'uid' }
+                { text: 'UID', value: 'uid' },
+                { text: 'Actions', value: 'actions', sortable: false }
                 ],
                 dataHOTO: [],
                 headersVR: [
@@ -97,7 +157,8 @@
                 { text: 'Matriculation No.', value: 'matricNum' },
                 { text: 'Location', value: 'location' },
                 { text: 'Date', value: 'date' },
-                { text: 'UID', value: 'uid' }
+                { text: 'UID', value: 'uid' },
+                { text: 'Actions', value: 'actions', sortable: false }
                 ],
                 dataVR: [],
                 headersGames: [
@@ -107,7 +168,8 @@
                     sortable: true,
                     value: 'serialNum',
                 },
-                { text: 'UID', value: 'uid' }
+                { text: 'UID', value: 'uid' },
+                { text: 'Actions', value: 'actions', sortable: false }
                 ],
                 dataGames: [],
             }
