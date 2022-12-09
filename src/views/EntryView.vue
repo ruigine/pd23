@@ -449,7 +449,7 @@
             console.log(this.dataGames)
             });
 
-            //HOTO Edit
+            //HOTO & VR Edit
             const vRef = collection(db, 'vouchers');
             onSnapshot(vRef, (querySnapshot) => {
             var v = [];
@@ -459,6 +459,14 @@
                 }
             })
             this.voucherList = v;
+            });
+
+            //VR Edit
+            const mRef = collection(db, 'voucherRedemption');
+            onSnapshot(mRef, (querySnapshot) => {
+            querySnapshot.docs.forEach((doc) => {
+                this.matricList.push(doc.data().matricNum);
+            })
             });
         },
         methods: {
