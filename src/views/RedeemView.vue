@@ -3,7 +3,7 @@
         <v-form v-model="valid" ref="form">
             <v-row class="box" align="center">
                 <v-col cols="12">
-                    <h1 class="mb-12">Redeemed Voucher</h1>
+                    <h1 class="mb-12">Voucher Redemption</h1>
                     <v-text-field
                         v-model="matricNo"
                         color="#000"
@@ -114,7 +114,7 @@
                         })
                         const vRef = doc(db, "vouchers", v);
                         updateDoc(vRef, {
-                            distributionMethod: "redeem",
+                            distributionMethod: "Voucher Redemption",
                             isAvailable: false,
                             uid: this.$store.state.user.uid,
                         })

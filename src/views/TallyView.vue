@@ -90,7 +90,7 @@
         methods: {
             detail(item) {
                 console.log(item)
-                if (item.distributionMethod == "redeem") {
+                if (item.distributionMethod == "Voucher Redemption") {
                     getDocs(query(collection(db, 'voucherRedemption'), where("serialNum", "==", item.serialNum)))
                     .then((snapshot) => {
                         snapshot.docs.forEach((doc) => {

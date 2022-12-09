@@ -3,7 +3,7 @@
         <v-form v-model="valid" ref="form">
             <v-row class="box" align="center">
                 <v-col cols="12">
-                    <h1 class="mb-12">Games Voucher</h1>
+                    <h1 class="mb-12">Games Redemption</h1>
                     <v-text-field
                         v-model="sNo"
                         color="#000"
@@ -111,7 +111,7 @@
                     })
                     const vRef = doc(db, "vouchers", v);
                     updateDoc(vRef, {
-                        distributionMethod: "games",
+                        distributionMethod: "Games Redemption",
                         isAvailable: false,
                         uid: this.$store.state.user.uid,
                     })
