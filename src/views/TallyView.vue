@@ -127,7 +127,6 @@
             
             var range = []; var bool = [];
             for (var i=0; i<this.data.length; i++) {
-                console.log(i, range, bool)
                 if (i == 0) {
                     range.push(this.data[i].serialNum);
                     bool = this.data[i].isAvailable;
