@@ -50,7 +50,7 @@
                     v-model="dialogHOTO"
                 >
                     <v-card>
-                        <v-form v-model="validHOTO" ref="form">
+                        <v-form v-model="validHOTO" ref="formHOTO">
                             <v-row class="pa-6 ma-0">
                                 <v-col cols="12">
                                     <h1 class="mb-12">HOTO</h1>
@@ -184,7 +184,7 @@
                 v-model="dialogVR"
             >
                 <v-card>
-                    <v-form v-model="validVR" ref="form">
+                    <v-form v-model="validVR" ref="formVR">
                         <v-row class="pa-6 ma-0">
                             <v-col cols="12">
                                 <h1 class="mb-12">Voucher Redemption</h1>
@@ -225,31 +225,31 @@
                     </v-form>
 
                     <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="close"
-                            >
-                                Cancel
-                            </v-btn>
-                            <v-btn
-                                v-if="validHOTO"
-                                color="blue darken-1"
-                                text
-                                @click="save"
-                            >
-                                Save
-                            </v-btn>
-                            <v-btn
-                                v-else
-                                color="blue darken-1"
-                                text
-                                disabled
-                            >
-                                Save
-                            </v-btn>
-                        </v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="blue darken-1"
+                            text
+                            @click="close"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            v-if="validVR"
+                            color="blue darken-1"
+                            text
+                            @click="saveVR"
+                        >
+                            Save
+                        </v-btn>
+                        <v-btn
+                            v-else
+                            color="blue darken-1"
+                            text
+                            disabled
+                        >
+                            Save
+                        </v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-dialog>
 
@@ -296,7 +296,10 @@
 <script>
     import { db } from "../firebase/firebaseinit";
     import { doc, collection, getDocs, onSnapshot, addDoc, updateDoc, query, where } from "firebase/firestore";
-    
+    import firebase from 'firebase/compat/app';
+    import 'firebase/compat/auth';
+    import 'firebase/compat/firestore';
+
     import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
 
@@ -395,22 +398,24 @@
                 matricRules: [
                     m => !!m || 'Field is required',
                     m => m.length == 8 || 'Matriculation number must be 8 digits long',
-                    m => this.matricList.includes(m) == false || 'Matriculation number is already in database',
+                    m => (this.matricList.includes(m) == false || m == this.currVR[0]) || 'Matriculation number is already in database',
                 ],
                 sNoRules: [
                     s => !!s || 'Field is required',
-                    s => this.voucherList.includes(s) || 'Voucher does not exist/is unavailable',
+                    s => (this.voucherList.includes(s) || s == this.currVR[1]) || 'Voucher does not exist/is unavailable',
                 ],
                 locRules: [
                     s => !!s || 'Field is required',
                 ],
                 locationVR: null,
+                currVR: ["", ""],
             }
         },
         created() {
             //HOTO
             const hRef = collection(db, 'hotoDB');
             onSnapshot(hRef, (querySnapshot) => {
+            this.dataHOTO = [];
             querySnapshot.docs.forEach((doc) => {
                 this.dataHOTO.push({ ...doc.data(), id: doc.id })
                 
@@ -428,6 +433,7 @@
             //VR
             const vrRef = collection(db, 'voucherRedemption');
             onSnapshot(vrRef, (querySnapshot) => {
+            this.dataVR = [];
             querySnapshot.docs.forEach((doc) => {
                 this.dataVR.push({ ...doc.data(), id: doc.id })
                 
@@ -441,6 +447,7 @@
             //Games
             const gRef = collection(db, 'vouchers');
             onSnapshot(gRef, (querySnapshot) => {
+            this.dataGames = [];
             querySnapshot.docs.forEach((doc) => {
                 if (doc.data().distributionMethod == "Games Redemption") {
                     this.dataGames.push({ ...doc.data(), id: doc.id })
@@ -464,6 +471,7 @@
             //VR Edit
             const mRef = collection(db, 'voucherRedemption');
             onSnapshot(mRef, (querySnapshot) => {
+            this.matricList = [];
             querySnapshot.docs.forEach((doc) => {
                 this.matricList.push(doc.data().matricNum);
             })
@@ -521,6 +529,7 @@
             editVR(item) {
                 this.matricNo = item.matricNum;
                 this.sNo = item.serialNum;
+                this.currVR = [item.matricNum, item.serialNum];
                 this.locationVR = item.location;
 
                 var d = new Date(item.timestamp.seconds*1000);
@@ -528,6 +537,71 @@
                 this.date = d;
 
                 this.dialogVR = true;
+            },
+            saveVR() {
+                getDocs(query(collection(db, 'voucherRedemption'), where("serialNum", "==", this.currVR[1])))
+                .then((snapshot) => {
+                    var v = "";
+                    snapshot.docs.forEach((doc) => {
+                        v = doc.id;
+                    })
+                    const vRef = doc(db, "voucherRedemption", v);
+                    updateDoc(vRef, {
+                        location: this.locationVR,
+                        matricNum: this.matricNo,
+                        serialNum: this.sNo,
+                        timestamp: firebase.firestore.Timestamp.fromDate(new Date(this.date)),
+                    })
+                    .then((snapshot) => {
+                        getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNo)))
+                        .then((snapshot) => {
+                            var v = "";
+                            snapshot.docs.forEach((doc) => {
+                                v = doc.id;
+                            })
+                            const vRef = doc(db, "vouchers", v);
+                            updateDoc(vRef, {
+                                isAvailable: false,
+                            })
+                            .then((snapshot) => {
+
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+
+                        getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.currVR[1])))
+                        .then((snapshot) => {
+                            var v = "";
+                            snapshot.docs.forEach((doc) => {
+                                v = doc.id;
+                            })
+                            const vRef = doc(db, "vouchers", v);
+                            updateDoc(vRef, {
+                                isAvailable: true,
+                            })
+                            .then((snapshot) => {
+                                
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                })
             },
             deleteVR() {
 
