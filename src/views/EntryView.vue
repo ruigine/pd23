@@ -709,6 +709,7 @@
                                 console.log(err);
                             })
                         } else {
+                            this.dialogVR = false;
                             this.success = true;
                         }
                     })
@@ -824,6 +825,7 @@
                         console.log(err);
                     })
                 } else {
+                    this.dialogGames = false;
                     this.success = true;
                 }
             },
