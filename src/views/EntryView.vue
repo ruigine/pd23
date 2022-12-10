@@ -2,7 +2,7 @@
     <div class="box">
         <v-tabs v-model="tab" class="mb-12" color="#000">
             <v-tab><h1>HOTO</h1></v-tab>
-            <v-tab><h1>Redeem</h1></v-tab>
+            <v-tab><h1>Voucher Redemption</h1></v-tab>
             <v-tab><h1>Games</h1></v-tab>
         </v-tabs>
 
