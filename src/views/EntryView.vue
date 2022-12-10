@@ -628,6 +628,7 @@
                                     distributionMethod: "",
                                 })
                                 .then((snapshot) => {
+                                    this.dialogVR = false;
                                     this.successVR = true;
                                 })
                                 .catch(err => {
