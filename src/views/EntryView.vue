@@ -198,9 +198,9 @@
                                     required
                                 ></v-text-field>
                                 <v-text-field
-                                    v-model="sNo"
+                                    v-model="sNoVR"
                                     color="#000"
-                                    :rules="sNoRules"
+                                    :rules="sNoRulesVR"
                                     label="Voucher Serial Number"
                                     type="number"
                                     required
@@ -216,7 +216,7 @@
                                 <v-text-field
                                     type="datetime-local"
                                     color="#000"
-                                    v-model="date"
+                                    v-model="dateVR"
                                     label="Date"
                                     :rules="dateRules"
                                 ></v-text-field>
@@ -249,25 +249,6 @@
                         >
                             Save
                         </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-
-            <!--Success VR-->
-            <v-dialog
-                max-width="600"
-                v-model="successVR"
-            >
-                <v-card>
-                    <v-card-text class="text-center">
-                        <v-icon class="py-12" color="success" size="100" style="opacity: 0.4">mdi-check-circle-outline</v-icon>
-                        <div class="text-h5">Update successful!</div>
-                    </v-card-text>
-                    <v-card-actions class="justify-end">
-                    <v-btn
-                        text
-                        @click="successVR = !successVR"
-                    >Close</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -309,13 +290,13 @@
                         <v-icon
                             small
                             class="mr-2"
-                            @click="editItem(item)"
+                            @click="editGames(item)"
                         >
                             mdi-pencil
                         </v-icon>
                         <v-icon
                             small
-                            @click="deleteItem(item)"
+                            @click="deleteGames(item)"
                         >
                             mdi-delete
                         </v-icon>
@@ -323,6 +304,90 @@
                 </v-data-table>
             </v-tab-item>
         </v-tabs-items>
+
+        <!--Edit Games dialog-->
+        <v-dialog
+            max-width="600"
+            v-model="dialogGames"
+        >
+            <v-card class="pa-6 ma-0">
+                <v-form v-model="validGames" ref="formGames">
+                    <v-row>
+                        <v-col cols="12">
+                            <h1 class="mb-12">Games Redemption</h1>
+                            <v-text-field
+                                v-model="sNoGames"
+                                color="#000"
+                                :rules="sNoRulesGames"
+                                label="Voucher Serial Number"
+                                type="number"
+                                required
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                </v-form>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="dialogGames = !dialogGames"
+                    >
+                        Cancel
+                    </v-btn>
+                    <v-btn
+                        v-if="validGames"
+                        color="blue darken-1"
+                        text
+                        @click="saveGames"
+                    >
+                        Save
+                    </v-btn>
+                    <v-btn
+                        v-else
+                        color="blue darken-1"
+                        text
+                        disabled
+                    >
+                        Save
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <!--Delete Games-->
+        <v-dialog v-model="dialogDeleteGames" max-width="500px">
+            <v-card>
+                <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="dialogDeleteGames = !dialogDeleteGames">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteConfirmGames">OK</v-btn>
+                <v-spacer></v-spacer>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+
+        <!--Universal Success Dialog-->
+            <v-dialog
+                max-width="600"
+                v-model="success"
+            >
+                <v-card>
+                    <v-card-text class="text-center">
+                        <v-icon class="py-12" color="success" size="100" style="opacity: 0.4">mdi-check-circle-outline</v-icon>
+                        <div class="text-h5">Update successful!</div>
+                    </v-card-text>
+                    <v-card-actions class="justify-end">
+                    <v-btn
+                        text
+                        @click="success = !success"
+                    >Close</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
     </div>
 </template>
 <script>
@@ -393,9 +458,7 @@
                 delHOTO: null,
                 delVR: null,
                 delGames: null,
-                successHOTO: false,
-                successVR: false,
-                successGames: false,
+                success: false,
 
                 //HOTO
                 startTime: null,
@@ -429,16 +492,15 @@
 
                 //VR
                 matricList: [],
-                valid: false,
                 matricNo: '',
-                sNo: '',
-                date: null,
+                sNoVR: '',
+                dateVR: null,
                 matricRules: [
                     m => !!m || 'Field is required',
                     m => m.length == 8 || 'Matriculation number must be 8 digits long',
                     m => (this.matricList.includes(m) == false || m == this.currVR[0]) || 'Matriculation number is already in database',
                 ],
-                sNoRules: [
+                sNoRulesVR: [
                     s => !!s || 'Field is required',
                     s => (this.voucherList.includes(s) || s == this.currVR[1]) || 'Voucher does not exist/is unavailable',
                 ],
@@ -447,6 +509,14 @@
                 ],
                 locationVR: null,
                 currVR: ["", ""],
+
+                //Games
+                sNoGames: "",
+                sNoRulesGames: [
+                    s => !!s || 'Field is required',
+                    s => (this.voucherList.includes(s) || s == this.currGames[0]) || 'Voucher does not exist/is unavailable',
+                ],
+                currGames: [],
             }
         },
         created() {
@@ -494,7 +564,7 @@
             console.log(this.dataGames)
             });
 
-            //HOTO & VR Edit
+            //HOTO & VR & Games Edit
             const vRef = collection(db, 'vouchers');
             onSnapshot(vRef, (querySnapshot) => {
             var v = [];
@@ -566,13 +636,13 @@
             //VR
             editVR(item) {
                 this.matricNo = item.matricNum;
-                this.sNo = item.serialNum;
+                this.sNoVR = item.serialNum;
                 this.currVR = [item.matricNum, item.serialNum, item.email];
                 this.locationVR = item.location;
 
                 var d = new Date(item.timestamp.seconds*1000);
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                this.date = d;
+                this.dateVR = d;
 
                 this.dialogVR = true;
             },
@@ -587,12 +657,12 @@
                     updateDoc(vRef, {
                         location: this.locationVR,
                         matricNum: this.matricNo,
-                        serialNum: this.sNo,
-                        timestamp: firebase.firestore.Timestamp.fromDate(new Date(this.date)),
+                        serialNum: this.sNoVR,
+                        timestamp: firebase.firestore.Timestamp.fromDate(new Date(this.dateVR)),
                     })
                     .then((snapshot) => {
-                        if (this.sNo != this.currVR[1]) {
-                            getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNo)))
+                        if (this.sNoVR != this.currVR[1]) {
+                            getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNoVR)))
                             .then((snapshot) => {
                                 var v = "";
                                 snapshot.docs.forEach((doc) => {
@@ -629,7 +699,7 @@
                                 })
                                 .then((snapshot) => {
                                     this.dialogVR = false;
-                                    this.successVR = true;
+                                    this.success = true;
                                 })
                                 .catch(err => {
                                     console.log(err);
@@ -639,7 +709,7 @@
                                 console.log(err);
                             })
                         } else {
-                            this.successVR = true;
+                            this.success = true;
                         }
                     })
                     .catch(err => {
@@ -679,7 +749,7 @@
                             })
                             .then((snapshot) => {
                                 this.dialogDeleteVR = false;
-                                this.successVR = true;
+                                this.success = true;
                             })
                             .catch(err => {
                                 console.log(err);
@@ -696,6 +766,95 @@
                 .catch(err => {
                     console.log(err);
                 })
+            },
+
+            //Games
+            editGames(items) {
+                this.currGames = [items.serialNum, items.email];
+                this.sNoGames = items.serialNum;
+
+                this.dialogGames = true;
+            },
+            saveGames() {
+                if (this.sNoGames != this.currGames[0]) {
+                    getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNoGames)))
+                    .then((snapshot) => {
+                        var v = "";
+                        snapshot.docs.forEach((doc) => {
+                            v = doc.id;
+                        })
+                        const vRef = doc(db, "vouchers", v);
+                        updateDoc(vRef, {
+                            isAvailable: false,
+                            distributionMethod: "Games Redemption",
+                            email: this.currGames[1]
+                        })
+                        .then((snapshot) => {
+
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+
+                    getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.currGames[0])))
+                    .then((snapshot) => {
+                        var v = "";
+                        snapshot.docs.forEach((doc) => {
+                            v = doc.id;
+                        })
+                        const vRef = doc(db, "vouchers", v);
+                        updateDoc(vRef, {
+                            isAvailable: true,
+                            email: "",
+                            distributionMethod: "",
+                        })
+                        .then((snapshot) => {
+                            this.dialogGames = false;
+                            this.success = true;
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+                } else {
+                    this.success = true;
+                }
+            },
+            deleteGames(items) {
+                this.dialogDeleteGames = true;
+                this.delGames = items;
+            },
+            deleteConfirmGames() {
+                getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.delGames.serialNum)))
+                    .then((snapshot) => {
+                        var v = "";
+                        snapshot.docs.forEach((doc) => {
+                            v = doc.id;
+                        })
+                        const vRef = doc(db, "vouchers", v);
+                        updateDoc(vRef, {
+                            isAvailable: true,
+                            email: "",
+                            distributionMethod: "",
+                        })
+                        .then((snapshot) => {
+                            this.dialogDeleteGames = false;
+                            this.success = true;
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             },
         }
     };
