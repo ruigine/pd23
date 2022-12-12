@@ -95,7 +95,6 @@
                 startTime: null,
                 endTime: null,
                 dialog: false,
-                voucherList: [],
                 valid: false,
                 sNoStart: "",
                 sNoEnd: "",

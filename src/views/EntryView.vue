@@ -44,19 +44,37 @@
                     </template>
                 </v-data-table>
                 
-                <!--Edit HOTO dialog (incomplete)-->
+                <!--Edit HOTO dialog-->
                 <v-dialog
                     max-width="600"
                     v-model="dialogHOTO"
                 >
-                    <v-card>
+                    <v-card class="pa-6 ma-0">
                         <v-form v-model="validHOTO" ref="formHOTO">
                             <v-row class="pa-6 ma-0">
                                 <v-col cols="12">
                                     <h1 class="mb-12">HOTO</h1>
 
-                                    <!---->
-
+                                    <v-text-field
+                                        v-model="sNoStart"
+                                        color="#000"
+                                        :rules="sNoRulesHOTO"
+                                        label="Voucher Serial Numbers at the Start"
+                                        hint="i.e.: 2000-2030, 2060, 2080"
+                                        required
+                                    ></v-text-field>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field
+                                                v-model="sNoEnd"
+                                                color="#000"
+                                                :rules="sNoRulesHOTO"
+                                                label="Voucher Serial Numbers at the End"
+                                                hint="i.e.: 2000-2030, 2060, 2080"
+                                                required
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
                                     <v-row>
                                         <v-col>
                                             <v-text-field
@@ -67,7 +85,6 @@
                                                 :rules="startRules"
                                             ></v-text-field>
                                         </v-col>
-
                                         <v-col>
                                             <v-text-field
                                                 type="datetime-local"
@@ -78,13 +95,12 @@
                                             ></v-text-field>
                                         </v-col>
                                     </v-row>
-
                                     <v-select
                                         v-model="locationHOTO"
                                         color="#000"
                                         :items="items"
                                         label="Location"
-                                        :rules="locRulesHOTO"
+                                        :rules="locRules"
                                         required
                                     ></v-select>
                                 </v-col>
@@ -96,7 +112,7 @@
                             <v-btn
                                 color="blue darken-1"
                                 text
-                                @click="close"
+                                @click="dialogHOTO = !dialogHOTO"
                             >
                                 Cancel
                             </v-btn>
@@ -104,7 +120,7 @@
                                 v-if="validHOTO"
                                 color="blue darken-1"
                                 text
-                                @click="save"
+                                @click="saveHOTO"
                             >
                                 Save
                             </v-btn>
@@ -120,6 +136,19 @@
                     </v-card>
                 </v-dialog>
             </v-tab-item>
+
+            <!--Delete HOTO-->
+            <v-dialog v-model="dialogDeleteHOTO" max-width="500px">
+                <v-card>
+                    <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="dialogDeleteHOTO = !dialogDeleteHOTO">Cancel</v-btn>
+                    <v-btn color="blue darken-1" text @click="deleteConfirmHOTO">OK</v-btn>
+                    <v-spacer></v-spacer>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
 
 
             <!--Redeem-->
@@ -411,11 +440,12 @@
                 searchGames: "",
                 headersHOTO: [
                 {
-                    text: 'S/N',
+                    text: 'S/Ns (Start)',
                     align: 'start',
                     sortable: true,
-                    value: 'serialNums',
+                    value: 'serialNumStart',
                 },
+                { text: 'S/Ns (End)', value: 'serialNumEnd' },
                 { text: 'Location', value: 'location' },
                 { text: 'Start Date', value: 'sDate' },
                 { text: 'End Date', value: 'eDate' },
@@ -448,14 +478,20 @@
                 delVR: null,
                 delGames: null,
                 success: false,
+                validHOTO: false,
+                validVR: false,
+                validGames: false,
 
                 //HOTO
                 startTime: null,
                 endTime: null,
-                dialog: false,
-                validHOTO: false,
-                validVR: false,
-                validGames: false,
+                sNoStart: "",
+                sNoEnd: "",
+                sNoRulesHOTO: [
+                    s => !!s || 'Field is required',
+                    s => this.checkFormat(s) || 'Please use the following format i.e. 3000-3040',
+                    s => (this.checkFormat(s) && this.checkOrder(s)) || 'Invalid ranges/vouchers'
+                ],
                 locRulesHOTO: [
                     l => !!l || 'Field is required',
                 ],
@@ -467,16 +503,11 @@
                 ],
                 endRules: [
                     e => !!e || 'Field is required',
+                    e => (e && this.dateOrder()) || 'End date must be after start date',
                 ],
                 items: ['Koufu', 'SOB', 'Connexion'],
                 locationHOTO: null,
-                value: [],
-                options: {
-                    min: 0,
-                    max: 6020,
-                    process: pos => Array.from({length:pos.length/2}, (_,i)=>[pos[2*i], pos[2*i+1]]),
-                    enableCross: true
-                },
+                currHOTO: null,
 
                 //VR
                 voucherListVR: [],
@@ -590,9 +621,47 @@
         },
         methods: {
             //HOTO
+            checkFormat(s) {
+                if (isNaN(s.split(", ").join("-").split("-").join(""))) {
+                    return false;
+                }
+                var sArr = s.replaceAll(",", " ").trim(" ").split("  ");
+
+                for (var str of sArr) {
+                    if (str.split("-").length != 2) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+            checkOrder(s) {
+                var sArr = s.replaceAll(",", " ").trim(" ").split("  ");
+
+                for (var str of sArr) {
+                    var range = str.split("-");
+                    if (range[1] < range[0]) {
+                        return false;
+                    } else {
+                        if ((range[0] >= 1901 && range[1] <= 2420) || (range[0] >= 2541 && range[1] <= 6000)) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            },
+            dateOrder() {
+                if (new Date(this.endTime).getTime() > new Date(this.startTime).getTime()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
             editHOTO(item) {
-                this.value = (item.serialNums.split(', ').join('-').split('-')).map(function(item) {return parseInt(item, 10)});
-                
+                this.sNoStart = item.serialNumStart;
+                this.sNoEnd = item.serialNumEnd;
+                this.currHOTO = item;
+
                 var sD = new Date(item.startTime.seconds*1000);
                 sD = [String(sD.getFullYear()), String(sD.getMonth()+1).padStart(2, '0'), String(sD.getDate()).padStart(2, '0')].join("-") + "T" + [String(sD.getHours()).padStart(2, '0'), String(sD.getMinutes()).padStart(2, '0')].join(":");
                 this.startTime = sD;
@@ -601,21 +670,40 @@
                 eD = [String(eD.getFullYear()), String(eD.getMonth()+1).padStart(2, '0'), String(eD.getDate()).padStart(2, '0')].join("-") + "T" + [String(eD.getHours()).padStart(2, '0'), String(eD.getMinutes()).padStart(2, '0')].join(":");
                 this.endTime = eD;
 
-                this.locationHOTO = item.location
+                this.locationHOTO = item.location;
 
                 this.dialogHOTO = true;
             },
-            submitHOTO() {
-
+            saveHOTO() {
+                updateDoc(doc(db, 'hotoDB', this.currHOTO.id), {
+                    location: this.locationHOTO,
+                    serialNumStart: this.sNoStart.replaceAll(",", " ").trim(" ").split("  ").join(", "),
+                    serialNumEnd: this.sNoEnd.replaceAll(",", " ").trim(" ").split("  ").join(", "),
+                    startTime: firebase.firestore.Timestamp.fromDate(new Date(this.startTime)),
+                    endTime: firebase.firestore.Timestamp.fromDate(new Date(this.endTime)),
+                })
+                .then((snapshot) => {
+                    this.dialogHOTO = false;
+                    this.success = true;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
             },
-            save() {
-
+            deleteHOTO(item) {
+                this.dialogDeleteHOTO = true;
+                this.delHOTO = item;
             },
-            close() {
-
-            },
-            deleteHOTO() {
-
+            deleteConfirmHOTO() {
+                deleteDoc(doc(db, 'hotoDB', this.delHOTO.id), {
+                })
+                .then((snapshot) => {
+                    this.dialogDeleteHOTO = false;
+                    this.success = true;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
             },
 
             //VR
