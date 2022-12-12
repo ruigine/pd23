@@ -189,7 +189,7 @@
                             <v-col cols="12">
                                 <h1 class="mb-12">Voucher Redemption</h1>
                                 <v-text-field
-                                    v-model="matricNo"
+                                    v-model="matricNoVR"
                                     color="#000"
                                     :rules="matricRules"
                                     :counter="8"
@@ -492,7 +492,7 @@
 
                 //VR
                 matricList: [],
-                matricNo: '',
+                matricNoVR: '',
                 sNoVR: '',
                 dateVR: null,
                 matricRules: [
@@ -574,15 +574,19 @@
                 }
             })
             this.voucherList = v;
+            this.$refs.formVR.validate();
+            this.$refs.formGames.validate()
             });
 
             //VR Edit
             const mRef = collection(db, 'voucherRedemption');
             onSnapshot(mRef, (querySnapshot) => {
-            this.matricList = [];
+            var m = [];
             querySnapshot.docs.forEach((doc) => {
-                this.matricList.push(doc.data().matricNum);
+                m.push(doc.data().matricNum);
             })
+            this.matricList = m;
+            this.$refs.formVR.validate();
             });
         },
         methods: {
@@ -635,7 +639,7 @@
 
             //VR
             editVR(item) {
-                this.matricNo = item.matricNum;
+                this.matricNoVR = item.matricNum;
                 this.sNoVR = item.serialNum;
                 this.currVR = [item.matricNum, item.serialNum, item.email];
                 this.locationVR = item.location;
@@ -656,7 +660,7 @@
                     const vRef = doc(db, "voucherRedemption", v);
                     updateDoc(vRef, {
                         location: this.locationVR,
-                        matricNum: this.matricNo,
+                        matricNum: this.matricNoVR,
                         serialNum: this.sNoVR,
                         timestamp: firebase.firestore.Timestamp.fromDate(new Date(this.dateVR)),
                     })
