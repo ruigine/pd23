@@ -15,6 +15,7 @@
                     item-key="serialNum"
                     class="elevation-1"
                     :search="searchHOTO"
+                    @click:row="history"
                     multi-sort
                 >
                     <template v-slot:top>
@@ -159,6 +160,7 @@
                     item-key="serialNum"
                     class="elevation-1"
                     :search="searchVR"
+                    @click:row="history"
                     multi-sort
                 >
                     <template v-slot:top>
@@ -285,6 +287,7 @@
                     item-key="serialNum"
                     class="elevation-1"
                     :search="searchGames"
+                    @click:row="history"
                     multi-sort
                 >
                     <template v-slot:top>
@@ -422,6 +425,42 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+
+        <!--Edit history dialog-->
+        <v-dialog
+            max-width="80%"
+            v-model="dialogEdit"
+        >
+            <v-card class="pa-6 ma-0">
+                <v-row class="pa-6 ma-0">
+                    <v-col cols="12">
+                        <h1 class="mb-12">Editing History</h1>
+                        <v-data-table
+                            :headers="headersEdit"
+                            :items="dataEdit"
+                            item-key="serialNum"
+                            class="elevation-1"
+                            :search="searchEdit"
+                            multi-sort
+                        >
+                            <template v-slot:top>
+                                <v-text-field
+                                v-model="searchEdit"
+                                color="#000"
+                                label="Search..."
+                                class="mx-4"
+                                ></v-text-field>
+                            </template>
+
+                            <template slot="no-data">
+                                No history of edits.
+                            </template>
+                        </v-data-table>
+                    </v-col>
+                </v-row>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
@@ -438,6 +477,9 @@
                 searchHOTO: "",
                 searchVR: "",
                 searchGames: "",
+                searchEdit: "",
+                headersEdit: [],
+                dataEdit: [],
                 headersHOTO: [
                 {
                     text: 'S/Ns (Start)',
@@ -468,6 +510,7 @@
                 ],
                 dataVR: [],
                 dataGames: [],
+                dialogEdit: false,
                 dialogHOTO: false,
                 dialogVR: false,
                 dialogGames: false,
@@ -750,6 +793,7 @@
                         matricNum: this.currVR.matricNum,
                         location: this.currVR.location,
                         date: this.currVR.date,
+                        email: this.currVR.email,
                         editDate: firebase.firestore.Timestamp.fromDate(new Date()),
                     })
                     .then((snapshot) => {
@@ -809,6 +853,7 @@
                         matricNum: this.currGames.matricNum,
                         location: this.currGames.location,
                         date: this.currGames.date,
+                        email: this.currGames.email,
                         editDate: firebase.firestore.Timestamp.fromDate(new Date()),
                     })
                     .then((snapshot) => {
@@ -838,6 +883,82 @@
                     console.log(err);
                 })
             },
+
+            //History
+            history(value) {
+                if (!(this.dialogHOTO || this.dialogVR || this.dialogGames) && !(this.dialogDeleteHOTO || this.dialogDeleteVR || this.dialogDeleteGames)) {
+                    this.dataEdit = [];
+                    if (this.tab == 0) {
+                        this.headersEdit = this.headersHOTO.slice(0, -1);
+                        this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
+                        
+                        getDocs(collection(doc(db, 'hotoDB', value.id), "history"))
+                        .then((snapshot) => {
+                            snapshot.docs.forEach((doc) => {
+                                this.dataEdit.push({ ...doc.data(), id: doc.id })
+
+                                var sD = new Date(doc.data().startTime.seconds*1000);
+                                sD = [String(sD.getDate()).padStart(2, '0'), String(sD.getMonth()+1).padStart(2, '0'), String(sD.getFullYear())].join("/") + " " + [String(sD.getHours()).padStart(2, '0'), String(sD.getMinutes()).padStart(2, '0')].join(":");
+                                this.dataEdit[this.dataEdit.length-1]["sDate"] = sD;
+
+                                var eD = new Date(doc.data().endTime.seconds*1000);
+                                eD = [String(eD.getDate()).padStart(2, '0'), String(eD.getMonth()+1).padStart(2, '0'), String(eD.getFullYear())].join("/") + " " + [String(eD.getHours()).padStart(2, '0'), String(eD.getMinutes()).padStart(2, '0')].join(":");
+                                this.dataEdit[this.dataEdit.length-1]["eDate"] = eD;
+
+                                var editD = new Date(doc.data().editDate.seconds*1000);
+                                editD = [String(editD.getDate()).padStart(2, '0'), String(editD.getMonth()+1).padStart(2, '0'), String(editD.getFullYear())].join("/") + " " + [String(editD.getHours()).padStart(2, '0'), String(editD.getMinutes()).padStart(2, '0')].join(":");
+                                this.dataEdit[this.dataEdit.length-1]["editDate"] = editD;
+                            })
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    } else if (this.tab == 1) {
+                        this.headersEdit = this.headers.slice(0, -1);
+                        this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
+                        
+                        getDocs(collection(doc(db, 'vouchers', value.id), "history"))
+                        .then((snapshot) => {
+                            snapshot.docs.forEach((doc) => {
+                                this.dataEdit.push({ ...doc.data(), id: doc.id })
+
+                                var d = new Date(doc.data().date.seconds*1000);
+                                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                                this.dataEdit[this.dataEdit.length-1]["datestamp"] = d;
+
+                                var editD = new Date(doc.data().editDate.seconds*1000);
+                                editD = [String(editD.getDate()).padStart(2, '0'), String(editD.getMonth()+1).padStart(2, '0'), String(editD.getFullYear())].join("/") + " " + [String(editD.getHours()).padStart(2, '0'), String(editD.getMinutes()).padStart(2, '0')].join(":");
+                                this.dataEdit[this.dataEdit.length-1]["editDate"] = editD;
+                            })
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    } else if (this.tab == 2) {
+                        this.headersEdit = this.headers.slice(0, -1);
+                        this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
+                        
+                        getDocs(collection(doc(db, 'games', value.id), "history"))
+                        .then((snapshot) => {
+                            snapshot.docs.forEach((doc) => {
+                                this.dataEdit.push({ ...doc.data(), id: doc.id })
+
+                                var d = new Date(doc.data().date.seconds*1000);
+                                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                                this.dataEdit[this.dataEdit.length-1]["datestamp"] = d;
+
+                                var editD = new Date(doc.data().editDate.seconds*1000);
+                                editD = [String(editD.getDate()).padStart(2, '0'), String(editD.getMonth()+1).padStart(2, '0'), String(editD.getFullYear())].join("/") + " " + [String(editD.getHours()).padStart(2, '0'), String(editD.getMinutes()).padStart(2, '0')].join(":");
+                                this.dataEdit[this.dataEdit.length-1]["editDate"] = editD;
+                            })
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    }
+                    this.dialogEdit = true;
+                }
+            }
         }
     };
 </script>
