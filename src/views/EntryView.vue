@@ -293,9 +293,18 @@
         >
             <v-card class="pa-6 ma-0">
                 <v-form v-model="validGames" ref="formGames">
-                    <v-row>
+                    <v-row class="pa-6 ma-0">
                         <v-col cols="12">
                             <h1 class="mb-12">Games Redemption</h1>
+                            <v-text-field
+                                v-model="matricNoGames"
+                                color="#000"
+                                :rules="matricRulesGames"
+                                :counter="8"
+                                label="Matriculation Number"
+                                type="number"
+                                required
+                            ></v-text-field>
                             <v-text-field
                                 v-model="sNoGames"
                                 color="#000"
@@ -303,6 +312,21 @@
                                 label="Voucher Serial Number"
                                 type="number"
                                 required
+                            ></v-text-field>
+                            <v-select
+                                v-model="locationGames"
+                                color="#000"
+                                :items="items"
+                                label="Location"
+                                :rules="locRules"
+                                required
+                            ></v-select>
+                            <v-text-field
+                                type="datetime-local"
+                                color="#000"
+                                v-model="dateGames"
+                                label="Date"
+                                :rules="dateRules"
                             ></v-text-field>
                         </v-col>
                     </v-row>
@@ -352,23 +376,23 @@
 
 
         <!--Universal Success Dialog-->
-            <v-dialog
-                max-width="600"
-                v-model="success"
-            >
-                <v-card>
-                    <v-card-text class="text-center">
-                        <v-icon class="py-12" color="success" size="100" style="opacity: 0.4">mdi-check-circle-outline</v-icon>
-                        <div class="text-h5">Update successful!</div>
-                    </v-card-text>
-                    <v-card-actions class="justify-end">
-                    <v-btn
-                        text
-                        @click="success = !success"
-                    >Close</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
+        <v-dialog
+            max-width="600"
+            v-model="success"
+        >
+            <v-card>
+                <v-card-text class="text-center">
+                    <v-icon class="py-12" color="success" size="100" style="opacity: 0.4">mdi-check-circle-outline</v-icon>
+                    <div class="text-h5">Update successful!</div>
+                </v-card-text>
+                <v-card-actions class="justify-end">
+                <v-btn
+                    text
+                    @click="success = !success"
+                >Close</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
@@ -478,13 +502,18 @@
 
                 //Games
                 voucherListGames: [],
-                matricNoG: '',
+                matricNoGames: '',
                 sNoGames: "",
                 dateGames: null,
                 locationGames: null,
                 sNoRulesGames: [
                     s => !!s || 'Field is required',
-                    s => (this.voucherList.includes(s) || s == this.currGames[0]) || 'Voucher does not exist/is unavailable',
+                    s => (1901 <= Number(s) && Number(s) <= 2420) || 'Invalid voucher S/N',
+                    s => (this.voucherListGames.includes(s) == false || s == this.currGames[1]) || 'Voucher does not exist/is unavailable',
+                ],
+                matricRulesGames: [
+                    m => !!m || 'Field is required',
+                    m => (m && m.length == 8) || 'Matriculation number must be 8 digits long'
                 ],
                 currGames: [],
                 saved: false,
@@ -636,93 +665,49 @@
             },
 
             //Games
-            editGames(items) {
-                this.currGames = [items.serialNum, items.email];
-                this.sNoGames = items.serialNum;
+            editGames(item) {
+                this.matricNoGames = item.matricNum;
+                this.sNoGames = item.serialNum;
+                this.currGames = [item.matricNum, item.serialNum, item.email, item.id];
+                this.locationGames = item.location;
+
+                var d = new Date(item.date.seconds*1000);
+                d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                this.dateGames = d;
 
                 this.dialogGames = true;
             },
             saveGames() {
-                if (this.sNoGames != this.currGames[0]) {
-                    getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNoGames)))
-                    .then((snapshot) => {
-                        var v = "";
-                        snapshot.docs.forEach((doc) => {
-                            v = doc.id;
-                        })
-                        const vRef = doc(db, "vouchers", v);
-                        updateDoc(vRef, {
-                            isAvailable: false,
-                            distributionMethod: "Games Redemption",
-                            email: this.currGames[1]
-                        })
-                        .then((snapshot) => {
-
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
-
-                    getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.currGames[0])))
-                    .then((snapshot) => {
-                        var v = "";
-                        snapshot.docs.forEach((doc) => {
-                            v = doc.id;
-                        })
-                        const vRef = doc(db, "vouchers", v);
-                        updateDoc(vRef, {
-                            isAvailable: true,
-                            email: "",
-                            distributionMethod: "",
-                        })
-                        .then((snapshot) => {
-                            this.dialogGames = false;
-                            this.success = true;
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
-                } else {
+                this.saved = true;
+                const gRef = doc(db, "games", this.currGames[3]);
+                updateDoc(gRef, {
+                    location: this.locationGames,
+                    matricNum: this.matricNoGames,
+                    serialNum: this.sNoGames,
+                    date: firebase.firestore.Timestamp.fromDate(new Date(this.dateGames)),
+                })
+                .then((snapshot) => {
                     this.dialogGames = false;
                     this.success = true;
-                }
+                })
+                .catch(err => {
+                    console.log(err);
+                })
             },
             deleteGames(items) {
                 this.dialogDeleteGames = true;
                 this.delGames = items;
             },
             deleteConfirmGames() {
-                getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.delGames.serialNum)))
-                    .then((snapshot) => {
-                        var v = "";
-                        snapshot.docs.forEach((doc) => {
-                            v = doc.id;
-                        })
-                        const vRef = doc(db, "vouchers", v);
-                        updateDoc(vRef, {
-                            isAvailable: true,
-                            email: "",
-                            distributionMethod: "",
-                        })
-                        .then((snapshot) => {
-                            this.dialogDeleteGames = false;
-                            this.success = true;
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                deleteDoc(doc(db, 'games', this.delGames.id), {
+                })
+                .then((snapshot) => {
+                    this.dialogDeleteGames = false;
+                    this.success = true;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
             },
         }
     };
