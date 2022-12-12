@@ -102,7 +102,7 @@
                 sNoRules: [
                     s => !!s || 'Field is required',
                     s => this.checkFormat(s) || 'Please use the following format i.e. 3000-3040',
-                    s => (this.checkFormat(s) && this.checkOrder(s)) || 'Invalid ranges'
+                    s => (this.checkFormat(s) && this.checkOrder(s)) || 'Invalid ranges/vouchers'
                 ],
                 locRules: [
                     l => !!l || 'Field is required',
