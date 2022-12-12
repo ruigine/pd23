@@ -5,26 +5,27 @@
                 <v-col cols="12">
                     <h1 class="mb-12">HOTO</h1>
 
+                    <v-text-field
+                        v-model="sNoStart"
+                        color="#000"
+                        :rules="sNoRules"
+                        label="Voucher Serial Numbers at the Start"
+                        hint="i.e.: 2000-2030, 2060, 2080"
+                        required
+                    ></v-text-field>
+
                     <v-row>
-                        <v-col class="mb-4">
-                            <p style="color: grey" class="float-left">Voucher Serial Numbers</p>
-                            <v-btn class="float-right" x-small text color="blue" @click="add"><v-icon>mdi-plus</v-icon></v-btn>
-                            <v-btn class="float-right" x-small text color="blue" @click="remove"><v-icon>mdi-minus</v-icon></v-btn>
+                        <v-col>
+                            <v-text-field
+                                v-model="sNoEnd"
+                                color="#000"
+                                :rules="sNoRules"
+                                label="Voucher Serial Numbers at the End"
+                                hint="i.e.: 2000-2030, 2060, 2080"
+                                required
+                            ></v-text-field>
                         </v-col>
                     </v-row>
-
-                    <vue-slider
-                        :tooltip="'always'"
-                        ref="slider"
-                        v-model="value"
-                        v-bind="options"
-                    >
-                        <template v-slot:tooltip="{ value, focus }">
-                            <div :class="['custom-tooltip', { focus }]" style="font-size: 12px; color: #a6a6a6;">{{ value }}</div>
-                        </template> 
-                    </vue-slider>
-                    <hr class="my-2"/>
-                    <p style="font-size: 12px;">Vouchers {{Array.from({length:value.length/2}, (_,i)=>[value[2*i], value[2*i+1]].join("-")).join(", ")}}</p>
 
                     <v-row>
                         <v-col>
@@ -88,13 +89,7 @@
     import 'firebase/compat/firestore';
     import { doc, collection, getDocs, onSnapshot, addDoc, updateDoc, query, where } from "firebase/firestore";
 
-    import VueSlider from 'vue-slider-component'
-    import 'vue-slider-component/theme/antd.css'
-
     export default {
-        components: {
-            VueSlider,
-        },
         data(){
             return {
                 startTime: null,
@@ -102,6 +97,10 @@
                 dialog: false,
                 voucherList: [],
                 valid: false,
+                sNoRules: [
+                    s => !!s || 'Field is required',
+                    s => this.checkFormat(s) || 'Please use the following format i.e. 3000-3040'
+                ],
                 locRules: [
                     l => !!l || 'Field is required',
                 ],
@@ -116,13 +115,6 @@
                 ],
                 items: ['Koufu', 'SOB', 'Connexion'],
                 location: null,
-                value: [100, 400],
-                options: {
-                    min: 0,
-                    max: 6020,
-                    process: pos => Array.from({length:pos.length/2}, (_,i)=>[pos[2*i], pos[2*i+1]]),
-                    enableCross: true
-                }
             }
         },
         created(){
@@ -138,36 +130,30 @@
             });
         },
         methods: {
-            add() {
-                if (this.value[this.value.length-1] + 150 <= this.options.max) {
-                    this.value.push(this.value[this.value.length-1] + 150);
-                } else {
-                    this.value.push(this.options.max);
+            checkFormat(s) {
+                if (isNaN(s.split(", ").join("-").split("-").join(""))) {
+                    return false;
                 }
-                if (this.value[this.value.length-1] + 150 <= this.options.max) {
-                    this.value.push(this.value[this.value.length-1] + 150);
-                } else {
-                    this.value.push(this.options.max);
+                var sArr = s.replaceAll(",", " ").trim(" ").split("  ");
+                for (var str of sArr) {
+                    if (str.split("-").length != 2) {
+                        return false;
+                    }
                 }
-            },
-            remove() {
-                if (this.value.length >= 4) {
-                    this.value.pop();
-                    this.value.pop();
-                }
+                return true;
             },
             submit() {
                 addDoc(collection(db, 'hotoDB'), {
                     location: this.location,
-                    serialNums: Array.from({length:this.value.length/2}, (_,i)=>[this.value[2*i], this.value[2*i+1]].join("-")).join(", "),
+                    serialNumStart: this.sNoStart.replaceAll(",", " ").trim(" ").split("  ").join(", "),
+                    serialNumEnd: this.sNoEnd.replaceAll(",", " ").trim(" ").split("  ").join(", "),
                     startTime: firebase.firestore.Timestamp.fromDate(new Date(this.startTime)),
                     endTime: firebase.firestore.Timestamp.fromDate(new Date(this.endTime)),
-                    Email: this.$store.state.user.email
+                    email: this.$store.state.user.email
                 })
                 .then((snapshot) => {
                     this.dialog = true;
                     this.$refs.form.reset();
-                    this.value = [100, 400];
                 })
                 .catch(err => {
                     console.log(err);
