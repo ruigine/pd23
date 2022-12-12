@@ -70,8 +70,7 @@
                 matricNo: '',
                 matricRules: [
                     m => !!m || 'Field is required',
-                    m => (m && m.length == 8) || 'Matriculation number must be 8 digits long',
-                    m => this.matricList.includes(m) == false || 'Matriculation number is already in database',
+                    m => (m && m.length == 8) || 'Matriculation number must be 8 digits long'
                 ],
                 sNo: '',
                 sNoRules: [
@@ -89,16 +88,12 @@
         created(){
             const gRef = collection(db, 'games');
             onSnapshot(gRef, (snapshot) => {
-            var v = []; var m = [];
+            var v = [];
             snapshot.docs.forEach((doc) => {
                 v.push(doc.data().serialNum);
-                m.push(doc.data().matricNum);
             })
             this.voucherList = v;
             console.log(this.voucherList);
-
-            this.matricList = m;
-            console.log(this.matricList);
             if (this.matricNo && this.sNo && this.location) {
                 this.$refs.form.validate()
             }
