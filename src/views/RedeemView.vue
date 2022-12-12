@@ -72,7 +72,7 @@
                 sNo: '',
                 matricRules: [
                     m => !!m || 'Field is required',
-                    m => m.length == 8 || 'Matriculation number must be 8 digits long',
+                    m => (m && m.length == 8) || 'Matriculation number must be 8 digits long',
                     m => this.matricList.includes(m) == false || 'Matriculation number is already in database',
                 ],
                 sNoRules: [
