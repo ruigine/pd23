@@ -574,8 +574,12 @@
                 }
             })
             this.voucherList = v;
-            this.$refs.formVR.validate();
-            this.$refs.formGames.validate()
+            if (this.$refs.formVR) {
+                this.$refs.formVR.validate();
+            }
+            if (this.$refs.formGames) {
+                this.$refs.formGames.validate();
+            }
             });
 
             //VR Edit
@@ -586,7 +590,9 @@
                 m.push(doc.data().matricNum);
             })
             this.matricList = m;
-            this.$refs.formVR.validate();
+            if (this.$refs.formVR) {
+                this.$refs.formVR.validate();
+            }
             });
         },
         methods: {
