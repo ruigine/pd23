@@ -683,8 +683,23 @@
                     endTime: firebase.firestore.Timestamp.fromDate(new Date(this.endTime)),
                 })
                 .then((snapshot) => {
-                    this.dialogHOTO = false;
-                    this.success = true;
+                    var colRef = collection(doc(db, 'hotoDB', this.currHOTO.id), "history");
+                    addDoc(colRef, {
+                        location: this.currHOTO.location,
+                        serialNumStart: this.currHOTO.serialNumStart,
+                        serialNumEnd: this.currHOTO.serialNumEnd,
+                        startTime: this.currHOTO.startTime,
+                        endTime: this.currHOTO.endTime,
+                        email: this.currHOTO.email,
+                        editDate: firebase.firestore.Timestamp.fromDate(new Date()),
+                    })
+                    .then((snapshot) => {
+                        this.dialogHOTO = false;
+                        this.success = true;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
                 })
                 .catch(err => {
                     console.log(err);
@@ -729,8 +744,21 @@
                     date: firebase.firestore.Timestamp.fromDate(new Date(this.dateVR)),
                 })
                 .then((snapshot) => {
-                    this.dialogVR = false;
-                    this.success = true;
+                    var colRef = collection(doc(db, 'vouchers', this.currVR.id), "history");
+                    addDoc(colRef, {
+                        serialNum: this.currVR.serialNum,
+                        matricNum: this.currVR.matricNum,
+                        location: this.currVR.location,
+                        date: this.currVR.date,
+                        editDate: firebase.firestore.Timestamp.fromDate(new Date()),
+                    })
+                    .then((snapshot) => {
+                        this.dialogVR = false;
+                        this.success = true;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
                 })
                 .catch(err => {
                     console.log(err);
@@ -775,8 +803,21 @@
                     date: firebase.firestore.Timestamp.fromDate(new Date(this.dateGames)),
                 })
                 .then((snapshot) => {
-                    this.dialogGames = false;
-                    this.success = true;
+                    var colRef = collection(doc(db, 'games', this.currGames.id), "history");
+                    addDoc(colRef, {
+                        serialNum: this.currGames.serialNum,
+                        matricNum: this.currGames.matricNum,
+                        location: this.currGames.location,
+                        date: this.currGames.date,
+                        editDate: firebase.firestore.Timestamp.fromDate(new Date()),
+                    })
+                    .then((snapshot) => {
+                        this.dialogGames = false;
+                        this.success = true;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
                 })
                 .catch(err => {
                     console.log(err);
