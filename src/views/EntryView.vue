@@ -55,26 +55,7 @@
                                 <v-col cols="12">
                                     <h1 class="mb-12">HOTO</h1>
 
-                                    <v-row>
-                                        <v-col class="mb-4">
-                                            <p style="color: grey" class="float-left">Voucher Serial Numbers</p>
-                                            <v-btn class="float-right" x-small text color="blue" @click="add"><v-icon>mdi-plus</v-icon></v-btn>
-                                            <v-btn class="float-right" x-small text color="blue" @click="remove"><v-icon>mdi-minus</v-icon></v-btn>
-                                        </v-col>
-                                    </v-row>
-
-                                    <vue-slider
-                                        :tooltip="'always'"
-                                        ref="slider"
-                                        v-model="value"
-                                        v-bind="options"
-                                    >
-                                        <template v-slot:tooltip="{ value, focus }">
-                                            <div :class="['custom-tooltip', { focus }]" style="font-size: 12px; color: #a6a6a6;">{{ value }}</div>
-                                        </template> 
-                                    </vue-slider>
-                                    <hr class="my-2"/>
-                                    <p style="font-size: 12px;">Vouchers {{Array.from({length:value.length/2}, (_,i)=>[value[2*i], value[2*i+1]].join("-")).join(", ")}}</p>
+                                    <!---->
 
                                     <v-row>
                                         <v-col>
@@ -144,7 +125,7 @@
             <!--Redeem-->
             <v-tab-item>
                 <v-data-table
-                    :headers="headersVR"
+                    :headers="headers"
                     :items="dataVR"
                     item-key="serialNum"
                     class="elevation-1"
@@ -191,7 +172,7 @@
                                 <v-text-field
                                     v-model="matricNoVR"
                                     color="#000"
-                                    :rules="matricRules"
+                                    :rules="matricRulesVR"
                                     :counter="8"
                                     label="Matriculation Number"
                                     type="number"
@@ -270,7 +251,7 @@
             <!--Games-->
             <v-tab-item>
                 <v-data-table
-                    :headers="headersGames"
+                    :headers="headers"
                     :items="dataGames"
                     item-key="serialNum"
                     class="elevation-1"
@@ -397,13 +378,7 @@
     import 'firebase/compat/auth';
     import 'firebase/compat/firestore';
 
-    import VueSlider from 'vue-slider-component'
-    import 'vue-slider-component/theme/antd.css'
-
     export default {
-        components: {
-            VueSlider,
-        },
         data(){
             return {
                 tab: null,
@@ -424,7 +399,7 @@
                 { text: 'Actions', value: 'actions', sortable: false }
                 ],
                 dataHOTO: [],
-                headersVR: [
+                headers: [
                 {
                     text: 'S/N',
                     align: 'start',
@@ -433,21 +408,11 @@
                 },
                 { text: 'Matriculation No.', value: 'matricNum' },
                 { text: 'Location', value: 'location' },
-                { text: 'Date', value: 'date' },
+                { text: 'Date', value: 'datestamp' },
                 { text: 'Email', value: 'email' },
                 { text: 'Actions', value: 'actions', sortable: false }
                 ],
                 dataVR: [],
-                headersGames: [
-                {
-                    text: 'S/N',
-                    align: 'start',
-                    sortable: true,
-                    value: 'serialNum',
-                },
-                { text: 'Email', value: 'email' },
-                { text: 'Actions', value: 'actions', sortable: false }
-                ],
                 dataGames: [],
                 dialogHOTO: false,
                 dialogVR: false,
@@ -464,7 +429,6 @@
                 startTime: null,
                 endTime: null,
                 dialog: false,
-                voucherList: [],
                 validHOTO: false,
                 validVR: false,
                 validGames: false,
@@ -491,18 +455,20 @@
                 },
 
                 //VR
-                matricList: [],
+                voucherListVR: [],
+                matricListVR: [],
                 matricNoVR: '',
                 sNoVR: '',
                 dateVR: null,
-                matricRules: [
+                matricRulesVR: [
                     m => !!m || 'Field is required',
                     m => m.length == 8 || 'Matriculation number must be 8 digits long',
-                    m => (this.matricList.includes(m) == false || m == this.currVR[0]) || 'Matriculation number is already in database',
+                    m => (this.matricListVR.includes(m) == false || m == this.currVR[0]) || 'Matriculation number is already in database',
                 ],
                 sNoRulesVR: [
                     s => !!s || 'Field is required',
-                    s => (this.voucherList.includes(s) || s == this.currVR[1]) || 'Voucher does not exist/is unavailable',
+                    s => (2541 <= Number(s) && Number(s) <= 6000) || 'Invalid voucher S/N',
+                    s => (this.voucherListVR.includes(s) == false || s == this.currVR[1]) || 'Voucher has already been redeemed',
                 ],
                 locRules: [
                     s => !!s || 'Field is required',
@@ -511,12 +477,17 @@
                 currVR: ["", ""],
 
                 //Games
+                voucherListGames: [],
+                matricNoG: '',
                 sNoGames: "",
+                dateGames: null,
+                locationGames: null,
                 sNoRulesGames: [
                     s => !!s || 'Field is required',
                     s => (this.voucherList.includes(s) || s == this.currGames[0]) || 'Voucher does not exist/is unavailable',
                 ],
                 currGames: [],
+                saved: false,
             }
         },
         created() {
@@ -539,59 +510,52 @@
             });
 
             //VR
-            const vrRef = collection(db, 'voucherRedemption');
-            onSnapshot(vrRef, (querySnapshot) => {
-            this.dataVR = [];
+            const vRef = collection(db, 'vouchers');
+            onSnapshot(vRef, (querySnapshot) => {
+            this.dataVR = []; var v = []; var m = [];
             querySnapshot.docs.forEach((doc) => {
                 this.dataVR.push({ ...doc.data(), id: doc.id })
                 
-                var d = new Date(doc.data().timestamp.seconds*1000);
+                var d = new Date(doc.data().date.seconds*1000);
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                this.dataVR[this.dataVR.length-1]["date"] = d;
+                this.dataVR[this.dataVR.length-1]["datestamp"] = d;
+
+                v.push(doc.data().serialNum);
+                m.push(doc.data().matricNum);
             })
-            console.log(this.dataVR)
+            console.log(this.dataVR);
+            this.voucherListVR = v;
+            console.log(this.voucherListVR);
+
+            this.matricListVR = m;
+            console.log(this.matricListVR);
+            if (this.matricNoVR && this.sNoVR && this.locationVR && !this.saved) {
+                this.$refs.formVR.validate();
+            } else {
+                this.saved = false;
+            }
             });
 
             //Games
-            const gRef = collection(db, 'vouchers');
+            const gRef = collection(db, 'games');
             onSnapshot(gRef, (querySnapshot) => {
-            this.dataGames = [];
+            this.dataGames = []; var s = [];
             querySnapshot.docs.forEach((doc) => {
-                if (doc.data().distributionMethod == "Games Redemption") {
-                    this.dataGames.push({ ...doc.data(), id: doc.id })
-                }
-            })
-            console.log(this.dataGames)
-            });
+                this.dataGames.push({ ...doc.data(), id: doc.id })
 
-            //HOTO & VR & Games Edit
-            const vRef = collection(db, 'vouchers');
-            onSnapshot(vRef, (querySnapshot) => {
-            var v = [];
-            querySnapshot.docs.forEach((doc) => {
-                if (doc.data().isAvailable) {
-                    v.push(doc.data().serialNum);
-                }
-            })
-            this.voucherList = v;
-            if (this.$refs.formVR) {
-                this.$refs.formVR.validate();
-            }
-            if (this.$refs.formGames) {
-                this.$refs.formGames.validate();
-            }
-            });
+                var d = new Date(doc.data().date.seconds*1000);
+                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                this.dataGames[this.dataGames.length-1]["datestamp"] = d;
 
-            //VR Edit
-            const mRef = collection(db, 'voucherRedemption');
-            onSnapshot(mRef, (querySnapshot) => {
-            var m = [];
-            querySnapshot.docs.forEach((doc) => {
-                m.push(doc.data().matricNum);
+                s.push(doc.data().serialNum);
             })
-            this.matricList = m;
-            if (this.$refs.formVR) {
-                this.$refs.formVR.validate();
+            console.log(this.dataGames);
+            this.voucherListGames = s;
+            console.log(this.voucherListGames);
+            if (this.matricNoGames && this.sNoGames && this.locationGames && !this.saved) {
+                this.$refs.formGames.validate()
+            } else {
+                this.saved = false;
             }
             });
         },
@@ -612,24 +576,6 @@
 
                 this.dialogHOTO = true;
             },
-            add() {
-                if (this.value[this.value.length-1] + 150 <= this.options.max) {
-                    this.value.push(this.value[this.value.length-1] + 150);
-                } else {
-                    this.value.push(this.options.max);
-                }
-                if (this.value[this.value.length-1] + 150 <= this.options.max) {
-                    this.value.push(this.value[this.value.length-1] + 150);
-                } else {
-                    this.value.push(this.options.max);
-                }
-            },
-            remove() {
-                if (this.value.length >= 4) {
-                    this.value.pop();
-                    this.value.pop();
-                }
-            },
             submitHOTO() {
 
             },
@@ -647,85 +593,27 @@
             editVR(item) {
                 this.matricNoVR = item.matricNum;
                 this.sNoVR = item.serialNum;
-                this.currVR = [item.matricNum, item.serialNum, item.email];
+                this.currVR = [item.matricNum, item.serialNum, item.email, item.id];
                 this.locationVR = item.location;
 
-                var d = new Date(item.timestamp.seconds*1000);
+                var d = new Date(item.date.seconds*1000);
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dateVR = d;
 
                 this.dialogVR = true;
             },
             saveVR() {
-                getDocs(query(collection(db, 'voucherRedemption'), where("serialNum", "==", this.currVR[1])))
+                this.saved = true;
+                const vRef = doc(db, "vouchers", this.currVR[3]);
+                updateDoc(vRef, {
+                    location: this.locationVR,
+                    matricNum: this.matricNoVR,
+                    serialNum: this.sNoVR,
+                    date: firebase.firestore.Timestamp.fromDate(new Date(this.dateVR)),
+                })
                 .then((snapshot) => {
-                    var v = "";
-                    snapshot.docs.forEach((doc) => {
-                        v = doc.id;
-                    })
-                    const vRef = doc(db, "voucherRedemption", v);
-                    updateDoc(vRef, {
-                        location: this.locationVR,
-                        matricNum: this.matricNoVR,
-                        serialNum: this.sNoVR,
-                        timestamp: firebase.firestore.Timestamp.fromDate(new Date(this.dateVR)),
-                    })
-                    .then((snapshot) => {
-                        if (this.sNoVR != this.currVR[1]) {
-                            getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNoVR)))
-                            .then((snapshot) => {
-                                var v = "";
-                                snapshot.docs.forEach((doc) => {
-                                    v = doc.id;
-                                })
-                                const vRef = doc(db, "vouchers", v);
-                                updateDoc(vRef, {
-                                    isAvailable: false,
-                                    distributionMethod: "Voucher Redemption",
-                                    email: this.currVR[2]
-                                })
-                                .then((snapshot) => {
-
-                                })
-                                .catch(err => {
-                                    console.log(err);
-                                })
-                            })
-                            .catch(err => {
-                                console.log(err);
-                            })
-
-                            getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.currVR[1])))
-                            .then((snapshot) => {
-                                var v = "";
-                                snapshot.docs.forEach((doc) => {
-                                    v = doc.id;
-                                })
-                                const vRef = doc(db, "vouchers", v);
-                                updateDoc(vRef, {
-                                    isAvailable: true,
-                                    email: "",
-                                    distributionMethod: "",
-                                })
-                                .then((snapshot) => {
-                                    this.dialogVR = false;
-                                    this.success = true;
-                                })
-                                .catch(err => {
-                                    console.log(err);
-                                })
-                            })
-                            .catch(err => {
-                                console.log(err);
-                            })
-                        } else {
-                            this.dialogVR = false;
-                            this.success = true;
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                    this.dialogVR = false;
+                    this.success = true;
                 })
                 .catch(err => {
                     console.log(err);
@@ -736,43 +624,11 @@
                 this.delVR = item;
             },
             deleteConfirmVR() {
-                getDocs(query(collection(db, 'voucherRedemption'), where("serialNum", "==", this.delVR.serialNum)))
+                deleteDoc(doc(db, 'vouchers', this.delVR.id), {
+                })
                 .then((snapshot) => {
-                    var v = "";
-                    snapshot.docs.forEach((doc) => {
-                        v = doc.id;
-                    })
-
-                    deleteDoc(doc(db, 'voucherRedemption', v), {
-                    })
-                    .then((snapshot) => {
-                        getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.delVR.serialNum)))
-                        .then((snapshot) => {
-                            var r = "";
-                            snapshot.docs.forEach((doc) => {
-                                r = doc.id;
-                            })
-                            const vRef = doc(db, "vouchers", r);
-                            updateDoc(vRef, {
-                                isAvailable: true,
-                                email: "",
-                                distributionMethod: "",
-                            })
-                            .then((snapshot) => {
-                                this.dialogDeleteVR = false;
-                                this.success = true;
-                            })
-                            .catch(err => {
-                                console.log(err);
-                            })
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                    this.dialogDeleteVR = false;
+                    this.success = true;
                 })
                 .catch(err => {
                     console.log(err);
