@@ -79,6 +79,11 @@
                     s => (1901 <= Number(s) && Number(s) <= 2420) || 'Invalid voucher S/N',
                     s => this.voucherList.includes(s) == false || 'Voucher has already been redeemed',
                 ],
+                locRules: [
+                    s => !!s || 'Field is required',
+                ],
+                items: ['Koufu', 'SOB', 'Connexion'],
+                location: null,
             }
         },
         created(){
