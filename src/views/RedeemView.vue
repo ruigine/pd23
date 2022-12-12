@@ -87,13 +87,11 @@
             }
         },
         created(){
-            const vRef = collection(db, 'vouchers');
+            const vRef = query(collection(db, 'vouchers'), where('isAvailable', '==', true));
             onSnapshot(vRef, (querySnapshot) => {
             var v = [];
             querySnapshot.docs.forEach((doc) => {
-                if (doc.data().isAvailable) {
-                    v.push(doc.data().serialNum);
-                }
+                v.push(doc.data().serialNum);
             })
             this.voucherList = v;
             console.log(this.voucherList);
@@ -102,7 +100,7 @@
             }
             });
 
-            const vrRef = collection(db, 'voucherRedemption');
+            const vrRef = query(collection(db, 'vouchers'), where('isAvailable', '==', false));
             onSnapshot(vrRef, (querySnapshot) => {
             var m = [];
             querySnapshot.docs.forEach((doc) => {
@@ -151,33 +149,23 @@
         },
         methods: {
             submit() {
-                addDoc(collection(db, 'voucherRedemption'), {
-                    location: this.location,
-                    matricNum: this.matricNo,
-                    serialNum: this.sNo,
-                    timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
-                    email: this.$store.state.user.email
-                })
+                getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNo)))
                 .then((snapshot) => {
-                    getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNo)))
+                    var v = "";
+                    snapshot.docs.forEach((doc) => {
+                        v = doc.id;
+                    })
+                    const vRef = doc(db, "vouchers", v);
+                    updateDoc(vRef, {
+                        isAvailable: false,
+                        matricNum: this.matricNo,
+                        location: this.location,
+                        date: firebase.firestore.Timestamp.fromDate(new Date()),
+                        email: this.$store.state.user.email
+                    })
                     .then((snapshot) => {
-                        var v = "";
-                        snapshot.docs.forEach((doc) => {
-                            v = doc.id;
-                        })
-                        const vRef = doc(db, "vouchers", v);
-                        updateDoc(vRef, {
-                            distributionMethod: "Voucher Redemption",
-                            isAvailable: false,
-                            email: this.$store.state.user.email,
-                        })
-                        .then((snapshot) => {
-                            this.dialog = true;
-                            this.$refs.form.reset();
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
+                        this.dialog = true;
+                        this.$refs.form.reset();
                     })
                     .catch(err => {
                         console.log(err);

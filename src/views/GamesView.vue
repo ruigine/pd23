@@ -5,6 +5,15 @@
                 <v-col cols="12">
                     <h1 class="mb-12">Games Redemption</h1>
                     <v-text-field
+                        v-model="matricNo"
+                        color="#000"
+                        :rules="matricRules"
+                        :counter="8"
+                        label="Matriculation Number"
+                        type="number"
+                        required
+                    ></v-text-field>
+                    <v-text-field
                         v-model="sNo"
                         color="#000"
                         :rules="sNoRules"
@@ -12,6 +21,14 @@
                         type="number"
                         required
                     ></v-text-field>
+                    <v-select
+                        v-model="location"
+                        color="#000"
+                        :items="items"
+                        label="Location"
+                        :rules="locRules"
+                        required
+                    ></v-select>
                     <v-btn v-if="valid" class="mt-6" @click="submit" color="#fff">Submit</v-btn>
                     <v-btn v-else class="mt-6" disabled>Submit</v-btn>
                 </v-col>
@@ -50,6 +67,12 @@
                 dialog: false,
                 voucherList: [],
                 valid: false,
+                matricNo: '',
+                matricRules: [
+                    m => !!m || 'Field is required',
+                    m => (m && m.length == 8) || 'Matriculation number must be 8 digits long',
+                    m => this.matricList.includes(m) == false || 'Matriculation number is already in database',
+                ],
                 sNo: '',
                 sNoRules: [
                     s => !!s || 'Field is required',
@@ -58,16 +81,28 @@
             }
         },
         created(){
-            const vRef = collection(db, 'vouchers');
+            const vRef = query(collection(db, 'vouchers'), where('isAvailable', '==', true));
             onSnapshot(vRef, (querySnapshot) => {
             var v = [];
             querySnapshot.docs.forEach((doc) => {
-                if (doc.data().isAvailable) {
-                    v.push(doc.data().serialNum);
-                }
+                v.push(doc.data().serialNum);
             })
             this.voucherList = v;
-            if (this.sNo) {
+            console.log(this.voucherList);
+            if (this.matricNo && this.sNo && this.location) {
+                this.$refs.form.validate()
+            }
+            });
+
+            const vrRef = query(collection(db, 'vouchers'), where('isAvailable', '==', false));
+            onSnapshot(vrRef, (querySnapshot) => {
+            var m = [];
+            querySnapshot.docs.forEach((doc) => {
+                m.push(doc.data().matricNum);
+            })
+            this.matricList = m;
+            console.log(this.matricList);
+            if (this.matricNo && this.sNo && this.location) {
                 this.$refs.form.validate()
             }
             });
@@ -108,17 +143,19 @@
         },
         methods: {
             submit() {
-                getDocs(query(collection(db, 'vouchers'), where("serialNum", "==", this.sNo)))
+                getDocs(query(collection(db, 'games'), where("serialNum", "==", this.sNo)))
                 .then((snapshot) => {
-                    var v = "";
+                    var g = "";
                     snapshot.docs.forEach((doc) => {
-                        v = doc.id;
+                        g = doc.id;
                     })
-                    const vRef = doc(db, "vouchers", v);
-                    updateDoc(vRef, {
-                        distributionMethod: "Games Redemption",
+                    const gRef = doc(db, "games", g);
+                    updateDoc(gRef, {
                         isAvailable: false,
-                        email: this.$store.state.user.email,
+                        matricNum: this.matricNo,
+                        location: this.location,
+                        date: firebase.firestore.Timestamp.fromDate(new Date()),
+                        email: this.$store.state.user.email
                     })
                     .then((snapshot) => {
                         this.dialog = true;
