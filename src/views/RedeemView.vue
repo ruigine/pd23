@@ -97,6 +97,7 @@
             })
             this.voucherList = v;
             console.log(this.voucherList);
+            this.$refs.form.validate()
             });
 
             const vrRef = collection(db, 'voucherRedemption');
@@ -107,6 +108,7 @@
             })
             this.matricList = m;
             console.log(this.matricList);
+            this.$refs.form.validate()
             });
 
         },
