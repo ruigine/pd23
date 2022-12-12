@@ -97,37 +97,26 @@
                 dialog: false,
                 voucherList: [],
                 valid: false,
+                sNoStart: "",
+                sNoEnd: "",
                 sNoRules: [
                     s => !!s || 'Field is required',
-                    s => this.checkFormat(s) || 'Please use the following format i.e. 3000-3040'
+                    s => this.checkFormat(s) || 'Please use the following format i.e. 3000-3040',
+                    s => (this.checkFormat(s) && this.checkOrder(s)) || 'Invalid ranges'
                 ],
                 locRules: [
                     l => !!l || 'Field is required',
-                ],
-                dateRules: [
-                    s => !!s || 'Field is required',
                 ],
                 startRules: [
                     s => !!s || 'Field is required',
                 ],
                 endRules: [
                     e => !!e || 'Field is required',
+                    e => (e && this.dateOrder()) || 'End date must be after start date',
                 ],
                 items: ['Koufu', 'SOB', 'Connexion'],
                 location: null,
             }
-        },
-        created(){
-            const vRef = collection(db, 'vouchers');
-            onSnapshot(vRef, (querySnapshot) => {
-            var v = [];
-            querySnapshot.docs.forEach((doc) => {
-                if (doc.data().isAvailable) {
-                    v.push(doc.data().serialNum);
-                }
-            })
-            this.voucherList = v;
-            });
         },
         methods: {
             checkFormat(s) {
@@ -135,12 +124,36 @@
                     return false;
                 }
                 var sArr = s.replaceAll(",", " ").trim(" ").split("  ");
+
                 for (var str of sArr) {
                     if (str.split("-").length != 2) {
                         return false;
                     }
                 }
                 return true;
+            },
+            checkOrder(s) {
+                var sArr = s.replaceAll(",", " ").trim(" ").split("  ");
+
+                for (var str of sArr) {
+                    var range = str.split("-");
+                    if (range[1] < range[0]) {
+                        return false;
+                    } else {
+                        if ((range[0] >= 1901 && range[1] <= 2420) || (range[0] >= 2541 && range[1] <= 6000)) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            },
+            dateOrder() {
+                if (new Date(this.endTime).getTime() > new Date(this.startTime).getTime()) {
+                    return true;
+                } else {
+                    return false;
+                }
             },
             submit() {
                 addDoc(collection(db, 'hotoDB'), {
@@ -154,6 +167,8 @@
                 .then((snapshot) => {
                     this.dialog = true;
                     this.$refs.form.reset();
+                    this.sNoStart = "";
+                    this.sNoEnd = "";
                 })
                 .catch(err => {
                     console.log(err);
