@@ -67,6 +67,9 @@
                 }
             })
             this.voucherList = v;
+            if (this.sNo) {
+                this.$refs.form.validate()
+            }
             });
 
             //populate firebase test data
