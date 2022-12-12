@@ -35,7 +35,6 @@
             item-key="serialNum"
             class="elevation-1"
             :search="searchInput"
-            @click:row="detail"
             multi-sort
         >
         <template v-slot:top>
@@ -47,32 +46,6 @@
             ></v-text-field>
         </template>
         </v-data-table>
-
-        <v-dialog
-            v-model="dialog"
-            max-width="600"
-        >
-            <v-card class="pa-5">   
-                <div class="text-h5 pa-4">Voucher Redemption</div>
-
-                <v-list-item two-line v-for="cat in currCat" :key="cat.name">
-                    <v-list-item-content>
-                        <v-list-item-title>{{cat.name}}</v-list-item-title>
-                        <v-list-item-subtitle>{{curr[cat.value]}}</v-list-item-subtitle>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                    text
-                    @click="dialog = false"
-                >
-                    Close
-                </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
     </div>
 </template>
 <script>
@@ -82,7 +55,6 @@
     export default {
         data(){
             return {
-                dialog: false,
                 condensed: true,
                 searchInput: "",
                 headers: [
@@ -93,7 +65,10 @@
                     value: 'serialNum',
                 },
                 { text: 'Available', value: 'isAvailable' },
-                { text: 'Distribution Method', value: 'distributionMethod' },
+                 { text: 'Redemption Method', value: 'method' },
+                { text: 'Matriculation No.', value: 'matricNum' },
+                { text: 'Location', value: 'location' },
+                { text: 'Date', value: 'date' },
                 { text: 'Email', value: 'email' }
                 ],
                 headersC: [
@@ -107,71 +82,124 @@
                 ],
                 data: [],
                 dataC: [],
-                curr: {},
-                currCat: [
-                    {name: "Location", value: "location"},
-                    {name: "Matriculation Number", value: "matricNum"},
-                    {name: "Serial Number", value: "serialNum"},
-                    {name: "Date", value: "date"},
-                    {name: "Email", value: "email"}
-                ]
             }
         },
         created() {
-            const vRef = query(collection(db, 'vouchers'), orderBy("serialNum"));
-            onSnapshot(vRef, (querySnapshot) => {
+            //Games
+            const gRef = query(collection(db, 'games'), orderBy("serialNum"));
+            onSnapshot(gRef, (querySnapshot) => {
+            var v = {}; var s = [];
             querySnapshot.docs.forEach((doc) => {
-                this.data.push({ ...doc.data(), id: doc.id })
+                var d = new Date(doc.data().date.seconds*1000);
+                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                
+                v[Number(doc.data().serialNum)] = { ...doc.data(), id: doc.id, method: "Games" };
+                v[Number(doc.data().serialNum)]["date"] = d;
+                s.push(Number(doc.data().serialNum));
             })
-            console.log(this.data);
+            console.log(v);
+            console.log(s);
             
-            var range = []; var bool = [];
-            for (var i=0; i<this.data.length; i++) {
-                if (i == 0) {
-                    range.push(this.data[i].serialNum);
-                    bool = this.data[i].isAvailable;
+            var range = []; var bool = "";
+            for (var i=1901; i<=2420; i++) {
+                if (i == 1901) {
+                    range.push(i);
+                    bool = s.includes(i) ? "No" : "Yes";
                 } else {
-                    if (this.data[i].isAvailable != bool) {
-                        range.push(this.data[i-1].serialNum);
+                    if (s.includes(i) ? "No" : "Yes" != bool) {
+                        range.push(i-1);
                         if (range[0] == range[1]) {
                             this.dataC.push({ serialNum: range[0], isAvailable: bool });
                         } else {
-                            this.dataC.push({ serialNum: range.join("-"), isAvailable: this.data[i-1].isAvailable });
+                            this.dataC.push({ serialNum: range.join("-"), isAvailable: (s.includes(i-1) ? "No" : "Yes") });
                         }
-                        range = [this.data[i].serialNum];
-                        bool = this.data[i].isAvailable;
+                        range = [i];
+                        bool = s.includes(i) ? "No" : "Yes";
 
-                        if (i == this.data.length - 1) {
-                            this.dataC.push({ serialNum: this.data[i].serialNum, isAvailable: this.data[i].isAvailable });
+                        if (i == 2420) {
+                            this.dataC.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
                         }
-                    } else if (i == this.data.length - 1) {
-                        range.push(this.data[i].serialNum);
-                        this.dataC.push({ serialNum: range.join("-"), isAvailable: this.data[i-1].isAvailable });
+                    } else if (i == 2420) {
+                        range.push(i);
+                        this.dataC.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
                     }
+                }
+
+                if (s.includes(i)) {
+                    v[i]["isAvailable"] = "No";
+                    this.data.push(v[i]);
+                } else {
+                    this.data.push({
+                        isAvailable: "Yes",
+                        serialNum: i,
+                        matricNum: "",
+                        location: "",
+                        date: "",
+                        email: ""
+                    })
+                }
+            }
+            });
+
+
+            //Vouchers
+            const vRef = query(collection(db, 'vouchers'), orderBy("serialNum"));
+            onSnapshot(vRef, (querySnapshot) => {
+            var v = {}; var s = [];
+            querySnapshot.docs.forEach((doc) => {
+                var d = new Date(doc.data().date.seconds*1000);
+                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+
+                v[Number(doc.data().serialNum)] = { ...doc.data(), id: doc.id, method: "Voucher" };
+                v[Number(doc.data().serialNum)]["date"] = d;
+                s.push(Number(doc.data().serialNum));
+            })
+            console.log(v);
+            console.log(s);
+            
+            var range = []; var bool = "";
+            for (var i=2541; i<=6000; i++) {
+                if (i == 2541) {
+                    range.push(i);
+                    bool = s.includes(i) ? "No" : "Yes";
+                } else {
+                    if (s.includes(i) ? "No" : "Yes" != bool) {
+                        range.push(i-1);
+                        if (range[0] == range[1]) {
+                            this.dataC.push({ serialNum: range[0], isAvailable: bool });
+                        } else {
+                            this.dataC.push({ serialNum: range.join("-"), isAvailable: (s.includes(i-1) ? "No" : "Yes") });
+                        }
+                        range = [i];
+                        bool = s.includes(i) ? "No" : "Yes";
+
+                        if (i == 6000) {
+                            this.dataC.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
+                        }
+                    } else if (i == 6000) {
+                        range.push(i);
+                        this.dataC.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
+                    }
+                }
+
+                if (s.includes(i)) {
+                    v[i]["isAvailable"] = "No";
+                    this.data.push(v[i]);
+                } else {
+                    this.data.push({
+                        isAvailable: "Yes",
+                        serialNum: i,
+                        matricNum: "",
+                        method: "",
+                        location: "",
+                        date: "",
+                        email: ""
+                    })
                 }
             }
             });
         },
         methods: {
-            detail(item) {
-                console.log(item)
-                if (item.distributionMethod == "Voucher Redemption") {
-                    getDocs(query(collection(db, 'voucherRedemption'), where("serialNum", "==", item.serialNum)))
-                    .then((snapshot) => {
-                        snapshot.docs.forEach((doc) => {
-                            this.curr = { ...doc.data(), id: doc.id }
-                            
-                            var d = new Date(doc.data().timestamp.seconds*1000);
-                            d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                            this.curr["date"] = d;
-                        })
-                        this.dialog = true;
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
-                }
-            }
         }
     };
 </script>
