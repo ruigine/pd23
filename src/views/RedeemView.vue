@@ -96,17 +96,19 @@
                 }
             })
             this.voucherList = v;
+            console.log(this.voucherList);
             });
 
             const vrRef = collection(db, 'voucherRedemption');
             onSnapshot(vrRef, (querySnapshot) => {
+            var m = [];
             querySnapshot.docs.forEach((doc) => {
-                this.matricList.push(doc.data().matricNum);
+                m.push(doc.data().matricNum);
             })
+            this.matricList = m;
+            console.log(this.matricList);
             });
 
-            console.log(this.voucherList);
-            console.log(this.matricList);
         },
         methods: {
             submit() {
