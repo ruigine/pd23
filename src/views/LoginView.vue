@@ -2,7 +2,8 @@
     <div>
         <v-row class="box" align="center" v-if="!$store.state.user">
             <v-col>
-                <h1 class="mb-12">Login</h1>
+                <h1 class="mb-12" v-if="!invalid">Login</h1>
+                <h1 class="mb-12" v-else>Please log in with your SMU email!</h1>
                 <v-btn color="#fff" class="py-7" @click="dialog=true" block>
                     <v-icon class="mr-3">mdi-google</v-icon>Login with Google
                 </v-btn>
@@ -55,6 +56,7 @@
                 show: false,
                 pin: "",
                 pinWrong: false,
+                invalid: false,
             }
         },
         methods: {
@@ -70,6 +72,11 @@
                         const token = credential.accessToken;
                         // The signed-in user info.
                         this.$store.dispatch("authenticate");
+                        if (!this.$store.state.user) {
+                            this.invalid = true;
+                        } else {
+                            this.invalid = false;
+                        }
                         this.pin = "";
                         // ...
                     }).catch((error) => {
