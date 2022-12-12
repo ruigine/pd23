@@ -115,6 +115,39 @@
             }
             });
 
+            //populate firebase test data (vouchers)
+                // //check dupes
+                // var exists = [];
+                // const gRef = collection(db, 'vouchers');
+                // getDocs(gRef)
+                // .then((snapshot) => {
+                //     snapshot.docs.forEach((doc) => {
+                //         exists.push(doc.data().serialNum);
+                //     })
+                //     console.log(exists);
+                //     //populate
+                //     for (var i=2541; i<=6000; i++) {
+                //         if (!exists.includes(String(i))) {
+                //             addDoc(collection(db, 'vouchers'), {
+                //                 isAvailable: true,
+                //                 serialNum: String(i),
+                //                 matricNum: "",
+                //                 location: "",
+                //                 date: "",
+                //                 email: ""
+                //             })
+                //             .then((snapshot) => {
+                            
+                //             })
+                //             .catch(err => {
+                //                 console.log(err);
+                //             })
+                //         }
+                //     }
+                // })
+                // .catch(err => {
+                //     console.log(err);
+                // })    
         },
         methods: {
             submit() {

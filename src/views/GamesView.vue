@@ -72,23 +72,25 @@
             }
             });
 
-            //populate firebase test data
+            //populate firebase test data (games)
                 // //check dupes
                 // var exists = [];
-                // const eRef = collection(db, 'vouchers');
-                // getDocs(eRef)
+                // const gRef = collection(db, 'games');
+                // getDocs(gRef)
                 // .then((snapshot) => {
                 //     snapshot.docs.forEach((doc) => {
                 //         exists.push(doc.data().serialNum);
                 //     })
                 //     console.log(exists);
                 //     //populate
-                //     for (var i=6001; i<=6020; i++) {
+                //     for (var i=1901; i<=2420; i++) {
                 //         if (!exists.includes(String(i))) {
-                //             addDoc(collection(db, 'vouchers'), {
-                //                 distributionMethod: "",
+                //             addDoc(collection(db, 'games'), {
                 //                 isAvailable: true,
                 //                 serialNum: String(i),
+                //                 matricNum: "",
+                //                 location: "",
+                //                 date: "",
                 //                 email: ""
                 //             })
                 //             .then((snapshot) => {
