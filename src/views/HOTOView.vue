@@ -136,10 +136,10 @@
 
                 for (var str of sArr) {
                     var range = str.split("-");
-                    if (range[1] < range[0]) {
+                    if (Number(range[1]) < Number(range[0])) {
                         return false;
                     } else {
-                        if ((range[0] >= 1901 && range[1] <= 2420) || (range[0] >= 2541 && range[1] <= 6000)) {
+                        if ((Number(range[0]) >= 1901 && Number(range[1]) <= 2420) || (Number(range[0]) >= 2541 && Number(range[1]) <= 6000)) {
                             return true;
                         } else {
                             return false;
