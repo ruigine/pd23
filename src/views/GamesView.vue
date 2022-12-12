@@ -76,94 +76,42 @@
                 sNo: '',
                 sNoRules: [
                     s => !!s || 'Field is required',
-                    s => this.voucherList.includes(s) || 'Voucher does not exist/is unavailable',
+                    s => (1901 <= Number(s) && Number(s) <= 2420) || 'Invalid voucher S/N',
+                    s => this.voucherList.includes(s) == false || 'Voucher has already been redeemed',
                 ],
             }
         },
         created(){
-            const vRef = query(collection(db, 'vouchers'), where('isAvailable', '==', true));
-            onSnapshot(vRef, (querySnapshot) => {
-            var v = [];
-            querySnapshot.docs.forEach((doc) => {
+            const gRef = collection(db, 'games');
+            onSnapshot(gRef, (snapshot) => {
+            var v = []; var m = [];
+            snapshot.docs.forEach((doc) => {
                 v.push(doc.data().serialNum);
+                m.push(doc.data().matricNum);
             })
             this.voucherList = v;
             console.log(this.voucherList);
-            if (this.matricNo && this.sNo && this.location) {
-                this.$refs.form.validate()
-            }
-            });
 
-            const vrRef = query(collection(db, 'vouchers'), where('isAvailable', '==', false));
-            onSnapshot(vrRef, (querySnapshot) => {
-            var m = [];
-            querySnapshot.docs.forEach((doc) => {
-                m.push(doc.data().matricNum);
-            })
             this.matricList = m;
             console.log(this.matricList);
             if (this.matricNo && this.sNo && this.location) {
                 this.$refs.form.validate()
             }
-            });
-
-            //populate firebase test data (games)
-                // //check dupes
-                // var exists = [];
-                // const gRef = collection(db, 'games');
-                // getDocs(gRef)
-                // .then((snapshot) => {
-                //     snapshot.docs.forEach((doc) => {
-                //         exists.push(doc.data().serialNum);
-                //     })
-                //     console.log(exists);
-                //     //populate
-                //     for (var i=1901; i<=2420; i++) {
-                //         if (!exists.includes(String(i))) {
-                //             addDoc(collection(db, 'games'), {
-                //                 isAvailable: true,
-                //                 serialNum: String(i),
-                //                 matricNum: "",
-                //                 location: "",
-                //                 date: "",
-                //                 email: ""
-                //             })
-                //             .then((snapshot) => {
-                            
-                //             })
-                //             .catch(err => {
-                //                 console.log(err);
-                //             })
-                //         }
-                //     }
-                // })
-                // .catch(err => {
-                //     console.log(err);
-                // })       
+            });       
         },
         methods: {
             submit() {
-                getDocs(query(collection(db, 'games'), where("serialNum", "==", this.sNo)))
+                const gRef = collection(db, "games");
+                addDoc(gRef, {
+                    serialNum: this.sNo,
+                    matricNum: this.matricNo,
+                    location: this.location,
+                    date: firebase.firestore.Timestamp.fromDate(new Date()),
+                    email: this.$store.state.user.email
+                })
                 .then((snapshot) => {
-                    var g = "";
-                    snapshot.docs.forEach((doc) => {
-                        g = doc.id;
-                    })
-                    const gRef = doc(db, "games", g);
-                    updateDoc(gRef, {
-                        isAvailable: false,
-                        matricNum: this.matricNo,
-                        location: this.location,
-                        date: firebase.firestore.Timestamp.fromDate(new Date()),
-                        email: this.$store.state.user.email
-                    })
-                    .then((snapshot) => {
-                        this.dialog = true;
-                        this.$refs.form.reset();
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                    this.dialog = true;
+                    this.$refs.form.reset();
                 })
                 .catch(err => {
                     console.log(err);
