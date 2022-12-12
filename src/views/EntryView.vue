@@ -518,18 +518,18 @@
                 matricRulesVR: [
                     m => !!m || 'Field is required',
                     m => m.length == 8 || 'Matriculation number must be 8 digits long',
-                    m => (this.matricListVR.includes(m) == false || m == this.currVR[0]) || 'Matriculation number is already in database',
+                    m => (this.matricListVR.includes(m) == false || m == this.currVR.matricNum) || 'Matriculation number is already in database',
                 ],
                 sNoRulesVR: [
                     s => !!s || 'Field is required',
                     s => (2541 <= Number(s) && Number(s) <= 6000) || 'Invalid voucher S/N',
-                    s => (this.voucherListVR.includes(s) == false || s == this.currVR[1]) || 'Voucher has already been redeemed',
+                    s => (this.voucherListVR.includes(s) == false || s == this.currVR.serialNum) || 'Voucher has already been redeemed',
                 ],
                 locRules: [
                     s => !!s || 'Field is required',
                 ],
                 locationVR: null,
-                currVR: ["", ""],
+                currVR: null,
 
                 //Games
                 voucherListGames: [],
@@ -540,13 +540,13 @@
                 sNoRulesGames: [
                     s => !!s || 'Field is required',
                     s => (1901 <= Number(s) && Number(s) <= 2420) || 'Invalid voucher S/N',
-                    s => (this.voucherListGames.includes(s) == false || s == this.currGames[1]) || 'Voucher does not exist/is unavailable',
+                    s => (this.voucherListGames.includes(s) == false || s == this.currGames.serialNum) || 'Voucher does not exist/is unavailable',
                 ],
                 matricRulesGames: [
                     m => !!m || 'Field is required',
                     m => (m && m.length == 8) || 'Matriculation number must be 8 digits long'
                 ],
-                currGames: [],
+                currGames: null,
                 saved: false,
             }
         },
@@ -710,7 +710,7 @@
             editVR(item) {
                 this.matricNoVR = item.matricNum;
                 this.sNoVR = item.serialNum;
-                this.currVR = [item.matricNum, item.serialNum, item.email, item.id];
+                this.currVR = item;
                 this.locationVR = item.location;
 
                 var d = new Date(item.date.seconds*1000);
@@ -721,7 +721,7 @@
             },
             saveVR() {
                 this.saved = true;
-                const vRef = doc(db, "vouchers", this.currVR[3]);
+                const vRef = doc(db, "vouchers", this.currVR.id);
                 updateDoc(vRef, {
                     location: this.locationVR,
                     matricNum: this.matricNoVR,
@@ -756,8 +756,8 @@
             editGames(item) {
                 this.matricNoGames = item.matricNum;
                 this.sNoGames = item.serialNum;
-                this.currGames = [item.matricNum, item.serialNum, item.email, item.id];
                 this.locationGames = item.location;
+                this.currGames = item;
 
                 var d = new Date(item.date.seconds*1000);
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
@@ -767,7 +767,7 @@
             },
             saveGames() {
                 this.saved = true;
-                const gRef = doc(db, "games", this.currGames[3]);
+                const gRef = doc(db, "games", this.currGames.id);
                 updateDoc(gRef, {
                     location: this.locationGames,
                     matricNum: this.matricNoGames,
