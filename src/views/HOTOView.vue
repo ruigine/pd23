@@ -139,13 +139,12 @@
                     if (Number(range[1]) < Number(range[0])) {
                         return false;
                     } else {
-                        if ((Number(range[0]) >= 1901 && Number(range[1]) <= 2420) || (Number(range[0]) >= 2541 && Number(range[1]) <= 6000)) {
-                            return true;
-                        } else {
+                        if (!((Number(range[0]) >= 1901 && Number(range[1]) <= 2420) || (Number(range[0]) >= 2541 && Number(range[1]) <= 6000))) {
                             return false;
                         }
                     }
                 }
+                return true;
             },
             dateOrder() {
                 if (new Date(this.endTime).getTime() > new Date(this.startTime).getTime()) {
