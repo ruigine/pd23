@@ -6,7 +6,7 @@
             <v-tab><h1>Games</h1></v-tab>   
         </v-tabs>
 
-        <v-tabs-items v-model="tab">
+        <v-tabs-items v-model="tab" class="px-1">
             <!--HOTO-->
             <v-tab-item>
                 <v-data-table
@@ -136,6 +136,31 @@
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
+
+                <v-btn class="mt-12 mb-6" @click="expand" color="#fff">Deleted HOTO entries</v-btn>
+                <v-expansion-panels flat class="mb-1" v-model="expandHOTO">
+                    <v-expansion-panel>
+                        <v-expansion-panel-content>
+                            <v-data-table
+                                :headers="headersDelHOTO"
+                                :items="dataDelHOTO"
+                                item-key="serialNum"
+                                class="elevation-1"
+                                :search="searchDelHOTO"
+                                multi-sort
+                            >
+                                <template v-slot:top>
+                                    <v-text-field
+                                    v-model="searchDelHOTO"
+                                    color="#000"
+                                    label="Search..."
+                                    class="mx-4"
+                                    ></v-text-field>
+                                </template>
+                            </v-data-table>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-tab-item>
 
             <!--Delete HOTO-->
@@ -188,6 +213,31 @@
                         </v-icon>
                     </template>
                 </v-data-table>
+
+                <v-btn class="mt-12 mb-6" @click="expand" color="#fff">Deleted voucher redemption entries</v-btn>
+                <v-expansion-panels flat class="mb-1" v-model="expandVR">
+                    <v-expansion-panel>
+                        <v-expansion-panel-content>
+                            <v-data-table
+                                :headers="headersDel"
+                                :items="dataDelVR"
+                                item-key="serialNum"
+                                class="elevation-1"
+                                :search="searchDelVR"
+                                multi-sort
+                            >
+                                <template v-slot:top>
+                                    <v-text-field
+                                    v-model="searchDelVR"
+                                    color="#000"
+                                    label="Search..."
+                                    class="mx-4"
+                                    ></v-text-field>
+                                </template>
+                            </v-data-table>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-tab-item>
             
             <!--Edit VR dialog-->
@@ -315,6 +365,31 @@
                         </v-icon>
                     </template>
                 </v-data-table>
+
+                <v-btn class="mt-12 mb-6" @click="expand" color="#fff">Deleted game redemption entries</v-btn>
+                <v-expansion-panels flat class="mb-1" v-model="expandGames">
+                    <v-expansion-panel>
+                        <v-expansion-panel-content>
+                            <v-data-table
+                                :headers="headersDel"
+                                :items="dataDelGames"
+                                item-key="serialNum"
+                                class="elevation-1"
+                                :search="searchDelGames"
+                                multi-sort
+                            >
+                                <template v-slot:top>
+                                    <v-text-field
+                                    v-model="searchDelGames"
+                                    color="#000"
+                                    label="Search..."
+                                    class="mx-4"
+                                    ></v-text-field>
+                                </template>
+                            </v-data-table>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-tab-item>
         </v-tabs-items>
 
@@ -474,6 +549,44 @@
         data(){
             return {
                 tab: null,
+                //Del
+                expandHOTO: null,
+                expandVR: null,
+                expandGames: null,
+                headersDelHOTO: [
+                {
+                    text: 'S/Ns (Start)',
+                    align: 'start',
+                    sortable: true,
+                    value: 'serialNumStart',
+                },
+                { text: 'S/Ns (End)', value: 'serialNumEnd' },
+                { text: 'Location', value: 'location' },
+                { text: 'Start Date', value: 'sDate' },
+                { text: 'End Date', value: 'eDate' },
+                { text: 'Email', value: 'email' },
+                { text: 'Deleted Date', value: 'deleteDate' }
+                ],
+                dataDelHOTO: null,
+                headersDel: [
+                {
+                    text: 'S/N',
+                    align: 'start',
+                    sortable: true,
+                    value: 'serialNum',
+                },
+                { text: 'Matriculation No.', value: 'matricNum' },
+                { text: 'Location', value: 'location' },
+                { text: 'Date', value: 'datestamp' },
+                { text: 'Email', value: 'email' },
+                { text: 'Deleted Date', value: 'deleteDate' }
+                ],
+                dataDelVR: null,
+                dataDelGames: null,
+                searchDelHOTO: "",
+                searchDelVR: "",
+                searchDelGames: "",
+                //Others
                 searchHOTO: "",
                 searchVR: "",
                 searchGames: "",
@@ -663,6 +776,80 @@
             });
         },
         methods: {
+            //Del
+            expand() {
+                if (this.tab == 0) {
+                    if (!this.dataDelHOTO) {
+                        const hRef = collection(db, 'deletedHOTO');
+                        onSnapshot(hRef, (querySnapshot) => {
+                        this.dataDelHOTO = [];
+                        querySnapshot.docs.forEach((doc) => {
+                            this.dataDelHOTO.push({ ...doc.data(), id: doc.id })
+                            
+                            var sD = new Date(doc.data().startTime.seconds*1000);
+                            sD = [String(sD.getDate()).padStart(2, '0'), String(sD.getMonth()+1).padStart(2, '0'), String(sD.getFullYear())].join("/") + " " + [String(sD.getHours()).padStart(2, '0'), String(sD.getMinutes()).padStart(2, '0')].join(":");
+                            this.dataDelHOTO[this.dataDelHOTO.length-1]["sDate"] = sD;
+
+                            var eD = new Date(doc.data().endTime.seconds*1000);
+                            eD = [String(eD.getDate()).padStart(2, '0'), String(eD.getMonth()+1).padStart(2, '0'), String(eD.getFullYear())].join("/") + " " + [String(eD.getHours()).padStart(2, '0'), String(eD.getMinutes()).padStart(2, '0')].join(":");
+                            this.dataDelHOTO[this.dataDelHOTO.length-1]["eDate"] = eD;
+
+                            var dD = new Date(doc.data().deleteDate.seconds*1000);
+                            dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
+                            this.dataDelHOTO[this.dataDelHOTO.length-1]["deleteDate"] = dD;
+                        })
+                        console.log(this.dataDelHOTO);
+                        this.expandHOTO = this.expandHOTO == 0 ? null: 0;
+                        });
+                    } else {
+                        this.expandHOTO = this.expandHOTO == 0 ? null: 0;
+                    }
+                } else if (this.tab == 1) {
+                    if (!this.dataDelVR) {
+                        const vRef = collection(db, 'deletedVouchers');
+                        onSnapshot(vRef, (querySnapshot) => {
+                        this.dataDelVR = [];
+                        querySnapshot.docs.forEach((doc) => {
+                            this.dataDelVR.push({ ...doc.data(), id: doc.id })
+                            
+                            var d = new Date(doc.data().date.seconds*1000);
+                            d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                            this.dataDelVR[this.dataDelVR.length-1]["datestamp"] = d;
+
+                            var dD = new Date(doc.data().deleteDate.seconds*1000);
+                            dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
+                            this.dataDelVR[this.dataDelVR.length-1]["deleteDate"] = dD;
+                        })
+                        console.log(this.dataDelVR);
+                        this.expandVR = this.expandVR == 0 ? null: 0;
+                        });
+                    } else {
+                        this.expandVR = this.expandVR == 0 ? null: 0;
+                    }
+                } else if (this.tab == 2) {
+                    if (!this.dataDelGames) {
+                        const gRef = collection(db, 'deletedGames');
+                        onSnapshot(gRef, (querySnapshot) => {
+                        this.dataDelGames = [];
+                        querySnapshot.docs.forEach((doc) => {
+                            this.dataDelGames.push({ ...doc.data(), id: doc.id })
+                            
+                            var d = new Date(doc.data().date.seconds*1000);
+                            d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                            this.dataDelGames[this.dataDelGames.length-1]["datestamp"] = d;
+
+                            var dD = new Date(doc.data().deleteDate.seconds*1000);
+                            dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
+                            this.dataDelGames[this.dataDelGames.length-1]["deleteDate"] = dD;
+                        })
+                        console.log(this.dataDelGames);
+                        this.expandGames = this.expandGames == 0 ? null: 0;
+                        });
+                    } else {
+                        this.expandGames = this.expandGames == 0 ? null: 0;
+                    }
+                }
+            },
             //HOTO
             checkFormat(s) {
                 if (isNaN(s.split(", ").join("-").split("-").join(""))) {
@@ -1007,5 +1194,8 @@
     .box {
         width: 80%;
         margin: 5% auto 5% auto;
+    }
+    .v-expansion-panel-content>>> .v-expansion-panel-content__wrap {
+        padding: 0 !important;
     }
 </style>
