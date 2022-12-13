@@ -61,7 +61,7 @@
                                         color="#000"
                                         :rules="sNoRulesHOTO"
                                         label="Voucher Serial Numbers at the Start"
-                                        hint="i.e.: 2000-2030, 2060, 2080"
+                                        hint="i.e.: 2000-2030, 2060-2080"
                                         required
                                     ></v-text-field>
                                     <v-row>
@@ -71,7 +71,7 @@
                                                 color="#000"
                                                 :rules="sNoRulesHOTO"
                                                 label="Voucher Serial Numbers at the End"
-                                                hint="i.e.: 2000-2030, 2060, 2080"
+                                                hint="i.e.: 2000-2030, 2060-2080"
                                                 required
                                             ></v-text-field>
                                         </v-col>
