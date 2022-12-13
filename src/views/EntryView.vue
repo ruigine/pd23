@@ -157,6 +157,10 @@
                                     class="mx-4"
                                     ></v-text-field>
                                 </template>
+
+                                <template slot="no-data">
+                                    No delete history.
+                                </template>
                             </v-data-table>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -233,6 +237,10 @@
                                     label="Search..."
                                     class="mx-4"
                                     ></v-text-field>
+                                </template>
+
+                                <template slot="no-data">
+                                    No delete history.
                                 </template>
                             </v-data-table>
                         </v-expansion-panel-content>
@@ -385,6 +393,10 @@
                                     label="Search..."
                                     class="mx-4"
                                     ></v-text-field>
+                                </template>
+
+                                <template slot="no-data">
+                                    No delete history.
                                 </template>
                             </v-data-table>
                         </v-expansion-panel-content>
