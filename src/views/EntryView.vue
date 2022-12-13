@@ -435,7 +435,7 @@
             <v-card class="pa-6 ma-0">
                 <v-row class="pa-6 ma-0">
                     <v-col cols="12">
-                        <h1 class="mb-12">Editing History</h1>
+                        <h1 class="mb-12">Past Edits</h1>
                         <v-data-table
                             :headers="headersEdit"
                             :items="dataEdit"
@@ -756,8 +756,22 @@
                 deleteDoc(doc(db, 'hotoDB', this.delHOTO.id), {
                 })
                 .then((snapshot) => {
-                    this.dialogDeleteHOTO = false;
-                    this.success = true;
+                    addDoc(collection(db, "deletedHOTO"), {
+                        location: this.delHOTO.location,
+                        serialNumStart: this.delHOTO.serialNumStart,
+                        serialNumEnd: this.delHOTO.serialNumEnd,
+                        startTime: this.delHOTO.startTime,
+                        endTime: this.delHOTO.endTime,
+                        email: this.delHOTO.email,
+                        deleteDate: firebase.firestore.Timestamp.fromDate(new Date()),
+                    })
+                    .then((snapshot) => {
+                        this.dialogDeleteHOTO = false;
+                        this.success = true;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
                 })
                 .catch(err => {
                     console.log(err);
@@ -816,8 +830,21 @@
                 deleteDoc(doc(db, 'vouchers', this.delVR.id), {
                 })
                 .then((snapshot) => {
-                    this.dialogDeleteVR = false;
-                    this.success = true;
+                    addDoc(collection(db, "deletedVouchers"), {
+                        serialNum: this.delVR.serialNum,
+                        matricNum: this.delVR.matricNum,
+                        location: this.delVR.location,
+                        date: this.delVR.date,
+                        email: this.delVR.email,
+                        deleteDate: firebase.firestore.Timestamp.fromDate(new Date()),
+                    })
+                    .then((snapshot) => {
+                        this.dialogDeleteVR = false;
+                        this.success = true;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
                 })
                 .catch(err => {
                     console.log(err);
@@ -876,8 +903,21 @@
                 deleteDoc(doc(db, 'games', this.delGames.id), {
                 })
                 .then((snapshot) => {
-                    this.dialogDeleteGames = false;
-                    this.success = true;
+                    addDoc(collection(db, "deletedGames"), {
+                        serialNum: this.delGames.serialNum,
+                        matricNum: this.delGames.matricNum,
+                        location: this.delGames.location,
+                        date: this.delGames.date,
+                        email: this.delGames.email,
+                        deleteDate: firebase.firestore.Timestamp.fromDate(new Date()),
+                    })
+                    .then((snapshot) => {
+                        this.dialogDeleteGames = false;
+                        this.success = true;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
                 })
                 .catch(err => {
                     console.log(err);
