@@ -775,6 +775,13 @@
             }
             });
         },
+        watch: {
+            tab() {
+                this.expandHOTO = null;
+                this.expandVR = null;
+                this.expandGames = null;
+            }
+        },
         methods: {
             //Del
             expand() {
