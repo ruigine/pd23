@@ -5,7 +5,7 @@ import HOTO from "../views/HOTOView.vue";
 import Login from "../views/LoginView.vue";
 import Redeem from "../views/RedeemView.vue";
 import Tally from "../views/TallyView.vue";
-import Entries from "../views/EntryView.vue";
+import Database from "../views/EntryView.vue";
 
 import { auth } from "../firebase/firebaseinit";
 
@@ -21,7 +21,7 @@ function guardMyroute(to, from, next) {
       if (user.email == 'pd23bigboss@gmail.com') {
         next();
       } else {
-        if (to.name == "HOTO" || to.name == "Redeem" || to.name == "Games" || to.name == "Entries") {
+        if (to.name == "HOTO" || to.name == "Redeem" || to.name == "Games" || to.name == "Database") {
           next();
         }
       }      
@@ -67,9 +67,9 @@ const routes = [
     beforeEnter: guardMyroute,
   },
   {
-    path: "/entries",
-    name: "Entries",
-    component: Entries,
+    path: "/database",
+    name: "Database",
+    component: Database,
     beforeEnter: guardMyroute,
   }
 ];
