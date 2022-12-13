@@ -366,7 +366,7 @@
                     </template>
                 </v-data-table>
 
-                <v-btn class="mt-12 mb-6" @click="expand" color="#fff">Deleted game redemption entries</v-btn>
+                <v-btn class="mt-12 mb-6" @click="expand" color="#fff">Deleted games redemption entries</v-btn>
                 <v-expansion-panels flat class="mb-1" v-model="expandGames">
                     <v-expansion-panel>
                         <v-expansion-panel-content>
