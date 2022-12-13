@@ -155,7 +155,7 @@
                 }
             },
             submit() {
-                addDoc(collection(db, 'hotoDB'), {
+                addDoc(collection(db, 'hoto'), {
                     location: this.location,
                     serialNumStart: this.sNoStart.replaceAll(",", " ").trim(" ").split("  ").join(", "),
                     serialNumEnd: this.sNoEnd.replaceAll(",", " ").trim(" ").split("  ").join(", "),

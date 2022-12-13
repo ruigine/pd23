@@ -708,7 +708,7 @@
         },
         created() {
             //HOTO
-            const hRef = collection(db, 'hotoDB');
+            const hRef = collection(db, 'hoto');
             onSnapshot(hRef, (querySnapshot) => {
             this.dataHOTO = [];
             querySnapshot.docs.forEach((doc) => {
@@ -912,7 +912,7 @@
                 this.dialogHOTO = true;
             },
             saveHOTO() {
-                updateDoc(doc(db, 'hotoDB', this.currHOTO.id), {
+                updateDoc(doc(db, 'hoto', this.currHOTO.id), {
                     location: this.locationHOTO,
                     serialNumStart: this.sNoStart.replaceAll(",", " ").trim(" ").split("  ").join(", "),
                     serialNumEnd: this.sNoEnd.replaceAll(",", " ").trim(" ").split("  ").join(", "),
@@ -920,7 +920,7 @@
                     endTime: firebase.firestore.Timestamp.fromDate(new Date(this.endTime)),
                 })
                 .then((snapshot) => {
-                    var colRef = collection(doc(db, 'hotoDB', this.currHOTO.id), "history");
+                    var colRef = collection(doc(db, 'hoto', this.currHOTO.id), "history");
                     addDoc(colRef, {
                         location: this.currHOTO.location,
                         serialNumStart: this.currHOTO.serialNumStart,
@@ -947,7 +947,7 @@
                 this.delHOTO = item;
             },
             deleteConfirmHOTO() {
-                deleteDoc(doc(db, 'hotoDB', this.delHOTO.id), {
+                deleteDoc(doc(db, 'hoto', this.delHOTO.id), {
                 })
                 .then((snapshot) => {
                     addDoc(collection(db, "deletedHOTO"), {
@@ -1126,7 +1126,7 @@
                         this.headersEdit = this.headersHOTO.slice(0, -1);
                         this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
                         
-                        getDocs(collection(doc(db, 'hotoDB', value.id), "history"))
+                        getDocs(collection(doc(db, 'hoto', value.id), "history"))
                         .then((snapshot) => {
                             snapshot.docs.forEach((doc) => {
                                 this.dataEdit.push({ ...doc.data(), id: doc.id })
