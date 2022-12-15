@@ -8,9 +8,9 @@
                     <v-text-field
                         v-model="sNoStart"
                         color="#000"
-                        :rules="sNoRules"
+                        :rules="sNoStartRules"
                         label="Voucher Serial Numbers at the Start"
-                        hint="i.e.: 2000-2030, 2060-2080"
+                        hint="i.e.: 3000 or i.e.: 2000-2030, 2060-2080"
                         required
                     ></v-text-field>
 
@@ -19,9 +19,9 @@
                             <v-text-field
                                 v-model="sNoEnd"
                                 color="#000"
-                                :rules="sNoRules"
+                                :rules="sNoEndRules"
                                 label="Voucher Serial Numbers at the End"
-                                hint="i.e.: 2000-2030, 2060-2080"
+                                hint="i.e.: 3000 or i.e.: 2000-2030, 2060-2080"
                                 required
                             ></v-text-field>
                         </v-col>
@@ -98,10 +98,14 @@
                 valid: false,
                 sNoStart: "",
                 sNoEnd: "",
-                sNoRules: [
+                sNoStartRules: [
                     s => !!s || 'Field is required',
-                    s => this.checkFormat(s) || 'Please use the following format i.e. 3000-3040',
+                    s => this.checkFormat(s) || 'Please enter a number or use the following format i.e. 3000-3040',
                     s => (this.checkFormat(s) && this.checkOrder(s)) || 'Invalid ranges/vouchers'
+                ],
+                sNoEndRules: [
+                    s => (s=="" || this.checkFormat(s)) || 'Please enter a number or use the following format i.e. 3000-3040',
+                    s => (s=="" || (this.checkFormat(s)) && this.checkOrder(s)) || 'Invalid ranges/vouchers'
                 ],
                 locRules: [
                     l => !!l || 'Field is required',
@@ -123,10 +127,14 @@
                     return false;
                 }
                 var sArr = s.replaceAll(",", " ").trim(" ").split("  ");
-
-                for (var str of sArr) {
-                    if (str.split("-").length != 2) {
-                        return false;
+                
+                if (sArr.length == 1 && sArr[0].split("-").length == 1) {
+                    return true;
+                } else {
+                    for (var str of sArr) {
+                        if (str.split("-").length != 2) {
+                            return false;
+                        }
                     }
                 }
                 return true;
@@ -134,13 +142,19 @@
             checkOrder(s) {
                 var sArr = s.replaceAll(",", " ").trim(" ").split("  ");
 
-                for (var str of sArr) {
-                    var range = str.split("-");
-                    if (Number(range[1]) < Number(range[0])) {
+                if (sArr.length == 1 && sArr[0].split("-").length == 1) {
+                    if (!((Number(sArr[0]) >= 1901 && Number(sArr[0]) <= 2420) || (Number(sArr[0]) >= 2541 && Number(sArr[0]) <= 6000))) {
                         return false;
-                    } else {
-                        if (!((Number(range[0]) >= 1901 && Number(range[1]) <= 2420) || (Number(range[0]) >= 2541 && Number(range[1]) <= 6000))) {
+                    }
+                } else {
+                    for (var str of sArr) {
+                        var range = str.split("-");
+                        if (Number(range[1]) < Number(range[0])) {
                             return false;
+                        } else {
+                            if (!((Number(range[0]) >= 1901 && Number(range[1]) <= 2420) || (Number(range[0]) >= 2541 && Number(range[1]) <= 6000))) {
+                                return false;
+                            }
                         }
                     }
                 }
