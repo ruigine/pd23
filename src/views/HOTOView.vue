@@ -68,10 +68,17 @@
             v-model="dialog"
         >
             <v-card>
-                <v-card-text class="text-center">
-                    <v-icon class="py-12" color="success" size="100" style="opacity: 0.4">mdi-check-circle-outline</v-icon>
-                    <div class="text-h5">Update successful!</div>
-                </v-card-text>
+                <div class="pt-8 pb-6 text-h5 text-center">
+                <v-icon color="success" size="40" style="opacity: 0.4">mdi-check-circle-outline</v-icon> Update successful!
+                </div>
+
+                <v-list-item class="px-8" two-line v-for="(item, idx) in successList" :key="idx">
+                    <v-list-item-content>
+                        <v-list-item-title>{{item.name}}</v-list-item-title>
+                        <v-list-item-subtitle>{{item.value}}</v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
+                
                 <v-card-actions class="justify-end">
                 <v-btn
                     text
@@ -119,6 +126,7 @@
                 ],
                 items: ['Koufu', 'SOB', 'Connexion'],
                 location: null,
+                successList: [],
             }
         },
         methods: {
@@ -177,6 +185,13 @@
                     email: this.$store.state.user.email
                 })
                 .then((snapshot) => {
+                    this.successList = [];
+                    this.successList.push({ name: "Voucher Serial Number at the Start", value: this.sNoStart.replaceAll(",", " ").trim(" ").split("  ").join(", ") });
+                    this.successList.push({ name: "Voucher Serial Number at the End", value: this.sNoEnd.replaceAll(",", " ").trim(" ").split("  ").join(", ") });
+                    this.successList.push({ name: "Start Date", value: this.startTime });
+                    this.successList.push({ name: "End Date", value: this.endTime });
+                    this.successList.push({ name: "Location", value: this.location });
+
                     this.dialog = true;
                     this.$refs.form.reset();
                     this.sNoStart = "";
