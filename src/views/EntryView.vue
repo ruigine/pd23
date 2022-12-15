@@ -12,7 +12,7 @@
                 <v-data-table
                     :headers="headersHOTO"
                     :items="dataHOTO"
-                    item-key="serialNum"
+                    item-key="serialNumStart"
                     class="elevation-1"
                     :search="searchHOTO"
                     @click:row="history"
@@ -144,7 +144,6 @@
                             <v-data-table
                                 :headers="headersDelHOTO"
                                 :items="dataDelHOTO"
-                                item-key="serialNum"
                                 class="elevation-1"
                                 :search="searchDelHOTO"
                                 multi-sort
@@ -225,7 +224,6 @@
                             <v-data-table
                                 :headers="headersDel"
                                 :items="dataDelVR"
-                                item-key="serialNum"
                                 class="elevation-1"
                                 :search="searchDelVR"
                                 multi-sort
@@ -381,7 +379,6 @@
                             <v-data-table
                                 :headers="headersDel"
                                 :items="dataDelGames"
-                                item-key="serialNum"
                                 class="elevation-1"
                                 :search="searchDelGames"
                                 multi-sort
