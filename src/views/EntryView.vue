@@ -500,10 +500,24 @@
             v-model="success"
         >
             <v-card>
-                <v-card-text class="text-center">
+                <v-card-text class="text-center" v-if="successList.length == 0">
                     <v-icon class="py-12" color="success" size="100" style="opacity: 0.4">mdi-check-circle-outline</v-icon>
                     <div class="text-h5">Update successful!</div>
                 </v-card-text>
+
+                <template v-else>
+                    <div class="pt-8 pb-6 text-h5 text-center">
+                    <v-icon color="success" size="40" style="opacity: 0.4">mdi-check-circle-outline</v-icon> Update successful!
+                    </div>
+
+                    <v-list-item class="px-8" two-line v-for="(item, idx) in successList" :key="idx">
+                        <v-list-item-content>
+                            <v-list-item-title>{{item.name}}</v-list-item-title>
+                            <v-list-item-subtitle>{{item.value}}</v-list-item-subtitle>
+                        </v-list-item-content>
+                    </v-list-item>
+                </template>
+                
                 <v-card-actions class="justify-end">
                 <v-btn
                     text
@@ -561,6 +575,7 @@
         data(){
             return {
                 tab: null,
+                successList: [],
                 //Del
                 expandHOTO: null,
                 expandVR: null,
@@ -956,6 +971,13 @@
                         editDate: firebase.firestore.Timestamp.fromDate(new Date()),
                     })
                     .then((snapshot) => {
+                        this.successList = [];
+                        this.successList.push({ name: "Voucher Serial Number at the Start", value: this.sNoStart.replaceAll(",", " ").trim(" ").split("  ").join(", ") });
+                        this.successList.push({ name: "Voucher Serial Number at the End", value: this.sNoEnd.replaceAll(",", " ").trim(" ").split("  ").join(", ") });
+                        this.successList.push({ name: "Start Date", value: this.startTime.replace("T", " ") });
+                        this.successList.push({ name: "End Date", value: this.endTime.replace("T", " ") });
+                        this.successList.push({ name: "Location", value: this.locationHOTO });
+
                         this.dialogHOTO = false;
                         this.success = true;
                     })
@@ -985,6 +1007,8 @@
                         deleteDate: firebase.firestore.Timestamp.fromDate(new Date()),
                     })
                     .then((snapshot) => {
+                        this.successList = [];
+
                         this.dialogDeleteHOTO = false;
                         this.success = true;
                     })
@@ -1030,6 +1054,15 @@
                         editDate: firebase.firestore.Timestamp.fromDate(new Date()),
                     })
                     .then((snapshot) => {
+                        var d = new Date(this.dateVR);
+                        d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                        
+                        this.successList = [];
+                        this.successList.push({ name: "Voucher Serial Number", value: this.sNoVR });
+                        this.successList.push({ name: "Matriculation Number", value: this.matricNoVR });
+                        this.successList.push({ name: "Location", value: this.locationVR });
+                        this.successList.push({ name: "Date", value: d });
+
                         this.dialogVR = false;
                         this.success = true;
                     })
@@ -1058,6 +1091,8 @@
                         deleteDate: firebase.firestore.Timestamp.fromDate(new Date()),
                     })
                     .then((snapshot) => {
+                        this.successList = [];
+
                         this.dialogDeleteVR = false;
                         this.success = true;
                     })
@@ -1103,6 +1138,15 @@
                         editDate: firebase.firestore.Timestamp.fromDate(new Date()),
                     })
                     .then((snapshot) => {
+                        var d = new Date(this.dateGames);
+                        d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                        
+                        this.successList = [];
+                        this.successList.push({ name: "Voucher Serial Number", value: this.sNoGames });
+                        this.successList.push({ name: "Matriculation Number", value: this.matricNoGames });
+                        this.successList.push({ name: "Location", value: this.locationGames });
+                        this.successList.push({ name: "Date", value: d });
+
                         this.dialogGames = false;
                         this.success = true;
                     })
@@ -1131,6 +1175,8 @@
                         deleteDate: firebase.firestore.Timestamp.fromDate(new Date()),
                     })
                     .then((snapshot) => {
+                        this.successList = [];
+
                         this.dialogDeleteGames = false;
                         this.success = true;
                     })
