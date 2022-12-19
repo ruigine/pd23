@@ -896,7 +896,7 @@
                     return true;
                 } else {
                     for (var str of sArr) {
-                        if (str.split("-").length != 2) {
+                        if (str.split("-").length != 1 && str.split("-").length != 2) {
                             return false;
                         }
                     }
@@ -913,11 +913,17 @@
                 } else {
                     for (var str of sArr) {
                         var range = str.split("-");
-                        if (Number(range[1]) < Number(range[0])) {
-                            return false;
-                        } else {
-                            if (!((Number(range[0]) >= 1901 && Number(range[1]) <= 2420) || (Number(range[0]) >= 2541 && Number(range[1]) <= 6000))) {
+                        if (range.length == 1) {
+                            if (!((Number(sArr[0]) >= 1901 && Number(sArr[0]) <= 2420) || (Number(sArr[0]) >= 2541 && Number(sArr[0]) <= 6000))) {
                                 return false;
+                            }
+                        } else {
+                            if (Number(range[1]) < Number(range[0])) {
+                                return false;
+                            } else {
+                                if (!((Number(range[0]) >= 1901 && Number(range[1]) <= 2420) || (Number(range[0]) >= 2541 && Number(range[1]) <= 6000))) {
+                                    return false;
+                                }
                             }
                         }
                     }
