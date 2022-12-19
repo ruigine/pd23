@@ -706,7 +706,7 @@
                 ],
                 sNoRulesVR: [
                     s => !!s || 'Field is required',
-                    s => (2541 <= Number(s) && Number(s) <= 6000) || 'Invalid voucher S/N',
+                    s => (2421 <= Number(s) && Number(s) <= 5880) || 'Invalid voucher S/N',
                     s => (this.voucherListVR.includes(s) == false || s == this.currVR.serialNum) || 'Voucher has already been redeemed',
                 ],
                 locRules: [
@@ -907,21 +907,21 @@
                 var sArr = s.replaceAll(",", " ").trim(" ").split("  ");
 
                 if (sArr.length == 1 && sArr[0].split("-").length == 1) {
-                    if (!((Number(sArr[0]) >= 1901 && Number(sArr[0]) <= 2420) || (Number(sArr[0]) >= 2541 && Number(sArr[0]) <= 6000))) {
+                    if (!((Number(sArr[0]) >= 1901 && Number(sArr[0]) <= 2420) || (Number(sArr[0]) >= 2421 && Number(sArr[0]) <= 5880))) {
                         return false;
                     }
                 } else {
                     for (var str of sArr) {
                         var range = str.split("-");
                         if (range.length == 1) {
-                            if (!((Number(sArr[0]) >= 1901 && Number(sArr[0]) <= 2420) || (Number(sArr[0]) >= 2541 && Number(sArr[0]) <= 6000))) {
+                            if (!((Number(sArr[0]) >= 1901 && Number(sArr[0]) <= 2420) || (Number(sArr[0]) >= 2421 && Number(sArr[0]) <= 5880))) {
                                 return false;
                             }
                         } else {
                             if (Number(range[1]) < Number(range[0])) {
                                 return false;
                             } else {
-                                if (!((Number(range[0]) >= 1901 && Number(range[1]) <= 2420) || (Number(range[0]) >= 2541 && Number(range[1]) <= 6000))) {
+                                if (!((Number(range[0]) >= 1901 && Number(range[1]) <= 2420) || (Number(range[0]) >= 2421 && Number(range[1]) <= 5880))) {
                                     return false;
                                 }
                             }

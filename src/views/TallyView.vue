@@ -158,8 +158,8 @@
             console.log(s);
             
             var range = []; var bool = "";
-            for (var i=2541; i<=6000; i++) {
-                if (i == 2541) {
+            for (var i=2421; i<=5880; i++) {
+                if (i == 2421) {
                     range.push(i);
                     bool = s.includes(i) ? "No" : "Yes";
                 } else {
@@ -173,10 +173,10 @@
                         range = [i];
                         bool = s.includes(i) ? "No" : "Yes";
 
-                        if (i == 6000) {
+                        if (i == 5880) {
                             this.dataC.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
                         }
-                    } else if (i == 6000) {
+                    } else if (i == 5880) {
                         range.push(i);
                         this.dataC.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
                     }
