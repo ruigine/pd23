@@ -31,14 +31,17 @@
                     <template v-slot:[`item.actions`]="{ item }">
                         <v-icon
                             small
-                            class="mr-2"
+                            class="mr-2 outlined"
                             @click="editHOTO(item)"
+                            color="primary"
                         >
                             mdi-pencil
                         </v-icon>
                         <v-icon
                             small
+                            class="outlined"
                             @click="deleteHOTO(item)"
+                            color="red"
                         >
                             mdi-delete
                         </v-icon>
@@ -203,14 +206,17 @@
                     <template v-slot:[`item.actions`]="{ item }">
                         <v-icon
                             small
-                            class="mr-2"
+                            class="mr-2 outlined"
                             @click="editVR(item)"
+                            color="primary"
                         >
                             mdi-pencil
                         </v-icon>
                         <v-icon
                             small
                             @click="deleteVR(item)"
+                            class="outlined"
+                            color="red"
                         >
                             mdi-delete
                         </v-icon>
@@ -358,14 +364,17 @@
                     <template v-slot:[`item.actions`]="{ item }">
                         <v-icon
                             small
-                            class="mr-2"
+                            class="mr-2 outlined"
                             @click="editGames(item)"
+                            color="primary"
                         >
                             mdi-pencil
                         </v-icon>
                         <v-icon
                             small
                             @click="deleteGames(item)"
+                            class="outlined"
+                            color="red"
                         >
                             mdi-delete
                         </v-icon>
@@ -629,7 +638,7 @@
                 { text: 'Start Date', value: 'sDate' },
                 { text: 'End Date', value: 'eDate' },
                 { text: 'Email', value: 'email' },
-                { text: 'Actions', value: 'actions', sortable: false }
+                { text: 'Actions', value: 'actions', sortable: false, width: '80px' }
                 ],
                 dataHOTO: [],
                 headers: [
@@ -643,7 +652,7 @@
                 { text: 'Location', value: 'location' },
                 { text: 'Date', value: 'datestamp' },
                 { text: 'Email', value: 'email' },
-                { text: 'Actions', value: 'actions', sortable: false }
+                { text: 'Actions', value: 'actions', sortable: false, width: '80px' }
                 ],
                 dataVR: [],
                 dataGames: [],
@@ -1279,4 +1288,10 @@
     .v-expansion-panel-content>>> .v-expansion-panel-content__wrap {
         padding: 0 !important;
     }
+    .v-icon.outlined {
+        border: 1px solid currentColor;
+        border-radius:50%;
+        padding: 1px;
+    }
+    
 </style>

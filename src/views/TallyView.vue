@@ -5,6 +5,7 @@
         <v-switch
             v-model="condensed"
             label="Condensed"
+            color="success"
         ></v-switch>
 
         <!--Condensed-->

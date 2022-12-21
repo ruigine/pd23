@@ -29,7 +29,7 @@
                         :rules="locRules"
                         required
                     ></v-select>
-                    <v-btn v-if="valid" class="mt-6" @click="submit" color="#fff">Submit</v-btn>
+                    <v-btn v-if="valid" class="mt-6" @click="submit" color="#d4ecd6">Submit</v-btn>
                     <v-btn v-else class="mt-6" disabled>Submit</v-btn>
                 </v-col>
             </v-row>
