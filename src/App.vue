@@ -127,7 +127,6 @@
           { title: 'Voucher Redemption', icon: 'mdi-wallet-giftcard', path: '/redeem'},
           { title: 'Games Redemption', icon: 'mdi-controller', path: '/games'},
           { title: 'Tally', icon: 'mdi-tally-mark-5', path: '/tally' },
-          { title: 'Excel', icon: 'mdi-microsoft-excel', path: ''},
           { title: 'Logout', icon: 'mdi-logout', path: ''},
         ],
       }
