@@ -869,7 +869,9 @@
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dataGames[this.dataGames.length-1]["datestamp"] = d;
 
-                s.push(doc.data().serialNum);
+                if (doc.data().serialNum) {
+                    s.push(doc.data().serialNum);
+                }
             })
             console.log(this.dataGames);
             this.voucherListGames = s;

@@ -139,7 +139,9 @@
             onSnapshot(gRef, (snapshot) => {
             var v = [];
             snapshot.docs.forEach((doc) => {
-                v.push(doc.data().serialNum);
+                if (doc.data().serialNum) {
+                    v.push(doc.data().serialNum);
+                }
             })
             this.voucherList = v;
             console.log(this.voucherList);
