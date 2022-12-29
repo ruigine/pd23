@@ -5,15 +5,33 @@
                 <v-col cols="12">
                     <h1 class="mb-12">Games Redemption</h1>
                     <v-text-field
+                        v-model="name"
+                        color="#000"
+                        :rules="nameRules"
+                        :counter="8"
+                        label="Name"
+                        type="text"
+                        required
+                    ></v-text-field>
+                    <v-text-field
                         v-model="matricNo"
                         color="#000"
                         :rules="matricRules"
                         :counter="8"
-                        label="Matriculation Number"
+                        label="Matriculation Number (if student)"
                         type="number"
                         required
                     ></v-text-field>
+                    <v-select
+                        v-model="prize"
+                        color="#000"
+                        :items="prizes"
+                        label="Prize"
+                        :rules="prizeRules"
+                        required
+                    ></v-select>
                     <v-text-field
+                        v-if="prize=='PD23 voucher'"
                         v-model="sNo"
                         color="#000"
                         :rules="sNoRules"
@@ -74,10 +92,13 @@
                 dialog: false,
                 voucherList: [],
                 valid: false,
+                name: '',
+                nameRules: [
+                    n => !!n || 'Field is required',
+                ],
                 matricNo: '',
                 matricRules: [
-                    m => !!m || 'Field is required',
-                    m => (m && m.length == 8) || 'Matriculation number must be 8 digits long'
+                    m => (!m || m.length == 8) || 'Matriculation number must be 8 digits long'
                 ],
                 sNo: '',
                 sNoRules: [
@@ -89,6 +110,27 @@
                     s => !!s || 'Field is required',
                 ],
                 items: ['Koufu', 'SOB', 'Connexion'],
+                prizeRules: [
+                    p => !!p || 'Field is required',
+                ],
+                prize: null,
+                prizes: [
+                    'PD23 voucher',
+                    'Ima-Sushi $10 voucher (No min. spend)',
+                    '$15 Basic Package voucher',
+                    'The SMU Shop $6 voucher',
+                    'MOTIF Snap 2 in 1 Magnetic Wireless charging Stand - Marble Noir',
+                    'LUCID Folio Ultra Light Full Protection Case for iPad Air (2022) w/ Pencil Slot - Charcoal',
+                    'Ripstop Jacket',
+                    'Ripstop Sweat Pants',
+                    'Dancer Bottle',
+                    'Adidas Push up Bar in Pairs',
+                    'SSOD Sports bag',
+                    '20% off Adult Group Dance Package',
+                    'Rainbow Black Singlet',
+                    'Rainbow Black Shorts (M)',
+                    'Paisley Shirt Beige (L)',
+                ],
                 location: null,
                 successList: [],
             }
@@ -110,17 +152,30 @@
         methods: {
             submit() {
                 const gRef = collection(db, "games");
-                addDoc(gRef, {
-                    serialNum: this.sNo,
-                    matricNum: this.matricNo,
+                var temp = {
+                    name: this.name,
+                    prize: this.prize,
                     location: this.location,
                     date: firebase.firestore.Timestamp.fromDate(new Date()),
                     email: this.$store.state.user.email
-                })
+                }
+                if (this.matricNo.length != 0) {
+                    temp['matricNum'] = this.matricNo
+                }
+                if (this.prize == 'PD23 voucher') {
+                    temp['serialNum'] = this.sNo
+                }
+                addDoc(gRef, temp)
                 .then((snapshot) => {
                     this.successList = [];
-                    this.successList.push({ name: "Voucher Serial Number", value: this.sNo });
-                    this.successList.push({ name: "Matriculation Number", value: this.matricNo });
+                    this.successList.push({ name: "Name", value: this.name });
+                    if (this.matricNo.length != 0) {
+                        this.successList.push({ name: "Matriculation Number", value: this.matricNo });
+                    }
+                    this.successList.push({ name: "Prize", value: this.prize });
+                    if (this.prize == 'PD23 voucher') {
+                        this.successList.push({ name: "Voucher Serial Number", value: this.sNo });
+                    }
                     this.successList.push({ name: "Location", value: this.location });
 
                     this.dialog = true;

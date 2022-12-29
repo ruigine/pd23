@@ -186,7 +186,7 @@
             <!--Redeem-->
             <v-tab-item>
                 <v-data-table
-                    :headers="headers"
+                    :headers="headersVR"
                     :items="dataVR"
                     item-key="serialNum"
                     class="elevation-1"
@@ -228,7 +228,7 @@
                     <v-expansion-panel>
                         <v-expansion-panel-content>
                             <v-data-table
-                                :headers="headersDel"
+                                :headers="headersDelVR"
                                 :items="dataDelVR"
                                 class="elevation-1"
                                 :search="searchDelVR"
@@ -344,7 +344,7 @@
             <!--Games-->
             <v-tab-item>
                 <v-data-table
-                    :headers="headers"
+                    :headers="headersGames"
                     :items="dataGames"
                     item-key="serialNum"
                     class="elevation-1"
@@ -386,7 +386,7 @@
                     <v-expansion-panel>
                         <v-expansion-panel-content>
                             <v-data-table
-                                :headers="headersDel"
+                                :headers="headersDelGames"
                                 :items="dataDelGames"
                                 class="elevation-1"
                                 :search="searchDelGames"
@@ -422,15 +422,33 @@
                         <v-col cols="12">
                             <h1 class="mb-12">Games Redemption</h1>
                             <v-text-field
+                                v-model="name"
+                                color="#000"
+                                :rules="nameRules"
+                                :counter="8"
+                                label="Name"
+                                type="text"
+                                required
+                            ></v-text-field>
+                            <v-text-field
                                 v-model="matricNoGames"
                                 color="#000"
                                 :rules="matricRulesGames"
                                 :counter="8"
-                                label="Matriculation Number"
+                                label="Matriculation Number (if student)"
                                 type="number"
                                 required
                             ></v-text-field>
+                            <v-select
+                                v-model="prize"
+                                color="#000"
+                                :items="prizes"
+                                label="Prize"
+                                :rules="prizeRules"
+                                required
+                            ></v-select>
                             <v-text-field
+                                v-if="prize=='PD23 voucher'"
                                 v-model="sNoGames"
                                 color="#000"
                                 :rules="sNoRulesGames"
@@ -601,7 +619,7 @@
                 { text: 'Deleted Date', value: 'deleteDate' }
                 ],
                 dataDelHOTO: null,
-                headersDel: [
+                headersDelVR: [
                 {
                     text: 'S/N',
                     align: 'start',
@@ -614,6 +632,20 @@
                 { text: 'Email', value: 'email' },
                 { text: 'Deleted Date', value: 'deleteDate' }
                 ],
+                headersDelGames: [
+                {
+                    text: 'Name',
+                    align: 'start',
+                    sortable: true,
+                    value: 'name',
+                },
+                { text: 'Matriculation No.', value: 'matricNum' },
+                { text: 'Prize', value: 'prize' },
+                { text: 'S/N', value: 'serialNum' },
+                { text: 'Location', value: 'location' },
+                { text: 'Date', value: 'datestamp' },
+                { text: 'Email', value: 'email' },
+                { text: 'Deleted Date', value: 'deleteDate' }                ],
                 dataDelVR: null,
                 dataDelGames: null,
                 searchDelHOTO: "",
@@ -641,7 +673,7 @@
                 { text: 'Actions', value: 'actions', sortable: false, width: '80px' }
                 ],
                 dataHOTO: [],
-                headers: [
+                headersVR: [
                 {
                     text: 'S/N',
                     align: 'start',
@@ -649,6 +681,21 @@
                     value: 'serialNum',
                 },
                 { text: 'Matriculation No.', value: 'matricNum' },
+                { text: 'Location', value: 'location' },
+                { text: 'Date', value: 'datestamp' },
+                { text: 'Email', value: 'email' },
+                { text: 'Actions', value: 'actions', sortable: false, width: '80px' }
+                ],
+                headersGames: [
+                {
+                    text: 'Name',
+                    align: 'start',
+                    sortable: true,
+                    value: 'name',
+                },
+                { text: 'Matriculation No.', value: 'matricNum' },
+                { text: 'Prize', value: 'prize' },
+                { text: 'S/N', value: 'serialNum' },
                 { text: 'Location', value: 'location' },
                 { text: 'Date', value: 'datestamp' },
                 { text: 'Email', value: 'email' },
@@ -736,11 +783,35 @@
                     s => (this.voucherListGames.includes(s) == false || s == this.currGames.serialNum) || 'Voucher does not exist/is unavailable',
                 ],
                 matricRulesGames: [
-                    m => !!m || 'Field is required',
-                    m => (m && m.length == 8) || 'Matriculation number must be 8 digits long'
+                    m => (!m || m.length == 8) || 'Matriculation number must be 8 digits long'
                 ],
                 currGames: null,
                 saved: false,
+                name: '',
+                nameRules: [
+                    n => !!n || 'Field is required',
+                ],
+                prizeRules: [
+                    p => !!p || 'Field is required',
+                ],
+                prize: null,
+                prizes: [
+                    'PD23 voucher',
+                    'Ima-Sushi $10 voucher (No min. spend)',
+                    '$15 Basic Package voucher',
+                    'The SMU Shop $6 voucher',
+                    'MOTIF Snap 2 in 1 Magnetic Wireless charging Stand - Marble Noir',
+                    'LUCID Folio Ultra Light Full Protection Case for iPad Air (2022) w/ Pencil Slot - Charcoal',
+                    'Ripstop Jacket',
+                    'Ripstop Sweat Pants',
+                    'Dancer Bottle',
+                    'Adidas Push up Bar in Pairs',
+                    'SSOD Sports bag',
+                    '20% off Adult Group Dance Package',
+                    'Rainbow Black Singlet',
+                    'Rainbow Black Shorts (M)',
+                    'Paisley Shirt Beige (L)',
+                ],
             }
         },
         created() {
@@ -1119,7 +1190,9 @@
 
             //Games
             editGames(item) {
+                this.name = item.name;
                 this.matricNoGames = item.matricNum;
+                this.prize = item.prize;
                 this.sNoGames = item.serialNum;
                 this.locationGames = item.location;
                 this.currGames = item;
@@ -1133,29 +1206,55 @@
             saveGames() {
                 this.saved = true;
                 const gRef = doc(db, "games", this.currGames.id);
-                updateDoc(gRef, {
+                var toUp = {
+                    name: this.name,
+                    prize: this.prize,
                     location: this.locationGames,
-                    matricNum: this.matricNoGames,
-                    serialNum: this.sNoGames,
                     date: firebase.firestore.Timestamp.fromDate(new Date(this.dateGames)),
-                })
+                }
+                if (this.matricNoGames.length != 0) {
+                    toUp['matricNum'] = this.matricNoGames
+                } else {
+                    toUp['matricNum'] = ""
+                }
+                if (this.prize == 'PD23 voucher') {
+                    toUp['serialNum'] = this.sNoGames
+                } else {
+                    toUp['serialNum'] = ""
+                }
+
+                var toAdd = {
+                    name: this.currGames.name,
+                    prize: this.currGames.prize,
+                    location: this.currGames.location,
+                    date: this.currGames.date,
+                    email: this.currGames.email,
+                    editDate: firebase.firestore.Timestamp.fromDate(new Date()),
+                }
+                if (this.currGames.matricNum.length != 0) {
+                    toAdd['matricNum'] = this.currGames.matricNum
+                }
+                if (this.currGames.prize == 'PD23 voucher') {
+                    toAdd['serialNum'] = this.currGames.serialNum
+                }
+
+                updateDoc(gRef, toUp)
                 .then((snapshot) => {
                     var colRef = collection(doc(db, 'games', this.currGames.id), "history");
-                    addDoc(colRef, {
-                        serialNum: this.currGames.serialNum,
-                        matricNum: this.currGames.matricNum,
-                        location: this.currGames.location,
-                        date: this.currGames.date,
-                        email: this.currGames.email,
-                        editDate: firebase.firestore.Timestamp.fromDate(new Date()),
-                    })
+                    addDoc(colRef, toAdd)
                     .then((snapshot) => {
                         var d = new Date(this.dateGames);
                         d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                         
                         this.successList = [];
-                        this.successList.push({ name: "Voucher Serial Number", value: this.sNoGames });
-                        this.successList.push({ name: "Matriculation Number", value: this.matricNoGames });
+                        this.successList.push({ name: "Name", value: this.name });
+                        if (this.matricNoGames.length != 0) {
+                            this.successList.push({ name: "Matriculation Number", value: this.matricNoGames });
+                        }
+                        this.successList.push({ name: "Prize", value: this.prize });
+                        if (this.prize == 'PD23 voucher') {
+                            this.successList.push({ name: "Voucher Serial Number", value: this.sNoGames });
+                        }
                         this.successList.push({ name: "Location", value: this.locationGames });
                         this.successList.push({ name: "Date", value: d });
 
@@ -1175,17 +1274,25 @@
                 this.delGames = items;
             },
             deleteConfirmGames() {
+                var toDel = {
+                    name: this.delGames.name,
+                    prize: this.delGames.prize,
+                    location: this.delGames.location,
+                    date: this.delGames.date,
+                    email: this.delGames.email,
+                    deleteDate: firebase.firestore.Timestamp.fromDate(new Date()),
+                }
+                if (this.delGames.length != 0) {
+                    toDel['matricNum'] = this.delGames.matricNum
+                }
+                if (this.delGames.prize == 'PD23 voucher') {
+                    toDel['serialNum'] = this.delGames.serialNum
+                }
+
                 deleteDoc(doc(db, 'games', this.delGames.id), {
                 })
                 .then((snapshot) => {
-                    addDoc(collection(db, "deletedGames"), {
-                        serialNum: this.delGames.serialNum,
-                        matricNum: this.delGames.matricNum,
-                        location: this.delGames.location,
-                        date: this.delGames.date,
-                        email: this.delGames.email,
-                        deleteDate: firebase.firestore.Timestamp.fromDate(new Date()),
-                    })
+                    addDoc(collection(db, "deletedGames"), toDel)
                     .then((snapshot) => {
                         this.successList = [];
 
@@ -1231,7 +1338,7 @@
                             console.log(err);
                         })
                     } else if (this.tab == 1) {
-                        this.headersEdit = this.headers.slice(0, -1);
+                        this.headersEdit = this.headersVR.slice(0, -1);
                         this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
                         
                         getDocs(collection(doc(db, 'vouchers', value.id), "history"))
@@ -1252,7 +1359,7 @@
                             console.log(err);
                         })
                     } else if (this.tab == 2) {
-                        this.headersEdit = this.headers.slice(0, -1);
+                        this.headersEdit = this.headersGames.slice(0, -1);
                         this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
                         
                         getDocs(collection(doc(db, 'games', value.id), "history"))
