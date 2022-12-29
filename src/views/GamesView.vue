@@ -20,7 +20,6 @@
                         :counter="8"
                         label="Matriculation Number (if student)"
                         type="number"
-                        required
                     ></v-text-field>
                     <v-select
                         v-model="prize"
@@ -98,7 +97,7 @@
                 ],
                 matricNo: '',
                 matricRules: [
-                    m => (!m || m.length == 8) || 'Matriculation number must be 8 digits long'
+                    m => (!m || (!!m && m.length == 8)) || 'Matriculation number must be 8 digits long'
                 ],
                 sNo: '',
                 sNoRules: [
@@ -159,7 +158,7 @@
                     date: firebase.firestore.Timestamp.fromDate(new Date()),
                     email: this.$store.state.user.email
                 }
-                if (this.matricNo.length != 0) {
+                if (this.matricNo && this.matricNo.length != 0) {
                     temp['matricNum'] = this.matricNo
                 }
                 if (this.prize == 'PD23 voucher') {
@@ -169,7 +168,7 @@
                 .then((snapshot) => {
                     this.successList = [];
                     this.successList.push({ name: "Name", value: this.name });
-                    if (this.matricNo.length != 0) {
+                    if (this.matricNo && this.matricNo.length != 0) {
                         this.successList.push({ name: "Matriculation Number", value: this.matricNo });
                     }
                     this.successList.push({ name: "Prize", value: this.prize });

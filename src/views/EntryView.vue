@@ -346,7 +346,6 @@
                 <v-data-table
                     :headers="headersGames"
                     :items="dataGames"
-                    item-key="serialNum"
                     class="elevation-1"
                     :search="searchGames"
                     @click:row="history"
@@ -437,7 +436,6 @@
                                 :counter="8"
                                 label="Matriculation Number (if student)"
                                 type="number"
-                                required
                             ></v-text-field>
                             <v-select
                                 v-model="prize"
@@ -1212,7 +1210,7 @@
                     location: this.locationGames,
                     date: firebase.firestore.Timestamp.fromDate(new Date(this.dateGames)),
                 }
-                if (this.matricNoGames.length != 0) {
+                if (this.matricNoGames && this.matricNoGames.length != 0) {
                     toUp['matricNum'] = this.matricNoGames
                 } else {
                     toUp['matricNum'] = ""
@@ -1231,7 +1229,7 @@
                     email: this.currGames.email,
                     editDate: firebase.firestore.Timestamp.fromDate(new Date()),
                 }
-                if (this.currGames.matricNum.length != 0) {
+                if (this.currGames.matricNum && this.currGames.matricNum.length != 0) {
                     toAdd['matricNum'] = this.currGames.matricNum
                 }
                 if (this.currGames.prize == 'PD23 voucher') {
@@ -1248,7 +1246,7 @@
                         
                         this.successList = [];
                         this.successList.push({ name: "Name", value: this.name });
-                        if (this.matricNoGames.length != 0) {
+                        if (this.matricNoGames && this.matricNoGames.length != 0) {
                             this.successList.push({ name: "Matriculation Number", value: this.matricNoGames });
                         }
                         this.successList.push({ name: "Prize", value: this.prize });
