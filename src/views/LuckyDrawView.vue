@@ -3,7 +3,7 @@
         <v-form v-model="valid" ref="form">
             <v-row class="box" align="center">
                 <v-col cols="12">
-                    <h1 class="mb-12">Lucky Draw</h1>
+                    <h1 class="mb-12">Roadshow Giveaway</h1>
                     <v-text-field
                         v-model="name"
                         color="#000"
