@@ -22,7 +22,7 @@ function guardMyroute(to, from, next) {
       if (user.email == 'pd23bigboss@gmail.com') {
         next();
       } else {
-        if (to.name == "HOTO" || to.name == "Redeem" || to.name == "Games" || to.name == "Database") {
+        if (to.name == "HOTO" || to.name == "Lucky Draw" || to.name == "Redeem" || to.name == "Games" || to.name == "Database") {
           next();
         }
       }      

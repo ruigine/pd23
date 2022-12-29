@@ -4,7 +4,7 @@
             <v-col>
                 <h1 class="mb-12" v-if="!invalid">Login</h1>
                 <h1 class="mb-12" v-else>Please log in with your SMU email!</h1>
-                <v-btn color="#fff" class="py-7" @click="dialog=true" block>
+                <v-btn color="#fff" class="py-7" @click="login" block>
                     <v-icon class="mr-3">mdi-google</v-icon>Login with Google
                 </v-btn>
             </v-col>
@@ -14,36 +14,6 @@
                 <h1 class="mb-12">Welcome!</h1>
             </v-col>
         </v-row>
-
-        <v-dialog
-            max-width="600"
-            v-model="dialog"
-        >
-            <v-card>
-                <v-card-text>
-                    <div class="text-h5 pa-12" v-if="!pinWrong">Enter given pin:</div>
-                    <div class="text-h5 pa-12" v-else>Incorrect pin!</div>
-                    <v-text-field
-                        v-model="pin"
-                        class="px-12"
-                        color="#000"
-                        :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                        :type="show ? 'text' : 'password'"
-                        name="input-10-1"
-                        label="PIN"
-                        counter
-                        @click:append="show = !show"
-                    ></v-text-field>
-                </v-card-text>
-                <v-card-actions class="justify-end">
-                <v-btn
-                    class="ma-6"
-                    text
-                    @click="login"
-                >Confirm</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
     </div>
 </template>
 <script>
@@ -54,44 +24,38 @@
             return {
                 dialog: false,
                 show: false,
-                pin: "",
-                pinWrong: false,
                 invalid: false,
             }
         },
         methods: {
             login() {
-                if (this.pin == "abc123") {
-                    this.dialog = false;
-                    const auth = getAuth();
-                    const provider = new GoogleAuthProvider();
-                    signInWithPopup(auth, provider)
-                    .then((result) => {
-                        // This gives you a Google Access Token. You can use it to access the Google API.
-                        const credential = GoogleAuthProvider.credentialFromResult(result);
-                        const token = credential.accessToken;
-                        // The signed-in user info.
-                        this.$store.dispatch("authenticate");
-                        if (!this.$store.state.user) {
-                            this.invalid = true;
-                        } else {
-                            this.invalid = false;
-                        }
-                        this.pin = "";
-                        // ...
-                    }).catch((error) => {
-                        // Handle Errors here.
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                        // The email of the user's account used.
-                        const email = error.customData.email;
-                        // The AuthCredential type that was used.
-                        const credential = GoogleAuthProvider.credentialFromError(error);
-                        // ...
-                    });
-                } else {
-                    this.pinWrong = true;
-                }
+                this.dialog = false;
+                const auth = getAuth();
+                const provider = new GoogleAuthProvider();
+                signInWithPopup(auth, provider)
+                .then((result) => {
+                    // This gives you a Google Access Token. You can use it to access the Google API.
+                    const credential = GoogleAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    // The signed-in user info.
+                    this.$store.dispatch("authenticate");
+                    if (!this.$store.state.user) {
+                        this.invalid = true;
+                    } else {
+                        this.invalid = false;
+                    }
+                    this.pin = "";
+                    // ...
+                }).catch((error) => {
+                    // Handle Errors here.
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    // The email of the user's account used.
+                    const email = error.customData.email;
+                    // The AuthCredential type that was used.
+                    const credential = GoogleAuthProvider.credentialFromError(error);
+                    // ...
+                });
             }
         }
     };
