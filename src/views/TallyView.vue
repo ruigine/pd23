@@ -88,7 +88,6 @@
                     value: 'serialNum',
                 },
                 { text: 'Available', value: 'isAvailable' },
-                 { text: 'Redemption Method', value: 'method' },
                 { text: 'Matriculation No.', value: 'matricNum' },
                 { text: 'Location', value: 'location' },
                 { text: 'Date', value: 'date' },
@@ -132,7 +131,7 @@
                 var d = new Date(doc.data().date.seconds*1000);
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 
-                v[Number(doc.data().serialNum)] = { ...doc.data(), id: doc.id, method: "Games" };
+                v[Number(doc.data().serialNum)] = { ...doc.data(), id: doc.id };
                 v[Number(doc.data().serialNum)]["date"] = d;
                 s.push(Number(doc.data().serialNum));
             })
@@ -189,7 +188,7 @@
                 var d = new Date(doc.data().date.seconds*1000);
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
 
-                v[Number(doc.data().serialNum)] = { ...doc.data(), id: doc.id, method: "Voucher" };
+                v[Number(doc.data().serialNum)] = { ...doc.data(), id: doc.id };
                 v[Number(doc.data().serialNum)]["date"] = d;
                 s.push(Number(doc.data().serialNum));
             })
@@ -229,7 +228,6 @@
                         isAvailable: "Yes",
                         serialNum: i,
                         matricNum: "",
-                        method: "",
                         location: "",
                         date: "",
                         email: ""
@@ -238,8 +236,6 @@
             }
             });
         },
-        methods: {
-        }
     };
 </script>
 
