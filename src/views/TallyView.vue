@@ -29,24 +29,44 @@
         </v-data-table>
 
         <!--Detailed-->
-        <v-data-table
-            v-else
-            :headers="headers"
-            :items="data"
-            item-key="serialNum"
-            class="elevation-1"
-            :search="searchInput"
-            multi-sort
-        >
-        <template v-slot:top>
-            <v-text-field
-            v-model="searchInput"
-            color="#000"
-            label="Search..."
-            class="mx-4"
-            ></v-text-field>
+        <template v-else>
+            <h1 class="my-12">Games</h1>
+            <v-data-table
+                :headers="headersGames"
+                :items="dataGames"
+                class="elevation-1"
+                :search="searchInputGames"
+                multi-sort
+            >
+            <template v-slot:top>
+                <v-text-field
+                v-model="searchInputGames"
+                color="#000"
+                label="Search..."
+                class="mx-4"
+                ></v-text-field>
+            </template>
+            </v-data-table>
+
+            <h1 class="my-12">Voucher Redemption</h1>
+            <v-data-table
+                :headers="headersVR"
+                :items="dataVR"
+                item-key="serialNum"
+                class="elevation-1"
+                :search="searchInputVR"
+                multi-sort
+            >
+            <template v-slot:top>
+                <v-text-field
+                v-model="searchInputVR"
+                color="#000"
+                label="Search..."
+                class="mx-4"
+                ></v-text-field>
+            </template>
+            </v-data-table>
         </template>
-        </v-data-table>
     </div>
 </template>
 <script>
@@ -58,7 +78,9 @@
             return {
                 condensed: true,
                 searchInput: "",
-                headers: [
+                searchInputVR: "",
+                searchInputGames: "",
+                headersVR: [
                 {
                     text: 'S/N',
                     align: 'start',
@@ -72,6 +94,21 @@
                 { text: 'Date', value: 'date' },
                 { text: 'Email', value: 'email' }
                 ],
+                headersGames: [
+                {
+                    text: 'S/N',
+                    align: 'start',
+                    sortable: true,
+                    value: 'serialNum',
+                },
+                { text: 'Available', value: 'isAvailable' },
+                { text: 'Name', value: 'name' },
+                { text: 'Matriculation No.', value: 'matricNum' },
+                { text: 'Prize', value: 'prize' },
+                { text: 'Location', value: 'location' },
+                { text: 'Date', value: 'date' },
+                { text: 'Email', value: 'email' },
+                ],
                 headersC: [
                 {
                     text: 'S/N',
@@ -81,7 +118,8 @@
                 },
                 { text: 'Available', value: 'isAvailable' }
                 ],
-                data: [],
+                dataVR: [],
+                dataGames: [],
                 dataC: [],
             }
         },
@@ -128,9 +166,9 @@
 
                 if (s.includes(i)) {
                     v[i]["isAvailable"] = "No";
-                    this.data.push(v[i]);
+                    this.dataGames.push(v[i]);
                 } else {
-                    this.data.push({
+                    this.dataGames.push({
                         isAvailable: "Yes",
                         serialNum: i,
                         matricNum: "",
@@ -185,9 +223,9 @@
 
                 if (s.includes(i)) {
                     v[i]["isAvailable"] = "No";
-                    this.data.push(v[i]);
+                    this.dataVR.push(v[i]);
                 } else {
-                    this.data.push({
+                    this.dataVR.push({
                         isAvailable: "Yes",
                         serialNum: i,
                         matricNum: "",
