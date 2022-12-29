@@ -1005,11 +1005,11 @@
                 prize: null,
                 prizes: [
                     'PD23 voucher',
-                    '$10 voucher (No min. spend)',
+                    'Ima-Sushi $10 voucher (No min. spend)',
                     '$15 Basic Package voucher',
                     'MOTIF Snap 2 in 1 Magnetic Wireless charging Stand - Marble Noir',
                     'LUCID Folio Ultra Light Full Protection Case for iPad Air (2022) w/ Pencil Slot - Charcoal',
-                    '$6 voucher',
+                    'The SMU Shop $6 voucher',
                     'Sonata Black Label Bra',
                     'Daily Modal Joggers',
                     'Adidas Push up Bar in Pairs',
