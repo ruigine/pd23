@@ -8,7 +8,6 @@
                         v-model="name"
                         color="#000"
                         :rules="nameRules"
-                        :counter="8"
                         label="Name"
                         type="text"
                         required
