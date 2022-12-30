@@ -2,9 +2,9 @@
     <div class="box">
         <v-tabs v-model="tab" class="mb-12" color="#000" grow>
             <v-tab><h1>HOTO</h1></v-tab>
-            <v-tab><h1>Lucky Draw</h1></v-tab>
+            <v-tab><h1>Roadshow Giveaway</h1></v-tab>
             <v-tab><h1>Voucher Redemption</h1></v-tab>
-            <v-tab><h1>Games</h1></v-tab>   
+            <v-tab><h1>Games Redemption</h1></v-tab>   
         </v-tabs>
 
         <v-tabs-items v-model="tab" class="px-1">
