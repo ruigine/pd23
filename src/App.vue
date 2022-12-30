@@ -117,7 +117,7 @@
         items1: [
           { title: 'Database', icon: 'mdi-notebook', path: '/database'},
           { title: 'HOTO', icon: 'mdi-account-switch', path: '/hoto'},
-          { title: 'Roadshow Giveaway', icon: 'mdi-clover', path: '/luckyDraw'},
+          { title: 'Roadshow Giveaway', icon: 'mdi-gift', path: '/roadshowGiveaway'},
           { title: 'Voucher Redemption', icon: 'mdi-wallet-giftcard', path: '/redeem'},
           { title: 'Games Redemption', icon: 'mdi-controller', path: '/games'},
           { title: 'Logout', icon: 'mdi-logout', path: ''},
@@ -125,7 +125,7 @@
         items2: [
           { title: 'Database', icon: 'mdi-notebook', path: '/database'},
           { title: 'HOTO', icon: 'mdi-account-switch', path: '/hoto'},
-          { title: 'Roadshow Giveaway', icon: 'mdi-clover', path: '/luckyDraw'},
+          { title: 'Roadshow Giveaway', icon: 'mdi-gift', path: '/roadshowGiveaway'},
           { title: 'Voucher Redemption', icon: 'mdi-wallet-giftcard', path: '/redeem'},
           { title: 'Games Redemption', icon: 'mdi-controller', path: '/games'},
           { title: 'Tally', icon: 'mdi-tally-mark-5', path: '/tally' },
