@@ -6,7 +6,7 @@ import LuckyDraw from "../views/LuckyDrawView.vue";
 import Login from "../views/LoginView.vue";
 import Redeem from "../views/RedeemView.vue";
 import Tally from "../views/TallyView.vue";
-import Database from "../views/EntryView.vue";
+import Database from "../views/DatabaseView.vue";
 
 import { auth } from "../firebase/firebaseinit";
 
