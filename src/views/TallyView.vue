@@ -30,7 +30,7 @@
 
         <!--Detailed-->
         <template v-else>
-            <h1 class="my-12">Games</h1>
+            <h1 class="my-12">Prize Redemption</h1>
             <v-data-table
                 :headers="headersGames"
                 :items="dataGames"
