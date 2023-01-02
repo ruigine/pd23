@@ -144,7 +144,7 @@
                     range.push(i);
                     bool = s.includes(i) ? "No" : "Yes";
                 } else {
-                    if (s.includes(i) ? "No" : "Yes" != bool) {
+                    if ((s.includes(i) ? "No" : "Yes") != bool) {
                         range.push(i-1);
                         if (range[0] == range[1]) {
                             this.dataC.push({ serialNum: range[0], isAvailable: bool });
@@ -201,7 +201,7 @@
                     range.push(i);
                     bool = s.includes(i) ? "No" : "Yes";
                 } else {
-                    if (s.includes(i) ? "No" : "Yes" != bool) {
+                    if ((s.includes(i) ? "No" : "Yes") != bool) {
                         range.push(i-1);
                         if (range[0] == range[1]) {
                             this.dataC.push({ serialNum: range[0], isAvailable: bool });
