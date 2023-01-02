@@ -3,7 +3,7 @@
         <v-form v-model="valid" ref="form">
             <v-row class="box" align="center">
                 <v-col cols="12">
-                    <h1 class="mb-12">Games Redemption</h1>
+                    <h1 class="mb-12">Prize Redemption</h1>
                     <v-text-field
                         v-model="name"
                         color="#000"
@@ -113,27 +113,27 @@
                 ],
                 prize: null,
                 prizes: [
-                    'PD23 voucher',
-                    'Ima-Sushi $10 voucher (No min. spend)',
-                    '$15 Basic Package voucher',
-                    'MOTIF Snap 2 in 1 Magnetic Wireless charging Stand - Marble Noir',
-                    'LUCID Folio Ultra Light Full Protection Case for iPad Air (2022) w/ Pencil Slot - Charcoal',
-                    'The SMU Shop $6 voucher',
-                    'Sonata Black Label Bra',
-                    'Daily Modal Joggers',
                     'Adidas Push up Bar in Pairs',
-                    'SSOD Sports bag',
-                    '20% off Adult Group Dance Package',
-                    'Rainbow Black Singlet',
-                    'Rainbow Black Shorts (M)',
+                    'Daily Modal Joggers',
+                    "Dancer's Dream Studio 20% off Adult Group Dance Package",
+                    'Ima-Sushi $10 voucher (No min. spend)',
+                    'LUCID Folio Ultra Light Full Protection Case for iPad Air (2022) w/ Pencil Slot - Charcoal',
+                    'MOTIF Snap 2 in 1 Magnetic Wireless charging Stand - Marble Noir',
                     'Paisley Shirt Beige (L)',
+                    'PD23 voucher',
+                    'Rainbow Black Shorts (M)',
+                    'Rainbow Black Singlet',
+                    'Self Photo Studio $15 Basic Package voucher',
+                    'Sonata Black Label Bra',
+                    'SSOD Sports bag',
+                    'The SMU Shop $6 voucher',
                 ],
                 location: null,
                 successList: [],
             }
         },
         created(){
-            const gRef = collection(db, 'games');
+            const gRef = collection(db, 'prize');
             onSnapshot(gRef, (snapshot) => {
             var v = [];
             snapshot.docs.forEach((doc) => {
@@ -150,7 +150,7 @@
         },
         methods: {
             submit() {
-                const gRef = collection(db, "games");
+                const gRef = collection(db, "prize");
                 var temp = {
                     name: this.name,
                     prize: this.prize,

@@ -1,10 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Games from "../views/GamesView.vue";
+import Prize from "../views/PrizeView.vue";
 import HOTO from "../views/HOTOView.vue";
 import RoadshowGiveaway from "../views/RoadshowGiveawayView.vue";
 import Login from "../views/LoginView.vue";
-import Redeem from "../views/RedeemView.vue";
+import Voucher from "../views/VoucherView.vue";
 import Tally from "../views/TallyView.vue";
 import Database from "../views/DatabaseView.vue";
 
@@ -22,7 +22,7 @@ function guardMyroute(to, from, next) {
       if (user.email == 'pd23bigboss@gmail.com') {
         next();
       } else {
-        if (to.name == "HOTO" || to.name == "Roadshow Giveaway" || to.name == "Redeem" || to.name == "Games" || to.name == "Database") {
+        if (to.name == "HOTO" || to.name == "Roadshow Giveaway" || to.name == "Redeem" || to.name == "Prize" || to.name == "Database") {
           next();
         }
       }      
@@ -39,9 +39,9 @@ function guardMyroute(to, from, next) {
 
 const routes = [
   {
-    path: "/games",
-    name: "Games",
-    component: Games,
+    path: "/prize",
+    name: "Prize",
+    component: Prize,
     beforeEnter: guardMyroute,
   },
   {
@@ -62,9 +62,9 @@ const routes = [
     component: Login,
   },
   {
-    path: "/redeem",
-    name: "Redeem",
-    component: Redeem,
+    path: "/voucher",
+    name: "Voucher",
+    component: Voucher,
     beforeEnter: guardMyroute,
   },
   {

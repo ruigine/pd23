@@ -124,7 +124,7 @@
         },
         created() {
             //Games
-            const gRef = query(collection(db, 'games'), orderBy("serialNum"));
+            const gRef = query(collection(db, 'prize'), orderBy("serialNum"));
             onSnapshot(gRef, (querySnapshot) => {
             var v = {}; var s = [];
             querySnapshot.docs.forEach((doc) => {

@@ -2,9 +2,9 @@
     <div class="box">
         <v-tabs v-model="tab" class="mb-12" color="#000" grow>
             <v-tab><h1>HOTO</h1></v-tab>
-            <v-tab><h1>Roadshow Giveaway</h1></v-tab>
             <v-tab><h1>Voucher Redemption</h1></v-tab>
-            <v-tab><h1>Games Redemption</h1></v-tab>   
+            <v-tab><h1>Prize Redemption</h1></v-tab>   
+            <v-tab><h1>Roadshow Giveaway</h1></v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="tab" class="px-1">
@@ -178,164 +178,6 @@
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="dialogDeleteHOTO = !dialogDeleteHOTO">Cancel</v-btn>
                     <v-btn color="blue darken-1" text @click="deleteConfirmHOTO">OK</v-btn>
-                    <v-spacer></v-spacer>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-
-            
-            <!--LD-->
-            <v-tab-item>
-                <v-data-table
-                    :headers="headersLD"
-                    :items="dataLD"
-                    class="elevation-1"
-                    :search="searchLD"
-                    @click:row="history"
-                    multi-sort
-                >
-                    <template v-slot:top>
-                        <v-text-field
-                        v-model="searchLD"
-                        color="#000"
-                        label="Search..."
-                        class="mx-4"
-                        ></v-text-field>
-                    </template>
-
-                    <template v-slot:[`item.actions`]="{ item }">
-                        <v-icon
-                            small
-                            class="mr-2 outlined"
-                            @click="editLD(item)"
-                            color="primary"
-                        >
-                            mdi-pencil
-                        </v-icon>
-                        <v-icon
-                            small
-                            @click="deleteLD(item)"
-                            class="outlined"
-                            color="red"
-                        >
-                            mdi-delete
-                        </v-icon>
-                    </template>
-                </v-data-table>
-
-                <v-btn class="mt-12 mb-6" @click="expand" color="#fff">Deleted Lucky Draw entries</v-btn>
-                <v-expansion-panels flat class="mb-1" v-model="expandLD">
-                    <v-expansion-panel>
-                        <v-expansion-panel-content>
-                            <v-data-table
-                                :headers="headersDelLD"
-                                :items="dataDelLD"
-                                class="elevation-1"
-                                :search="searchDelLD"
-                                multi-sort
-                            >
-                                <template v-slot:top>
-                                    <v-text-field
-                                    v-model="searchDelLD"
-                                    color="#000"
-                                    label="Search..."
-                                    class="mx-4"
-                                    ></v-text-field>
-                                </template>
-
-                                <template slot="no-data">
-                                    No delete history.
-                                </template>
-                            </v-data-table>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
-            </v-tab-item>
-            
-            <!--Edit LD dialog-->
-            <v-dialog
-                max-width="600"
-                v-model="dialogLD"
-            >
-                <v-card>
-                    <v-form v-model="validLD" ref="formLD">
-                        <v-row class="pa-6 ma-0">
-                            <v-col cols="12">
-                                <h1 class="mb-12">Lucky Draw</h1>
-                                <v-text-field
-                                    v-model="nameLD"
-                                    color="#000"
-                                    :rules="nameRulesLD"
-                                    label="Name"
-                                    type="text"
-                                    required
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="matricNoLD"
-                                    color="#000"
-                                    :rules="matricRulesLD"
-                                    :counter="8"
-                                    label="Matriculation Number (if student)"
-                                    type="number"
-                                    required
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="tele"
-                                    color="#000"
-                                    :rules="teleRules"
-                                    :counter="8"
-                                    label="Telephone"
-                                    type="number"
-                                    required
-                                ></v-text-field>
-                                 <v-text-field
-                                    type="datetime-local"
-                                    color="#000"
-                                    v-model="dateLD"
-                                    label="Date"
-                                    :rules="dateRules"
-                                ></v-text-field>
-                            </v-col>
-                        </v-row>
-                    </v-form>
-
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="dialogLD = !dialogLD"
-                        >
-                            Cancel
-                        </v-btn>
-                        <v-btn
-                            v-if="validLD"
-                            color="blue darken-1"
-                            text
-                            @click="saveLD"
-                        >
-                            Save
-                        </v-btn>
-                        <v-btn
-                            v-else
-                            color="blue darken-1"
-                            text
-                            disabled
-                        >
-                            Save
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-
-            <!--Delete LD-->
-            <v-dialog v-model="dialogDeleteLD" max-width="500px">
-                <v-card>
-                    <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-                    <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="dialogDeleteLD = !dialogDeleteLD">Cancel</v-btn>
-                    <v-btn color="blue darken-1" text @click="deleteConfirmLD">OK</v-btn>
                     <v-spacer></v-spacer>
                     </v-card-actions>
                 </v-card>
@@ -539,7 +381,7 @@
                     </template>
                 </v-data-table>
 
-                <v-btn class="mt-12 mb-6" @click="expand" color="#fff">Deleted games redemption entries</v-btn>
+                <v-btn class="mt-12 mb-6" @click="expand" color="#fff">Deleted prize redemption entries</v-btn>
                 <v-expansion-panels flat class="mb-1" v-model="expandGames">
                     <v-expansion-panel>
                         <v-expansion-panel-content>
@@ -567,7 +409,6 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
             </v-tab-item>
-        </v-tabs-items>
 
         <!--Edit Games dialog-->
         <v-dialog
@@ -578,7 +419,7 @@
                 <v-form v-model="validGames" ref="formGames">
                     <v-row class="pa-6 ma-0">
                         <v-col cols="12">
-                            <h1 class="mb-12">Games Redemption</h1>
+                            <h1 class="mb-12">Prize Redemption</h1>
                             <v-text-field
                                 v-model="name"
                                 color="#000"
@@ -672,6 +513,165 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+
+        <!--LD-->
+            <v-tab-item>
+                <v-data-table
+                    :headers="headersLD"
+                    :items="dataLD"
+                    class="elevation-1"
+                    :search="searchLD"
+                    @click:row="history"
+                    multi-sort
+                >
+                    <template v-slot:top>
+                        <v-text-field
+                        v-model="searchLD"
+                        color="#000"
+                        label="Search..."
+                        class="mx-4"
+                        ></v-text-field>
+                    </template>
+
+                    <template v-slot:[`item.actions`]="{ item }">
+                        <v-icon
+                            small
+                            class="mr-2 outlined"
+                            @click="editLD(item)"
+                            color="primary"
+                        >
+                            mdi-pencil
+                        </v-icon>
+                        <v-icon
+                            small
+                            @click="deleteLD(item)"
+                            class="outlined"
+                            color="red"
+                        >
+                            mdi-delete
+                        </v-icon>
+                    </template>
+                </v-data-table>
+
+                <v-btn class="mt-12 mb-6" @click="expand" color="#fff">Deleted Lucky Draw entries</v-btn>
+                <v-expansion-panels flat class="mb-1" v-model="expandLD">
+                    <v-expansion-panel>
+                        <v-expansion-panel-content>
+                            <v-data-table
+                                :headers="headersDelLD"
+                                :items="dataDelLD"
+                                class="elevation-1"
+                                :search="searchDelLD"
+                                multi-sort
+                            >
+                                <template v-slot:top>
+                                    <v-text-field
+                                    v-model="searchDelLD"
+                                    color="#000"
+                                    label="Search..."
+                                    class="mx-4"
+                                    ></v-text-field>
+                                </template>
+
+                                <template slot="no-data">
+                                    No delete history.
+                                </template>
+                            </v-data-table>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+            </v-tab-item>
+            
+            <!--Edit LD dialog-->
+            <v-dialog
+                max-width="600"
+                v-model="dialogLD"
+            >
+                <v-card>
+                    <v-form v-model="validLD" ref="formLD">
+                        <v-row class="pa-6 ma-0">
+                            <v-col cols="12">
+                                <h1 class="mb-12">Lucky Draw</h1>
+                                <v-text-field
+                                    v-model="nameLD"
+                                    color="#000"
+                                    :rules="nameRulesLD"
+                                    label="Name"
+                                    type="text"
+                                    required
+                                ></v-text-field>
+                                <v-text-field
+                                    v-model="matricNoLD"
+                                    color="#000"
+                                    :rules="matricRulesLD"
+                                    :counter="8"
+                                    label="Matriculation Number (if student)"
+                                    type="number"
+                                    required
+                                ></v-text-field>
+                                <v-text-field
+                                    v-model="tele"
+                                    color="#000"
+                                    :rules="teleRules"
+                                    :counter="8"
+                                    label="Telephone"
+                                    type="number"
+                                    required
+                                ></v-text-field>
+                                 <v-text-field
+                                    type="datetime-local"
+                                    color="#000"
+                                    v-model="dateLD"
+                                    label="Date"
+                                    :rules="dateRules"
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-form>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="blue darken-1"
+                            text
+                            @click="dialogLD = !dialogLD"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            v-if="validLD"
+                            color="blue darken-1"
+                            text
+                            @click="saveLD"
+                        >
+                            Save
+                        </v-btn>
+                        <v-btn
+                            v-else
+                            color="blue darken-1"
+                            text
+                            disabled
+                        >
+                            Save
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <!--Delete LD-->
+            <v-dialog v-model="dialogDeleteLD" max-width="500px">
+                <v-card>
+                    <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="dialogDeleteLD = !dialogDeleteLD">Cancel</v-btn>
+                    <v-btn color="blue darken-1" text @click="deleteConfirmLD">OK</v-btn>
+                    <v-spacer></v-spacer>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-tabs-items>
 
 
         <!--Universal Success Dialog-->
@@ -1041,7 +1041,7 @@
             });
 
             //LD
-            const lRef = collection(db, 'luckyDraw');
+            const lRef = collection(db, 'roadshow');
             onSnapshot(lRef, (querySnapshot) => {
             this.dataLD = [];
             querySnapshot.docs.forEach((doc) => {
@@ -1082,7 +1082,7 @@
             });
 
             //Games
-            const gRef = collection(db, 'games');
+            const gRef = collection(db, 'prize');
             onSnapshot(gRef, (querySnapshot) => {
             this.dataGames = []; var s = [];
             querySnapshot.docs.forEach((doc) => {
@@ -1144,28 +1144,6 @@
                         this.expandHOTO = this.expandHOTO == 0 ? null: 0;
                     }
                 } else if (this.tab == 1) {
-                    if (!this.dataDelLD) {
-                        const lRef = collection(db, 'deletedLuckyDraw');
-                        onSnapshot(lRef, (querySnapshot) => {
-                        this.dataDelLD = [];
-                        querySnapshot.docs.forEach((doc) => {
-                            this.dataDelLD.push({ ...doc.data(), id: doc.id })
-                            
-                            var d = new Date(doc.data().date.seconds*1000);
-                            d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                            this.dataDelLD[this.dataDelLD.length-1]["datestamp"] = d;
-
-                            var dD = new Date(doc.data().deleteDate.seconds*1000);
-                            dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
-                            this.dataDelLD[this.dataDelLD.length-1]["deleteDate"] = dD;
-                        })
-                        console.log(this.dataDelLD);
-                        this.expandLD = this.expandLD == 0 ? null: 0;
-                        });
-                    } else {
-                        this.expandLD = this.expandLD == 0 ? null: 0;
-                    }
-                } else if (this.tab == 2) {
                     if (!this.dataDelVR) {
                         const vRef = collection(db, 'deletedVouchers');
                         onSnapshot(vRef, (querySnapshot) => {
@@ -1187,9 +1165,9 @@
                     } else {
                         this.expandVR = this.expandVR == 0 ? null: 0;
                     }
-                } else if (this.tab == 3) {
+                } else if (this.tab == 2) {
                     if (!this.dataDelGames) {
-                        const gRef = collection(db, 'deletedGames');
+                        const gRef = collection(db, 'deletedPrize');
                         onSnapshot(gRef, (querySnapshot) => {
                         this.dataDelGames = [];
                         querySnapshot.docs.forEach((doc) => {
@@ -1208,6 +1186,28 @@
                         });
                     } else {
                         this.expandGames = this.expandGames == 0 ? null: 0;
+                    }
+                } else if (this.tab == 3) {
+                    if (!this.dataDelLD) {
+                        const lRef = collection(db, 'deletedRoadshow');
+                        onSnapshot(lRef, (querySnapshot) => {
+                        this.dataDelLD = [];
+                        querySnapshot.docs.forEach((doc) => {
+                            this.dataDelLD.push({ ...doc.data(), id: doc.id })
+                            
+                            var d = new Date(doc.data().date.seconds*1000);
+                            d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                            this.dataDelLD[this.dataDelLD.length-1]["datestamp"] = d;
+
+                            var dD = new Date(doc.data().deleteDate.seconds*1000);
+                            dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
+                            this.dataDelLD[this.dataDelLD.length-1]["deleteDate"] = dD;
+                        })
+                        console.log(this.dataDelLD);
+                        this.expandLD = this.expandLD == 0 ? null: 0;
+                        });
+                    } else {
+                        this.expandLD = this.expandLD == 0 ? null: 0;
                     }
                 }
             },
@@ -1365,7 +1365,7 @@
             },
             saveLD() {
                 this.saved = true;
-                const lRef = doc(db, "luckyDraw", this.currLD.id);
+                const lRef = doc(db, "roadshow", this.currLD.id);
                 var toUp = {
                     name: this.nameLD,
                     telephone: this.tele,
@@ -1390,7 +1390,7 @@
 
                 updateDoc(lRef, toUp)
                 .then((snapshot) => {
-                    var colRef = collection(doc(db, 'luckyDraw', this.currLD.id), "history");
+                    var colRef = collection(doc(db, 'roadshow', this.currLD.id), "history");
                     addDoc(colRef, toAdd)
                     .then((snapshot) => {
                         var d = new Date(this.dateLD);
@@ -1431,10 +1431,10 @@
                     toDel['matricNum'] = this.delLD.matricNum
                 }
 
-                deleteDoc(doc(db, 'luckyDraw', this.delLD.id), {
+                deleteDoc(doc(db, 'roadshow', this.delLD.id), {
                 })
                 .then((snapshot) => {
-                    addDoc(collection(db, "deletedLuckyDraw"), toDel)
+                    addDoc(collection(db, "deletedRoadshow"), toDel)
                     .then((snapshot) => {
                         this.successList = [];
 
@@ -1551,7 +1551,7 @@
             },
             saveGames() {
                 this.saved = true;
-                const gRef = doc(db, "games", this.currGames.id);
+                const gRef = doc(db, "prize", this.currGames.id);
                 var toUp = {
                     name: this.name,
                     prize: this.prize,
@@ -1586,7 +1586,7 @@
 
                 updateDoc(gRef, toUp)
                 .then((snapshot) => {
-                    var colRef = collection(doc(db, 'games', this.currGames.id), "history");
+                    var colRef = collection(doc(db, 'prize', this.currGames.id), "history");
                     addDoc(colRef, toAdd)
                     .then((snapshot) => {
                         var d = new Date(this.dateGames);
@@ -1635,10 +1635,10 @@
                     toDel['serialNum'] = this.delGames.serialNum
                 }
 
-                deleteDoc(doc(db, 'games', this.delGames.id), {
+                deleteDoc(doc(db, 'prize', this.delGames.id), {
                 })
                 .then((snapshot) => {
-                    addDoc(collection(db, "deletedGames"), toDel)
+                    addDoc(collection(db, "deletedPrize"), toDel)
                     .then((snapshot) => {
                         this.successList = [];
 
@@ -1684,27 +1684,6 @@
                             console.log(err);
                         })
                     } else if (this.tab == 1) {
-                        this.headersEdit = this.headersLD.slice(0, -1);
-                        this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
-                        
-                        getDocs(collection(doc(db, 'luckyDraw', value.id), "history"))
-                        .then((snapshot) => {
-                            snapshot.docs.forEach((doc) => {
-                                this.dataEdit.push({ ...doc.data(), id: doc.id })
-
-                                var d = new Date(doc.data().date.seconds*1000);
-                                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                                this.dataEdit[this.dataEdit.length-1]["datestamp"] = d;
-
-                                var editD = new Date(doc.data().editDate.seconds*1000);
-                                editD = [String(editD.getDate()).padStart(2, '0'), String(editD.getMonth()+1).padStart(2, '0'), String(editD.getFullYear())].join("/") + " " + [String(editD.getHours()).padStart(2, '0'), String(editD.getMinutes()).padStart(2, '0')].join(":");
-                                this.dataEdit[this.dataEdit.length-1]["editDate"] = editD;
-                            })
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
-                    } else if (this.tab == 2) {
                         this.headersEdit = this.headersVR.slice(0, -1);
                         this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
                         
@@ -1725,11 +1704,32 @@
                         .catch(err => {
                             console.log(err);
                         })
-                    } else if (this.tab == 3) {
+                    } else if (this.tab == 2) {
                         this.headersEdit = this.headersGames.slice(0, -1);
                         this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
                         
-                        getDocs(collection(doc(db, 'games', value.id), "history"))
+                        getDocs(collection(doc(db, 'prize', value.id), "history"))
+                        .then((snapshot) => {
+                            snapshot.docs.forEach((doc) => {
+                                this.dataEdit.push({ ...doc.data(), id: doc.id })
+
+                                var d = new Date(doc.data().date.seconds*1000);
+                                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                                this.dataEdit[this.dataEdit.length-1]["datestamp"] = d;
+
+                                var editD = new Date(doc.data().editDate.seconds*1000);
+                                editD = [String(editD.getDate()).padStart(2, '0'), String(editD.getMonth()+1).padStart(2, '0'), String(editD.getFullYear())].join("/") + " " + [String(editD.getHours()).padStart(2, '0'), String(editD.getMinutes()).padStart(2, '0')].join(":");
+                                this.dataEdit[this.dataEdit.length-1]["editDate"] = editD;
+                            })
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    } else if (this.tab == 3) {
+                        this.headersEdit = this.headersLD.slice(0, -1);
+                        this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
+                        
+                        getDocs(collection(doc(db, 'roadshow', value.id), "history"))
                         .then((snapshot) => {
                             snapshot.docs.forEach((doc) => {
                                 this.dataEdit.push({ ...doc.data(), id: doc.id })

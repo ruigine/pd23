@@ -93,7 +93,7 @@
 
         methods: {
             submit() {
-                const vRef = collection(db, "luckyDraw");
+                const vRef = collection(db, "roadshow");
                 var temp = {
                     name: this.name,
                     telephone: this.tele,
