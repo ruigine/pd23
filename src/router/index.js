@@ -34,8 +34,8 @@ function guardMyroute(to, from, next) {
         'wanzhen.lim.2021@smu.edu.sg',
         'michaelong.2021@smu.edu.sg'
       ]
-      
-      if (user.email in accessArr) {
+
+      if (accessArr.includes(user.email)) {
         next();
       } else {
         if (to.name == "HOTO" || to.name == "Roadshow Giveaway" || to.name == "Voucher" || to.name == "Prize" || to.name == "Database") {
