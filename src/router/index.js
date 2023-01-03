@@ -19,7 +19,23 @@ function guardMyroute(to, from, next) {
       next("/login");
     } else {
       console.log(user)
-      if (user.email == 'pd23bigboss@gmail.com') {
+
+      var accessArr = [
+        'pd23bigboss@gmail.com',
+        'lynette.lim.2022@smu.edu.sg',
+        'jkelsie.2021@smu.edu.sg',
+        'ziyang.lai.2021@smu.edu.sg',
+        'joanne.ng.2021@smu.edu.sg',
+        'fangqi.lim.2021@smu.edu.sg',
+        'prachikale.2020@smu.edu.sg',
+        'shauna.teo.2022@smu.edu.sg',
+        'Kelly.Neo.2019@smu.edu.sg',
+        'tzelin.loo.2021@smu.edu.sg',
+        'wanzhen.lim.2021@smu.edu.sg',
+        'michaelong.2021@smu.edu.sg'
+      ]
+      
+      if (user.email in accessArr) {
         next();
       } else {
         if (to.name == "HOTO" || to.name == "Roadshow Giveaway" || to.name == "Voucher" || to.name == "Prize" || to.name == "Database") {
