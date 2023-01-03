@@ -42,7 +42,7 @@
       <v-list
         dense
         nav
-        v-else-if="$store.state.user.email=='pd23bigboss@gmail.com'"
+        v-else-if="accessArr.includes($store.state.user.email)"
       >
         <v-list-item
           v-for="item in items2"
@@ -131,6 +131,20 @@
           { title: 'Tally', icon: 'mdi-tally-mark-5', path: '/tally' },
           { title: 'Logout', icon: 'mdi-logout', path: ''},
         ],
+        accessArr: [
+          'pd23bigboss@gmail.com',
+          'lynette.lim.2022@smu.edu.sg',
+          'jkelsie.2021@smu.edu.sg',
+          'ziyang.lai.2021@smu.edu.sg',
+          'joanne.ng.2021@smu.edu.sg',
+          'fangqi.lim.2021@smu.edu.sg',
+          'prachikale.2020@smu.edu.sg',
+          'shauna.teo.2022@smu.edu.sg',
+          'Kelly.Neo.2019@smu.edu.sg',
+          'tzelin.loo.2021@smu.edu.sg',
+          'wanzhen.lim.2021@smu.edu.sg',
+          'michaelong.2021@smu.edu.sg'
+        ]
       }
     },
     methods: {
