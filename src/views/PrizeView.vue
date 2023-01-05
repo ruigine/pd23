@@ -126,7 +126,7 @@
                     'Self Photo Studio $15 Basic Package voucher',
                     'Sonata Black Label Bra',
                     'SSOD Sports bag',
-                    'The SMU Shop $6 voucher',
+                    'The SMU Shop 20% OFF voucher',
                 ],
                 location: null,
                 successList: [],
