@@ -41,7 +41,27 @@
                         chips
                         multiple
                         required
-                    ></v-autocomplete>
+                    >
+                        <v-tooltip
+                            slot="append"
+                            bottom
+                            v-model="show"
+                            top
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                icon
+                                v-bind="attrs"
+                                v-on="on"
+                                >
+                                <v-icon color="grey lighten-1">
+                                    mdi-information-outline
+                                </v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Multi-select</span>
+                        </v-tooltip>
+                    </v-autocomplete>
                     <v-select
                         v-model="location"
                         color="#000"
@@ -92,6 +112,7 @@
     export default {
         data(){
             return {
+                show: false,
                 dialog: false,
                 voucherList: [],
                 valid: false,
