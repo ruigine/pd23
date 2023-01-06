@@ -747,7 +747,7 @@
 </template>
 <script>
     import { db } from "../firebase/firebaseinit";
-    import { doc, collection, getDocs, onSnapshot, addDoc, updateDoc, query, where, deleteDoc } from "firebase/firestore";
+    import { doc, collection, getDocs, onSnapshot, addDoc, updateDoc, query, where, orderBy, deleteDoc } from "firebase/firestore";
     import firebase from 'firebase/compat/app';
     import 'firebase/compat/auth';
     import 'firebase/compat/firestore';
@@ -1042,7 +1042,7 @@
             });
 
             //VR
-            const vRef = collection(db, 'vouchers');
+            const vRef = query(collection(db, 'vouchers'), orderBy('date', 'desc'));
             onSnapshot(vRef, (querySnapshot) => {
             this.dataVR = []; var v = []; var m = [];
             querySnapshot.docs.forEach((doc) => {
@@ -1069,7 +1069,7 @@
             });
 
             //Prize
-            const gRef = collection(db, 'prize');
+            const gRef = query(collection(db, 'prize'), orderBy('date', 'desc'));
             onSnapshot(gRef, (querySnapshot) => {
             this.dataGames = []; var s = [];
             querySnapshot.docs.forEach((doc) => {
@@ -1094,7 +1094,7 @@
             });
 
             //LD
-            const lRef = collection(db, 'roadshow');
+            const lRef = query(collection(db, 'roadshow'), orderBy('date', 'desc'));
             onSnapshot(lRef, (querySnapshot) => {
             this.dataLD = [];
             querySnapshot.docs.forEach((doc) => {
