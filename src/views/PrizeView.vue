@@ -31,6 +31,7 @@
                     ></v-select>
                     <v-autocomplete
                         v-if="prize.includes('PD23 voucher')"
+                        hint="You may enter multiple S/Ns"
                         v-model="sNo"
                         no-data-text="Invalid voucher S/N"
                         :items="sNos"
