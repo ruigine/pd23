@@ -13,6 +13,7 @@
                 <v-data-table
                     :headers="headersHOTO"
                     :items="dataHOTO"
+                    item-key="serialNumStart"
                     class="elevation-1"
                     :search="searchHOTO"
                     @click:row="history"
@@ -188,6 +189,7 @@
                 <v-data-table
                     :headers="headersVR"
                     :items="dataVR"
+                    item-key="serialNum"
                     class="elevation-1"
                     :search="searchVR"
                     @click:row="history"
@@ -270,16 +272,14 @@
                                     type="number"
                                     required
                                 ></v-text-field>
-                                <v-autocomplete
+                                <v-text-field
                                     v-model="sNoVR"
-                                    :items="sNosVR"
-                                    :rules="sNoRulesVR"
                                     color="#000"
+                                    :rules="sNoRulesVR"
                                     label="Voucher Serial Number"
-                                    chips
-                                    multiple
+                                    type="number"
                                     required
-                                ></v-autocomplete>
+                                ></v-text-field>
                                 <v-select
                                     v-model="locationVR"
                                     color="#000"
@@ -721,6 +721,7 @@
                         <v-data-table
                             :headers="headersEdit"
                             :items="dataEdit"
+                            item-key="serialNum"
                             class="elevation-1"
                             :search="searchEdit"
                             multi-sort
@@ -962,7 +963,6 @@
                 matricListVR: [],
                 matricNoVR: '',
                 sNoVR: '',
-                sNosVR: [],
                 dateVR: null,
                 matricRulesVR: [
                     m => !!m || 'Field is required',
@@ -971,6 +971,8 @@
                 ],
                 sNoRulesVR: [
                     s => !!s || 'Field is required',
+                    s => (2421 <= Number(s) && Number(s) <= 5880) || 'Invalid voucher S/N',
+                    s => (this.voucherListVR.includes(s) == false || s == this.currVR.serialNum) || 'Voucher has already been redeemed',
                 ],
                 locRules: [
                     s => !!s || 'Field is required',
@@ -1050,15 +1052,12 @@
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dataVR[this.dataVR.length-1]["datestamp"] = d;
 
-                v = v.concat(doc.data().serialNum);
+                v.push(doc.data().serialNum);
                 m.push(doc.data().matricNum);
             })
             console.log(this.dataVR);
             this.voucherListVR = v;
             console.log(this.voucherListVR);
-            if (this.dialogVR) {
-                this.sNosVR = (Array.from(Array(5881).keys()).slice(2421)).filter( ( sn ) => !this.voucherListVR.includes( sn ) || this.currVR.serialNum.includes( sn ))
-            }
 
             this.matricListVR = m;
             console.log(this.matricListVR);
@@ -1462,8 +1461,6 @@
                 var d = new Date(item.date.seconds*1000);
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dateVR = d;
-
-                this.sNosVR = (Array.from(Array(5881).keys()).slice(2421)).filter( ( sn ) => !this.voucherListVR.includes( sn ) || this.currVR.serialNum.includes( sn ))
 
                 this.dialogVR = true;
             },

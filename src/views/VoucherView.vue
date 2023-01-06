@@ -13,16 +13,14 @@
                         type="number"
                         required
                     ></v-text-field>
-                    <v-autocomplete
+                    <v-text-field
                         v-model="sNo"
-                        :items="sNos"
-                        :rules="sNoRules"
                         color="#000"
+                        :rules="sNoRules"
                         label="Voucher Serial Number"
-                        chips
-                        multiple
+                        type="number"
                         required
-                    ></v-autocomplete>
+                    ></v-text-field>
                     <v-select
                         v-model="location"
                         color="#000"
@@ -79,7 +77,6 @@
                 valid: false,
                 matricNo: '',
                 sNo: '',
-                sNos: [],
                 matricRules: [
                     m => !!m || 'Field is required',
                     m => (m && m.length == 8) || 'Matriculation number must be 8 digits long',
@@ -87,6 +84,8 @@
                 ],
                 sNoRules: [
                     s => !!s || 'Field is required',
+                    s => (2421 <= Number(s) && Number(s) <= 5880) || 'Invalid voucher S/N',
+                    s => this.voucherList.includes(s) == false || 'Voucher has already been redeemed',
                 ],
                 locRules: [
                     s => !!s || 'Field is required',
@@ -101,19 +100,18 @@
             onSnapshot(vRef, (snapshot) => {
             var v = []; var m = [];
             snapshot.docs.forEach((doc) => {
-                v = v.concat(doc.data().serialNum);
+                v.push(doc.data().serialNum);
                 m.push(doc.data().matricNum);
             })
             this.voucherList = v;
             console.log(this.voucherList);
-            this.sNos = (Array.from(Array(5881).keys()).slice(2421)).filter( ( sn ) => !this.voucherList.includes( sn ) );
 
             this.matricList = m;
             console.log(this.matricList);
             if (this.matricNo && this.sNo && this.location) {
                 this.$refs.form.validate()
             }
-            });
+            }); 
         },
         methods: {
             submit() {
@@ -127,7 +125,7 @@
                 })
                 .then((snapshot) => {
                     this.successList = [];
-                    this.successList.push({ name: "Voucher Serial Number", value: this.sNo.join(", ") });
+                    this.successList.push({ name: "Voucher Serial Number", value: this.sNo });
                     this.successList.push({ name: "Matriculation Number", value: this.matricNo });
                     this.successList.push({ name: "Location", value: this.location });
 
