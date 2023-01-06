@@ -131,10 +131,14 @@
                 var d = new Date(doc.data().date.seconds*1000);
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 
-                v[Number(doc.data().serialNum)] = { ...doc.data(), id: doc.id };
-                v[Number(doc.data().serialNum)]["date"] = d;
-                s.push(Number(doc.data().serialNum));
+                for (var sn of doc.data().serialNum) {
+                    v[sn] = { ...doc.data(), id: doc.id };
+                    v[sn]["date"] = d;
+                }
+                
+                s = s.concat(doc.data().serialNum);
             })
+            s = s.filter(sn => !!sn)
             console.log(v);
             console.log(s);
             
@@ -165,6 +169,7 @@
 
                 if (s.includes(i)) {
                     v[i]["isAvailable"] = "No";
+                    v[i]["serialNum"] = i;
                     this.dataGames.push(v[i]);
                 } else {
                     this.dataGames.push({
