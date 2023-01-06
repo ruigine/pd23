@@ -9,10 +9,30 @@
         ></v-switch>
 
         <!--Condensed-->
+        <h1 class="my-12">Prize Redemption</h1>
         <v-data-table
             v-if="condensed"
             :headers="headersC"
-            :items="dataC"
+            :items="dataC1"
+            class="elevation-1"
+            :search="searchInput"
+            multi-sort
+        >
+        <template v-slot:top>
+            <v-text-field
+            v-model="searchInput"
+            color="#000"
+            label="Search..."
+            class="mx-4"
+            ></v-text-field>
+        </template>
+        </v-data-table>
+
+        <h1 class="my-12">Voucher Redemption</h1>
+        <v-data-table
+            v-if="condensed"
+            :headers="headersC"
+            :items="dataC2"
             class="elevation-1"
             :search="searchInput"
             multi-sort
@@ -117,7 +137,8 @@
                 ],
                 dataVR: [],
                 dataGames: [],
-                dataC: [],
+                dataC1: [],
+                dataC2: [],
             }
         },
         created() {
@@ -149,19 +170,19 @@
                     if ((s.includes(i) ? "No" : "Yes") != bool) {
                         range.push(i-1);
                         if (range[0] == range[1]) {
-                            this.dataC.push({ serialNum: range[0], isAvailable: bool });
+                            this.dataC1.push({ serialNum: range[0], isAvailable: bool });
                         } else {
-                            this.dataC.push({ serialNum: range.join("-"), isAvailable: (s.includes(i-1) ? "No" : "Yes") });
+                            this.dataC1.push({ serialNum: range.join("-"), isAvailable: (s.includes(i-1) ? "No" : "Yes") });
                         }
                         range = [i];
                         bool = s.includes(i) ? "No" : "Yes";
 
                         if (i == 2420) {
-                            this.dataC.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
+                            this.dataC1.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
                         }
                     } else if (i == 2420) {
                         range.push(i);
-                        this.dataC.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
+                        this.dataC1.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
                     }
                 }
 
@@ -207,19 +228,19 @@
                     if ((s.includes(i) ? "No" : "Yes") != bool) {
                         range.push(i-1);
                         if (range[0] == range[1]) {
-                            this.dataC.push({ serialNum: range[0], isAvailable: bool });
+                            this.dataC2.push({ serialNum: range[0], isAvailable: bool });
                         } else {
-                            this.dataC.push({ serialNum: range.join("-"), isAvailable: (s.includes(i-1) ? "No" : "Yes") });
+                            this.dataC2.push({ serialNum: range.join("-"), isAvailable: (s.includes(i-1) ? "No" : "Yes") });
                         }
                         range = [i];
                         bool = s.includes(i) ? "No" : "Yes";
 
                         if (i == 5880) {
-                            this.dataC.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
+                            this.dataC2.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
                         }
                     } else if (i == 5880) {
                         range.push(i);
-                        this.dataC.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
+                        this.dataC2.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
                     }
                 }
 
