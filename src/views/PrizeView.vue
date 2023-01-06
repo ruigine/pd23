@@ -116,7 +116,7 @@
                     'Adidas Push up Bar in Pairs',
                     'Daily Modal Joggers',
                     "Dancer's Dream Studio 20% off Adult Group Dance Package",
-                    'Ima-Sushi $10 voucher (No min. spend)',
+                    'Ima-Sushi $5 Voucher (No min. spend) x 2',
                     'LUCID Folio Ultra Light Full Protection Case for iPad Air (2022) w/ Pencil Slot - Charcoal',
                     'MOTIF Snap 2 in 1 Magnetic Wireless charging Stand - Marble Noir',
                     'Paisley Shirt Beige (L)',
