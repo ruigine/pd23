@@ -13,7 +13,6 @@
                 <v-data-table
                     :headers="headersHOTO"
                     :items="dataHOTO"
-                    item-key="serialNumStart"
                     class="elevation-1"
                     :search="searchHOTO"
                     @click:row="history"
@@ -189,7 +188,6 @@
                 <v-data-table
                     :headers="headersVR"
                     :items="dataVR"
-                    item-key="serialNum"
                     class="elevation-1"
                     :search="searchVR"
                     @click:row="history"
@@ -445,15 +443,18 @@
                                 multiple
                                 required
                             ></v-select>
-                            <v-text-field
-                                v-if="prize=='PD23 voucher'"
+                            <v-autocomplete
+                                v-if="prize.includes('PD23 voucher')"
                                 v-model="sNoGames"
-                                color="#000"
+                                no-data-text="Invalid voucher S/N"
+                                :items="sNosGames"
                                 :rules="sNoRulesGames"
+                                color="#000"
                                 label="Voucher Serial Number"
-                                type="number"
+                                chips
+                                multiple
                                 required
-                            ></v-text-field>
+                            ></v-autocomplete>
                             <v-select
                                 v-model="locationGames"
                                 color="#000"
@@ -721,7 +722,6 @@
                         <v-data-table
                             :headers="headersEdit"
                             :items="dataEdit"
-                            item-key="serialNum"
                             class="elevation-1"
                             :search="searchEdit"
                             multi-sort
@@ -881,8 +881,8 @@
                     value: 'name',
                 },
                 { text: 'Matriculation No.', value: 'matricNum' },
-                { text: 'Prize', value: 'prize' },
-                { text: 'S/N', value: 'serialNum' },
+                { text: 'Prize', value: 'prizes' },
+                { text: 'S/N', value: 'sNos' },
                 { text: 'Location', value: 'location' },
                 { text: 'Date', value: 'datestamp' },
                 { text: 'Email', value: 'email' },
@@ -984,12 +984,11 @@
                 voucherListGames: [],
                 matricNoGames: '',
                 sNoGames: "",
+                sNosGames: [],
                 dateGames: null,
                 locationGames: null,
                 sNoRulesGames: [
                     s => !!s || 'Field is required',
-                    s => (1901 <= Number(s) && Number(s) <= 2420) || 'Invalid voucher S/N',
-                    s => (this.voucherListGames.includes(s) == false || s == this.currGames.serialNum) || 'Voucher does not exist/is unavailable',
                 ],
                 matricRulesGames: [
                     m => (!m || m.length == 8) || 'Matriculation number must be 8 digits long'
@@ -1003,7 +1002,7 @@
                 prizeRules: [
                     p => !!p || 'Field is required',
                 ],
-                prize: null,
+                prize: [],
                 prizes: [
                     'Adidas Push up Bar in Pairs',
                     'Daily Modal Joggers',
@@ -1080,12 +1079,19 @@
                 this.dataGames[this.dataGames.length-1]["datestamp"] = d;
 
                 if (doc.data().serialNum) {
-                    s.push(doc.data().serialNum);
+                    s = s.concat(doc.data().serialNum);
+                    this.dataGames[this.dataGames.length-1]["sNos"] = (doc.data().serialNum).join(", ");
                 }
+
+                this.dataGames[this.dataGames.length-1]["prizes"] = (doc.data().prize).join(", ");
             })
             console.log(this.dataGames);
             this.voucherListGames = s;
             console.log(this.voucherListGames);
+            if (this.dialogGames && this.prize.includes('PD23 voucher')) {
+                this.sNosGames = (Array.from(Array(2421).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ))
+            }
+
             if (this.matricNoGames && this.sNoGames && this.locationGames && !this.saved) {
                 this.$refs.formGames.validate()
             } else {
@@ -1181,6 +1187,12 @@
                             var dD = new Date(doc.data().deleteDate.seconds*1000);
                             dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
                             this.dataDelGames[this.dataDelGames.length-1]["deleteDate"] = dD;
+
+                            if (doc.data().serialNum) {
+                                this.dataDelGames[this.dataDelGames.length-1]["serialNum"] = (doc.data().serialNum).join(", ");
+                            }
+
+                            this.dataDelGames[this.dataDelGames.length-1]["prize"] = (doc.data().prize).join(", ");
                         })
                         console.log(this.dataDelGames);
                         this.expandGames = this.expandGames == 0 ? null: 0;
@@ -1548,6 +1560,8 @@
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dateGames = d;
 
+                this.sNosGames = (Array.from(Array(2421).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ));
+
                 this.dialogGames = true;
             },
             saveGames() {
@@ -1564,7 +1578,7 @@
                 } else {
                     toUp['matricNum'] = ""
                 }
-                if (this.prize == 'PD23 voucher') {
+                if (this.prize.includes('PD23 voucher')) {
                     toUp['serialNum'] = this.sNoGames
                 } else {
                     toUp['serialNum'] = ""
@@ -1581,7 +1595,7 @@
                 if (this.currGames.matricNum && this.currGames.matricNum.length != 0) {
                     toAdd['matricNum'] = this.currGames.matricNum
                 }
-                if (this.currGames.prize == 'PD23 voucher') {
+                if (this.currGames.prize.includes('PD23 voucher')) {
                     toAdd['serialNum'] = this.currGames.serialNum
                 }
 
@@ -1599,8 +1613,8 @@
                             this.successList.push({ name: "Matriculation Number", value: this.matricNoGames });
                         }
                         this.successList.push({ name: "Prize", value: this.prize.join(", ") });
-                        if (this.prize == 'PD23 voucher') {
-                            this.successList.push({ name: "Voucher Serial Number", value: this.sNoGames });
+                        if (this.prize.includes('PD23 voucher')) {
+                            this.successList.push({ name: "Voucher Serial Number", value: this.sNoGames.join(", ") });
                         }
                         this.successList.push({ name: "Location", value: this.locationGames });
                         this.successList.push({ name: "Date", value: d });
@@ -1632,7 +1646,7 @@
                 if (this.delGames && this.delGames.length != 0) {
                     toDel['matricNum'] = this.delGames.matricNum
                 }
-                if (this.delGames.prize == 'PD23 voucher') {
+                if (this.delGames.prize.includes('PD23 voucher')) {
                     toDel['serialNum'] = this.delGames.serialNum
                 }
 
@@ -1721,6 +1735,10 @@
                                 var editD = new Date(doc.data().editDate.seconds*1000);
                                 editD = [String(editD.getDate()).padStart(2, '0'), String(editD.getMonth()+1).padStart(2, '0'), String(editD.getFullYear())].join("/") + " " + [String(editD.getHours()).padStart(2, '0'), String(editD.getMinutes()).padStart(2, '0')].join(":");
                                 this.dataEdit[this.dataEdit.length-1]["editDate"] = editD;
+
+                                if (doc.data().serialNum) {
+                                    this.dataEdit[this.dataEdit.length-1]["sNos"] = (doc.data().serialNum).join(", ");
+                                }
                             })
                         })
                         .catch(err => {

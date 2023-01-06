@@ -29,15 +29,18 @@
                         multiple
                         required
                     ></v-select>
-                    <v-text-field
-                        v-if="prize=='PD23 voucher'"
+                    <v-autocomplete
+                        v-if="prize.includes('PD23 voucher')"
                         v-model="sNo"
-                        color="#000"
+                        no-data-text="Invalid voucher S/N"
+                        :items="sNos"
                         :rules="sNoRules"
+                        color="#000"
                         label="Voucher Serial Number"
-                        type="number"
+                        chips
+                        multiple
                         required
-                    ></v-text-field>
+                    ></v-autocomplete>
                     <v-select
                         v-model="location"
                         color="#000"
@@ -100,10 +103,9 @@
                     m => (!m || (!!m && m.length == 8)) || 'Matriculation number must be 8 digits long'
                 ],
                 sNo: '',
+                sNos: [],
                 sNoRules: [
                     s => !!s || 'Field is required',
-                    s => (1901 <= Number(s) && Number(s) <= 2420) || 'Invalid voucher S/N',
-                    s => this.voucherList.includes(s) == false || 'Voucher has already been redeemed',
                 ],
                 locRules: [
                     s => !!s || 'Field is required',
@@ -112,7 +114,7 @@
                 prizeRules: [
                     p => !!p || 'Field is required',
                 ],
-                prize: null,
+                prize: [],
                 prizes: [
                     'Adidas Push up Bar in Pairs',
                     'Daily Modal Joggers',
@@ -139,11 +141,13 @@
             var v = [];
             snapshot.docs.forEach((doc) => {
                 if (doc.data().serialNum) {
-                    v.push(doc.data().serialNum);
+                    v = v.concat(doc.data().serialNum);
                 }
             })
             this.voucherList = v;
             console.log(this.voucherList);
+            this.sNos = (Array.from(Array(2421).keys()).slice(1901)).filter( ( sn ) => !this.voucherList.includes( sn ) );
+
             if (this.matricNo && this.sNo && this.location) {
                 this.$refs.form.validate()
             }
@@ -162,7 +166,7 @@
                 if (this.matricNo && this.matricNo.length != 0) {
                     temp['matricNum'] = this.matricNo
                 }
-                if (this.prize == 'PD23 voucher') {
+                if (this.prize.includes('PD23 voucher')) {
                     temp['serialNum'] = this.sNo
                 }
                 addDoc(gRef, temp)
@@ -173,8 +177,8 @@
                         this.successList.push({ name: "Matriculation Number", value: this.matricNo });
                     }
                     this.successList.push({ name: "Prize", value: this.prize.join(", ") });
-                    if (this.prize == 'PD23 voucher') {
-                        this.successList.push({ name: "Voucher Serial Number", value: this.sNo });
+                    if (this.prize.includes('PD23 voucher')) {
+                        this.successList.push({ name: "Voucher Serial Number", value: this.sNo.join(", ") });
                     }
                     this.successList.push({ name: "Location", value: this.location });
 
