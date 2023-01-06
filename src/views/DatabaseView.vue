@@ -1739,6 +1739,8 @@
                                 if (doc.data().serialNum) {
                                     this.dataEdit[this.dataEdit.length-1]["sNos"] = (doc.data().serialNum).join(", ");
                                 }
+
+                                this.dataEdit[this.dataEdit.length-1]["prizes"] = (doc.data().prize).join(", ");
                             })
                         })
                         .catch(err => {
