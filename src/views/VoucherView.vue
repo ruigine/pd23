@@ -15,7 +15,6 @@
                     ></v-text-field>
                     <v-autocomplete
                         v-model="sNo"
-                        no-data-text="Invalid voucher S/N"
                         :items="sNos"
                         :rules="sNoRules"
                         color="#000"
