@@ -66,7 +66,27 @@
                                         label="Voucher Serial Numbers at the Start"
                                         hint="i.e.: 3000 or i.e.: 2000-2030, 2060-2080"
                                         required
-                                    ></v-text-field>
+                                    >
+                                        <v-tooltip
+                                            slot="append"
+                                            bottom
+                                            v-model="show1"
+                                            top
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                icon
+                                                v-bind="attrs"
+                                                v-on="on"
+                                                >
+                                                <v-icon color="grey lighten-1">
+                                                    mdi-information-outline
+                                                </v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>i.e.: 3000 or i.e.: 2000-2030, 2060-2080</span>
+                                        </v-tooltip>
+                                    </v-text-field>
                                     <v-row>
                                         <v-col>
                                             <v-text-field
@@ -76,7 +96,27 @@
                                                 label="Voucher Serial Numbers at the End"
                                                 hint="i.e.: 3000 or i.e.: 2000-2030, 2060-2080"
                                                 required
-                                            ></v-text-field>
+                                            >
+                                                <v-tooltip
+                                                    slot="append"
+                                                    bottom
+                                                    v-model="show2"
+                                                    top
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-btn
+                                                        icon
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                        >
+                                                        <v-icon color="grey lighten-1">
+                                                            mdi-information-outline
+                                                        </v-icon>
+                                                        </v-btn>
+                                                    </template>
+                                                    <span>i.e.: 3000 or i.e.: 2000-2030, 2060-2080</span>
+                                                </v-tooltip>
+                                            </v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -455,7 +495,27 @@
                                 chips
                                 multiple
                                 required
-                            ></v-autocomplete>
+                            >
+                                <v-tooltip
+                                    slot="append"
+                                    bottom
+                                    v-model="show3"
+                                    top
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                        icon
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        >
+                                        <v-icon color="grey lighten-1">
+                                            mdi-information-outline
+                                        </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Multi-select</span>
+                                </v-tooltip>
+                            </v-autocomplete>
                             <v-select
                                 v-model="locationGames"
                                 color="#000"
@@ -756,6 +816,9 @@
     export default {
         data(){
             return {
+                show1: false,
+                show2: false,
+                show3: false,
                 tab: null,
                 successList: [],
                 //Del
