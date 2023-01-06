@@ -1041,20 +1041,6 @@
             console.log(this.dataHOTO)
             });
 
-            //LD
-            const lRef = collection(db, 'roadshow');
-            onSnapshot(lRef, (querySnapshot) => {
-            this.dataLD = [];
-            querySnapshot.docs.forEach((doc) => {
-                this.dataLD.push({ ...doc.data(), id: doc.id })
-                
-                var d = new Date(doc.data().date.seconds*1000);
-                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                this.dataLD[this.dataLD.length-1]["datestamp"] = d;
-            })
-            console.log(this.dataLD);
-            });
-
             //VR
             const vRef = collection(db, 'vouchers');
             onSnapshot(vRef, (querySnapshot) => {
@@ -1082,7 +1068,7 @@
             }
             });
 
-            //Games
+            //Prize
             const gRef = collection(db, 'prize');
             onSnapshot(gRef, (querySnapshot) => {
             this.dataGames = []; var s = [];
@@ -1105,6 +1091,20 @@
             } else {
                 this.saved = false;
             }
+            });
+
+            //LD
+            const lRef = collection(db, 'roadshow');
+            onSnapshot(lRef, (querySnapshot) => {
+            this.dataLD = [];
+            querySnapshot.docs.forEach((doc) => {
+                this.dataLD.push({ ...doc.data(), id: doc.id })
+                
+                var d = new Date(doc.data().date.seconds*1000);
+                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+                this.dataLD[this.dataLD.length-1]["datestamp"] = d;
+            })
+            console.log(this.dataLD);
             });
         },
         watch: {
