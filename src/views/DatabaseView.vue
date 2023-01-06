@@ -864,7 +864,7 @@
                     text: 'S/N',
                     align: 'start',
                     sortable: true,
-                    value: 'serialNum',
+                    value: 'sNos',
                 },
                 { text: 'Matriculation No.', value: 'matricNum' },
                 { text: 'Location', value: 'location' },
@@ -1050,6 +1050,8 @@
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dataVR[this.dataVR.length-1]["datestamp"] = d;
 
+                this.dataVR[this.dataVR.length-1]["sNos"] = (doc.data().serialNum).join(", ");
+
                 v = v.concat(doc.data().serialNum);
                 m.push(doc.data().matricNum);
             })
@@ -1160,6 +1162,8 @@
                             var dD = new Date(doc.data().deleteDate.seconds*1000);
                             dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
                             this.dataDelVR[this.dataDelVR.length-1]["deleteDate"] = dD;
+
+                            this.dataDelVR[this.dataDelVR.length-1]["serialNum"] = (doc.data().serialNum).join(", ");
                         })
                         console.log(this.dataDelVR);
                         this.expandVR = this.expandVR == 0 ? null: 0;
@@ -1491,7 +1495,7 @@
                         d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                         
                         this.successList = [];
-                        this.successList.push({ name: "Voucher Serial Number", value: this.sNoVR });
+                        this.successList.push({ name: "Voucher Serial Number", value: this.sNoVR.join(", ") });
                         this.successList.push({ name: "Matriculation Number", value: this.matricNoVR });
                         this.successList.push({ name: "Location", value: this.locationVR });
                         this.successList.push({ name: "Date", value: d });
