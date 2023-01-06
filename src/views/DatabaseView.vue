@@ -63,7 +63,7 @@
                                         v-model="sNoStart"
                                         color="#000"
                                         :rules="sNoStartRules"
-                                        label="Voucher Serial Numbers at the Start"
+                                        label="Voucher Serial Numbers at the Start of Shift"
                                         hint="i.e.: 3000 or i.e.: 2000-2030, 2060-2080"
                                         required
                                     >
@@ -93,7 +93,7 @@
                                                 v-model="sNoEnd"
                                                 color="#000"
                                                 :rules="sNoEndRules"
-                                                label="Voucher Serial Numbers at the End"
+                                                label="Voucher Serial Numbers at the End of Shift"
                                                 hint="i.e.: 3000 or i.e.: 2000-2030, 2060-2080"
                                                 required
                                             >
