@@ -178,10 +178,10 @@
                         range = [i];
                         bool = s.includes(i) ? "No" : "Yes";
 
-                        if (i == 2420) {
+                        if (i == 2580) {
                             this.dataC1.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
                         }
-                    } else if (i == 2420) {
+                    } else if (i == 2580) {
                         range.push(i);
                         this.dataC1.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
                     }
@@ -222,7 +222,7 @@
             
             var range = []; var bool = "";
             for (var i=2581; i<=5880; i++) {
-                if (i == 2421) {
+                if (i == 2581) {
                     range.push(i);
                     bool = s.includes(i) ? "No" : "Yes";
                 } else {
