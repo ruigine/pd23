@@ -26,6 +26,7 @@
                         :items="prizes"
                         label="Prize"
                         :rules="prizeRules"
+                        multiple
                         required
                     ></v-select>
                     <v-text-field
@@ -171,7 +172,7 @@
                     if (this.matricNo && this.matricNo.length != 0) {
                         this.successList.push({ name: "Matriculation Number", value: this.matricNo });
                     }
-                    this.successList.push({ name: "Prize", value: this.prize });
+                    this.successList.push({ name: "Prize", value: this.prize.join(", ") });
                     if (this.prize == 'PD23 voucher') {
                         this.successList.push({ name: "Voucher Serial Number", value: this.sNo });
                     }
