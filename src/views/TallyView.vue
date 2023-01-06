@@ -13,7 +13,6 @@
             v-if="condensed"
             :headers="headersC"
             :items="dataC"
-            item-key="serialNum"
             class="elevation-1"
             :search="searchInput"
             multi-sort
@@ -52,7 +51,6 @@
             <v-data-table
                 :headers="headersVR"
                 :items="dataVR"
-                item-key="serialNum"
                 class="elevation-1"
                 :search="searchInputVR"
                 multi-sort
