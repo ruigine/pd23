@@ -84,7 +84,7 @@
                 ],
                 sNoRules: [
                     s => !!s || 'Field is required',
-                    s => (2421 <= Number(s) && Number(s) <= 5880) || 'Invalid voucher S/N',
+                    s => (2581 <= Number(s) && Number(s) <= 5880) || 'Invalid voucher S/N',
                     s => this.voucherList.includes(s) == false || 'Voucher has already been redeemed',
                 ],
                 locRules: [

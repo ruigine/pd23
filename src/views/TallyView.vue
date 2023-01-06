@@ -9,43 +9,44 @@
         ></v-switch>
 
         <!--Condensed-->
-        <h1 class="my-12">Prize Redemption</h1>
-        <v-data-table
-            v-if="condensed"
-            :headers="headersC"
-            :items="dataC1"
-            class="elevation-1"
-            :search="searchInput"
-            multi-sort
-        >
-        <template v-slot:top>
-            <v-text-field
-            v-model="searchInput"
-            color="#000"
-            label="Search..."
-            class="mx-4"
-            ></v-text-field>
-        </template>
-        </v-data-table>
+        <template v-if="condensed">
+            <h1 class="my-12">Prize Redemption</h1>
+            <v-data-table
+                :headers="headersC"
+                :items="dataC1"
+                class="elevation-1"
+                :search="searchInput"
+                multi-sort
+            >
+            <template v-slot:top>
+                <v-text-field
+                v-model="searchInput"
+                color="#000"
+                label="Search..."
+                class="mx-4"
+                ></v-text-field>
+            </template>
+            </v-data-table>
 
-        <h1 class="my-12">Voucher Redemption</h1>
-        <v-data-table
-            v-if="condensed"
-            :headers="headersC"
-            :items="dataC2"
-            class="elevation-1"
-            :search="searchInput"
-            multi-sort
-        >
-        <template v-slot:top>
-            <v-text-field
-            v-model="searchInput"
-            color="#000"
-            label="Search..."
-            class="mx-4"
-            ></v-text-field>
+            <h1 class="my-12">Voucher Redemption</h1>
+            <v-data-table
+                v-if="condensed"
+                :headers="headersC"
+                :items="dataC2"
+                class="elevation-1"
+                :search="searchInput"
+                multi-sort
+            >
+            <template v-slot:top>
+                <v-text-field
+                v-model="searchInput"
+                color="#000"
+                label="Search..."
+                class="mx-4"
+                ></v-text-field>
+            </template>
+            </v-data-table>
         </template>
-        </v-data-table>
 
         <!--Detailed-->
         <template v-else>
@@ -162,7 +163,7 @@
             console.log(s);
             
             var range = []; var bool = "";
-            for (var i=1901; i<=2420; i++) {
+            for (var i=1901; i<=2580; i++) {
                 if (i == 1901) {
                     range.push(i);
                     bool = s.includes(i) ? "No" : "Yes";
@@ -220,7 +221,7 @@
             console.log(s);
             
             var range = []; var bool = "";
-            for (var i=2421; i<=5880; i++) {
+            for (var i=2581; i<=5880; i++) {
                 if (i == 2421) {
                     range.push(i);
                     bool = s.includes(i) ? "No" : "Yes";

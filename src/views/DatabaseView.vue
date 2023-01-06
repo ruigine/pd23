@@ -1089,7 +1089,7 @@
             this.voucherListGames = s;
             console.log(this.voucherListGames);
             if (this.dialogGames && this.prize.includes('PD23 voucher')) {
-                this.sNosGames = (Array.from(Array(2421).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ))
+                this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ))
             }
 
             if (this.matricNoGames && this.sNoGames && this.locationGames && !this.saved) {
@@ -1246,21 +1246,21 @@
                 var sArr = s.replaceAll(",", " ").trim(" ").split("  ");
 
                 if (sArr.length == 1 && sArr[0].split("-").length == 1) {
-                    if (!((Number(sArr[0]) >= 1901 && Number(sArr[0]) <= 2420) || (Number(sArr[0]) >= 2421 && Number(sArr[0]) <= 5880))) {
+                    if (!((Number(sArr[0]) >= 1901 && Number(sArr[0]) <= 2580) || (Number(sArr[0]) >= 2581 && Number(sArr[0]) <= 5880))) {
                         return false;
                     }
                 } else {
                     for (var str of sArr) {
                         var range = str.split("-");
                         if (range.length == 1) {
-                            if (!((Number(range[0]) >= 1901 && Number(range[0]) <= 2420) || (Number(range[0]) >= 2421 && Number(range[0]) <= 5880))) {
+                            if (!((Number(range[0]) >= 1901 && Number(range[0]) <= 2580) || (Number(range[0]) >= 2581 && Number(range[0]) <= 5880))) {
                                 return false;
                             }
                         } else {
                             if (Number(range[1]) < Number(range[0])) {
                                 return false;
                             } else {
-                                if (!((Number(range[0]) >= 1901 && Number(range[1]) <= 2420) || (Number(range[0]) >= 2421 && Number(range[1]) <= 5880))) {
+                                if (!((Number(range[0]) >= 1901 && Number(range[1]) <= 2580) || (Number(range[0]) >= 2581 && Number(range[1]) <= 5880))) {
                                     return false;
                                 }
                             }
@@ -1560,7 +1560,7 @@
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dateGames = d;
 
-                this.sNosGames = (Array.from(Array(2421).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ));
+                this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ));
 
                 this.dialogGames = true;
             },

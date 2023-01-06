@@ -146,7 +146,7 @@
             })
             this.voucherList = v;
             console.log(this.voucherList);
-            this.sNos = (Array.from(Array(2421).keys()).slice(1901)).filter( ( sn ) => !this.voucherList.includes( sn ) );
+            this.sNos = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherList.includes( sn ) );
 
             if (this.matricNo && this.sNo && this.location) {
                 this.$refs.form.validate()
