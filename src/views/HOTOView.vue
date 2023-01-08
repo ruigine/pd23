@@ -236,8 +236,8 @@
                     this.successList = [];
                     this.successList.push({ name: "Voucher Serial Number at the Start", value: this.sNoStart.replaceAll(",", " ").trim(" ").split("  ").join(", ") });
                     this.successList.push({ name: "Voucher Serial Number at the End", value: this.sNoEnd.replaceAll(",", " ").trim(" ").split("  ").join(", ") });
-                    this.successList.push({ name: "Start Date", value: this.startTime });
-                    this.successList.push({ name: "End Date", value: this.endTime });
+                    this.successList.push({ name: "Start Date", value: this.startTime.replace("T", " ") });
+                    this.successList.push({ name: "End Date", value: this.endTime.replace("T", " ") });
                     this.successList.push({ name: "Location", value: this.location });
 
                     this.dialog = true;
