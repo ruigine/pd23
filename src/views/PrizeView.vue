@@ -126,17 +126,17 @@
                     s => !!s || 'Field is required',
                     s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number'
                 ],
-                sNo: '',
+                sNo: [],
                 sNos: [],
                 sNoRules: [
-                    s => !!s || 'Field is required',
+                    s => s.length > 0 || 'Field is required',
                 ],
                 locRules: [
                     s => !!s || 'Field is required',
                 ],
                 items: ['Koufu', 'SOB', 'Connexion'],
                 prizeRules: [
-                    p => !!p || 'Field is required',
+                    p => p.length > 0 || 'Field is required',
                 ],
                 prize: [],
                 prizes: [
