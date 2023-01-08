@@ -1618,15 +1618,17 @@
                 this.name = item.name;
                 this.teleGames = item.telephone;
                 this.prize = item.prize;
-                this.sNoGames = item.serialNum;
                 this.locationGames = item.location;
                 this.currGames = item;
+
+                if (item.serialNum) {
+                    this.sNoGames = item.serialNum;
+                    this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ));
+                }
 
                 var d = new Date(item.date.seconds*1000);
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dateGames = d;
-
-                this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ));
 
                 this.dialogGames = true;
             },
