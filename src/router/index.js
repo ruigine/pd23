@@ -29,7 +29,7 @@ function guardMyroute(to, from, next) {
         'fangqi.lim.2021@smu.edu.sg',
         'prachikale.2020@smu.edu.sg',
         'shauna.teo.2022@smu.edu.sg',
-        'Kelly.Neo.2019@smu.edu.sg',
+        'kelly.neo.2019@smu.edu.sg',
         'tzelin.loo.2021@smu.edu.sg',
         'wanzhen.lim.2021@smu.edu.sg',
         'michaelong.2021@smu.edu.sg'
