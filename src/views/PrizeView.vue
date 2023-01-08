@@ -13,12 +13,13 @@
                         required
                     ></v-text-field>
                     <v-text-field
-                        v-model="matricNo"
+                        v-model="tele"
                         color="#000"
-                        :rules="matricRules"
+                        :rules="teleRules"
                         :counter="8"
-                        label="Matriculation Number (if student)"
+                        label="Telephone"
                         type="number"
+                        required
                     ></v-text-field>
                     <v-select
                         v-model="prize"
@@ -120,9 +121,10 @@
                 nameRules: [
                     n => !!n || 'Field is required',
                 ],
-                matricNo: '',
-                matricRules: [
-                    m => (!m || (!!m && m.length == 8)) || 'Matriculation number must be 8 digits long'
+                tele: '',
+                teleRules: [
+                    s => !!s || 'Field is required',
+                    s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number'
                 ],
                 sNo: '',
                 sNos: [],
@@ -180,13 +182,11 @@
                 const gRef = collection(db, "prize");
                 var temp = {
                     name: this.name,
+                    telephone: this.tele,
                     prize: this.prize,
                     location: this.location,
                     date: firebase.firestore.Timestamp.fromDate(new Date()),
                     email: this.$store.state.user.email
-                }
-                if (this.matricNo && this.matricNo.length != 0) {
-                    temp['matricNum'] = this.matricNo
                 }
                 if (this.prize.includes('PD23 voucher')) {
                     temp['serialNum'] = this.sNo
@@ -195,9 +195,7 @@
                 .then((snapshot) => {
                     this.successList = [];
                     this.successList.push({ name: "Name", value: this.name });
-                    if (this.matricNo && this.matricNo.length != 0) {
-                        this.successList.push({ name: "Matriculation Number", value: this.matricNo });
-                    }
+                    this.successList.push({ name: "Telephone", value: this.tele });
                     this.successList.push({ name: "Prize", value: this.prize.join(", ") });
                     if (this.prize.includes('PD23 voucher')) {
                         this.successList.push({ name: "Voucher Serial Number", value: this.sNo.join(", ") });

@@ -467,12 +467,13 @@
                                 required
                             ></v-text-field>
                             <v-text-field
-                                v-model="matricNoGames"
+                                v-model="teleGames"
                                 color="#000"
-                                :rules="matricRulesGames"
+                                :rules="teleRulesGames"
                                 :counter="8"
-                                label="Matriculation Number (if student)"
+                                label="Telephone"
                                 type="number"
+                                required
                             ></v-text-field>
                             <v-select
                                 v-model="prize"
@@ -674,9 +675,9 @@
                                     required
                                 ></v-text-field>
                                 <v-text-field
-                                    v-model="tele"
+                                    v-model="teleLD"
                                     color="#000"
-                                    :rules="teleRules"
+                                    :rules="teleRulesLD"
                                     :counter="8"
                                     label="Telephone"
                                     type="number"
@@ -876,7 +877,7 @@
                     sortable: true,
                     value: 'name',
                 },
-                { text: 'Matriculation No.', value: 'matricNum' },
+                { text: 'Telephone', value: 'telephone' },
                 { text: 'Prize', value: 'prize' },
                 { text: 'S/N', value: 'serialNum' },
                 { text: 'Location', value: 'location' },
@@ -944,7 +945,7 @@
                     sortable: true,
                     value: 'name',
                 },
-                { text: 'Matriculation No.', value: 'matricNum' },
+                { text: 'Telephone', value: 'telephone' },
                 { text: 'Prize', value: 'prizes' },
                 { text: 'S/N', value: 'sNos' },
                 { text: 'Location', value: 'location' },
@@ -1007,7 +1008,7 @@
 
                 //LD
                 matricNoLD: '',
-                tele: '',
+                teleLD: '',
                 nameLD: '',
                 dateLD: null,
                 nameRulesLD: [
@@ -1016,7 +1017,7 @@
                 matricRulesLD: [
                     m => (!m || (!!m && m.length == 8)) || 'Matriculation number must be 8 digits long'
                 ],
-                teleRules: [
+                teleRulesLD: [
                     s => !!s || 'Field is required',
                     s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number'
                 ],
@@ -1046,7 +1047,7 @@
 
                 //Games
                 voucherListGames: [],
-                matricNoGames: '',
+                teleGames: '',
                 sNoGames: "",
                 sNosGames: [],
                 dateGames: null,
@@ -1054,8 +1055,9 @@
                 sNoRulesGames: [
                     s => !!s || 'Field is required',
                 ],
-                matricRulesGames: [
-                    m => (!m || m.length == 8) || 'Matriculation number must be 8 digits long'
+                teleRulesGames: [
+                    s => !!s || 'Field is required',
+                    s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number'
                 ],
                 currGames: null,
                 saved: false,
@@ -1156,7 +1158,7 @@
                 this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ))
             }
 
-            if (this.matricNoGames && this.sNoGames && this.locationGames && !this.saved) {
+            if (this.teleGames && this.sNoGames && this.locationGames && !this.saved) {
                 this.$refs.formGames.validate()
             } else {
                 this.saved = false;
@@ -1431,7 +1433,7 @@
             editLD(item) {
                 this.nameLD = item.name;
                 this.matricNoLD = item.matricNum;
-                this.tele = item.telephone
+                this.teleLD = item.telephone
                 this.currLD = item;
                 console.log(item.date)
                 var d = new Date(item.date.seconds*1000);
@@ -1445,7 +1447,7 @@
                 const lRef = doc(db, "roadshow", this.currLD.id);
                 var toUp = {
                     name: this.nameLD,
-                    telephone: this.tele,
+                    telephone: this.teleLD,
                     date: firebase.firestore.Timestamp.fromDate(new Date(this.dateLD)),
                 }
                 if (this.matricNoLD && this.matricNoLD.length != 0) {
@@ -1478,7 +1480,7 @@
                         if (this.matricNoLD && this.matricNoLD.length != 0) {
                             this.successList.push({ name: "Matriculation Number", value: this.matricNoLD });
                         }
-                        this.successList.push({ name: "Telephone", value: this.tele });
+                        this.successList.push({ name: "Telephone", value: this.teleLD });
                         this.successList.push({ name: "Date", value: d });
 
                         this.dialogLD = false;
@@ -1614,7 +1616,7 @@
             //Games
             editGames(item) {
                 this.name = item.name;
-                this.matricNoGames = item.matricNum;
+                this.teleGames = item.telephone;
                 this.prize = item.prize;
                 this.sNoGames = item.serialNum;
                 this.locationGames = item.location;
@@ -1633,14 +1635,10 @@
                 const gRef = doc(db, "prize", this.currGames.id);
                 var toUp = {
                     name: this.name,
+                    telephone: this.teleGames,
                     prize: this.prize,
                     location: this.locationGames,
                     date: firebase.firestore.Timestamp.fromDate(new Date(this.dateGames)),
-                }
-                if (this.matricNoGames && this.matricNoGames.length != 0) {
-                    toUp['matricNum'] = this.matricNoGames
-                } else {
-                    toUp['matricNum'] = ""
                 }
                 if (this.prize.includes('PD23 voucher')) {
                     toUp['serialNum'] = this.sNoGames
@@ -1650,14 +1648,12 @@
 
                 var toAdd = {
                     name: this.currGames.name,
+                    telephone: this.currGames.telephone,
                     prize: this.currGames.prize,
                     location: this.currGames.location,
                     date: this.currGames.date,
                     email: this.currGames.email,
                     editDate: firebase.firestore.Timestamp.fromDate(new Date()),
-                }
-                if (this.currGames.matricNum && this.currGames.matricNum.length != 0) {
-                    toAdd['matricNum'] = this.currGames.matricNum
                 }
                 if (this.currGames.prize.includes('PD23 voucher')) {
                     toAdd['serialNum'] = this.currGames.serialNum
@@ -1673,9 +1669,7 @@
                         
                         this.successList = [];
                         this.successList.push({ name: "Name", value: this.name });
-                        if (this.matricNoGames && this.matricNoGames.length != 0) {
-                            this.successList.push({ name: "Matriculation Number", value: this.matricNoGames });
-                        }
+                        this.successList.push({ name: "Telephone", value: this.teleGames });
                         this.successList.push({ name: "Prize", value: this.prize.join(", ") });
                         if (this.prize.includes('PD23 voucher')) {
                             this.successList.push({ name: "Voucher Serial Number", value: this.sNoGames.join(", ") });
@@ -1701,14 +1695,12 @@
             deleteConfirmGames() {
                 var toDel = {
                     name: this.delGames.name,
+                    telephone: this.delGames.telephone,
                     prize: this.delGames.prize,
                     location: this.delGames.location,
                     date: this.delGames.date,
                     email: this.delGames.email,
                     deleteDate: firebase.firestore.Timestamp.fromDate(new Date()),
-                }
-                if (this.delGames && this.delGames.length != 0) {
-                    toDel['matricNum'] = this.delGames.matricNum
                 }
                 if (this.delGames.prize.includes('PD23 voucher')) {
                     toDel['serialNum'] = this.delGames.serialNum

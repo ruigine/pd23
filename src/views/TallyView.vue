@@ -121,7 +121,7 @@
                 },
                 { text: 'Available', value: 'isAvailable' },
                 { text: 'Name', value: 'name' },
-                { text: 'Matriculation No.', value: 'matricNum' },
+                { text: 'Telephone', value: 'telephone' },
                 { text: 'Prize', value: 'prize' },
                 { text: 'Location', value: 'location' },
                 { text: 'Date', value: 'date' },
@@ -195,7 +195,7 @@
                     this.dataGames.push({
                         isAvailable: "Yes",
                         serialNum: i,
-                        matricNum: "",
+                        telephone: "",
                         location: "",
                         date: "",
                         email: ""
