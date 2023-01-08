@@ -1198,7 +1198,7 @@
             expand() {
                 if (this.tab == 0) {
                     if (!this.dataDelHOTO) {
-                        const hRef = collection(db, 'deletedHOTO');
+                        const hRef = query(collection(db, 'deletedHOTO'), orderBy('deleteDate', 'desc'));
                         onSnapshot(hRef, (querySnapshot) => {
                         this.dataDelHOTO = [];
                         querySnapshot.docs.forEach((doc) => {
@@ -1224,7 +1224,7 @@
                     }
                 } else if (this.tab == 1) {
                     if (!this.dataDelVR) {
-                        const vRef = collection(db, 'deletedVouchers');
+                        const vRef = query(collection(db, 'deletedVouchers'), orderBy('deleteDate', 'desc'));
                         onSnapshot(vRef, (querySnapshot) => {
                         this.dataDelVR = [];
                         querySnapshot.docs.forEach((doc) => {
@@ -1246,7 +1246,7 @@
                     }
                 } else if (this.tab == 2) {
                     if (!this.dataDelGames) {
-                        const gRef = collection(db, 'deletedPrize');
+                        const gRef = query(collection(db, 'deletedPrize'), orderBy('deleteDate', 'desc'));
                         onSnapshot(gRef, (querySnapshot) => {
                         this.dataDelGames = [];
                         querySnapshot.docs.forEach((doc) => {
@@ -1274,7 +1274,7 @@
                     }
                 } else if (this.tab == 3) {
                     if (!this.dataDelLD) {
-                        const lRef = collection(db, 'deletedRoadshow');
+                        const lRef = query(collection(db, 'deletedRoadshow'), orderBy('deleteDate', 'desc'));
                         onSnapshot(lRef, (querySnapshot) => {
                         this.dataDelLD = [];
                         querySnapshot.docs.forEach((doc) => {
