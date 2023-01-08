@@ -1048,7 +1048,7 @@
                 //Games
                 voucherListGames: [],
                 teleGames: '',
-                sNoGames: "",
+                sNoGames: [],
                 sNosGames: [],
                 dateGames: null,
                 locationGames: null,
@@ -1625,6 +1625,7 @@
                     this.sNoGames = item.serialNum;
                     this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ));
                 } else {
+                    this.sNoGames = [];
                     this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ));
                 }
 
