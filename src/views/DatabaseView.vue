@@ -1048,12 +1048,13 @@
                 //Games
                 voucherListGames: [],
                 teleGames: '',
+                prevSNoGames: [],
                 sNoGames: [],
                 sNosGames: [],
                 dateGames: null,
                 locationGames: null,
                 sNoRulesGames: [
-                    s => !!s || 'Field is required',
+                    s => s.length > 0 || 'Field is required',
                 ],
                 teleRulesGames: [
                     s => !!s || 'Field is required',
@@ -1066,7 +1067,7 @@
                     n => !!n || 'Field is required',
                 ],
                 prizeRules: [
-                    p => !!p || 'Field is required',
+                    p => p.length > 0 || 'Field is required',
                 ],
                 prize: [],
                 prizes: [
@@ -1156,6 +1157,11 @@
             console.log(this.voucherListGames);
             if (this.dialogGames && this.prize.includes('PD23 voucher')) {
                 this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ))
+            }
+
+            if (this.sNoGames.length != 0 && !this.sNosGames.includes(this.sNoGames)) {
+                this.prevSNoGames = this.sNoGames;
+                this.sNoGames = [];
             }
 
             if (this.teleGames && this.sNoGames && this.locationGames && !this.saved) {
@@ -1677,7 +1683,7 @@
                         this.successList.push({ name: "Telephone", value: this.teleGames });
                         this.successList.push({ name: "Prize", value: this.prize.join(", ") });
                         if (this.prize.includes('PD23 voucher')) {
-                            this.successList.push({ name: "Voucher Serial Number", value: this.sNoGames.join(", ") });
+                            this.successList.push({ name: "Voucher Serial Number", value: this.prevSNoGames.join(", ") });
                         }
                         this.successList.push({ name: "Location", value: this.locationGames });
                         this.successList.push({ name: "Date", value: d });
