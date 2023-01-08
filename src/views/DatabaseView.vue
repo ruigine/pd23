@@ -1624,6 +1624,8 @@
                 if (item.serialNum) {
                     this.sNoGames = item.serialNum;
                     this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ));
+                } else {
+                    this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ));
                 }
 
                 var d = new Date(item.date.seconds*1000);
