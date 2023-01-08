@@ -126,6 +126,7 @@
                     s => !!s || 'Field is required',
                     s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number'
                 ],
+                prevSNo: [],
                 sNo: [],
                 sNos: [],
                 sNoRules: [
@@ -171,6 +172,10 @@
             this.voucherList = v;
             console.log(this.voucherList);
             this.sNos = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherList.includes( sn ) );
+            if (this.sNo.length != 0 && !this.sNos.includes(this.sNo)) {
+                this.prevSNo = this.sNo;
+                this.sNo = [];
+            }
 
             if (this.matricNo && this.sNo && this.location) {
                 this.$refs.form.validate()
@@ -198,7 +203,7 @@
                     this.successList.push({ name: "Telephone", value: this.tele });
                     this.successList.push({ name: "Prize", value: this.prize.join(", ") });
                     if (this.prize.includes('PD23 voucher')) {
-                        this.successList.push({ name: "Voucher Serial Number", value: this.sNo.join(", ") });
+                        this.successList.push({ name: "Voucher Serial Number", value: this.prevSNo.join(", ") });
                     }
                     this.successList.push({ name: "Location", value: this.location });
 
