@@ -1031,6 +1031,7 @@
                 dateVR: null,
                 matricRulesVR: [
                     m => !!m || 'Field is required',
+                    m => String(m)[0] == "0" || "Invalid matriculation number",
                     m => m.length == 8 || 'Matriculation number must be 8 digits long',
                     m => (this.matricListVR.includes(m) == false || m == this.currVR.matricNum) || 'Matriculation number is already in database',
                 ],

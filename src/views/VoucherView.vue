@@ -79,6 +79,7 @@
                 sNo: '',
                 matricRules: [
                     m => !!m || 'Field is required',
+                    m => String(m)[0] == "0" || "Invalid matriculation number",
                     m => (m && m.length == 8) || 'Matriculation number must be 8 digits long',
                     m => this.matricList.includes(m) == false || 'Matriculation number is already in database',
                 ],
