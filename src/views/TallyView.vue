@@ -27,6 +27,7 @@
                 ></v-text-field>
             </template>
             </v-data-table>
+            <h3 class="my-8">Total Redeemed: {{redeemedCountPrize}}</h3>
 
             <h1 class="my-12">Voucher Redemption</h1>
             <v-data-table
@@ -46,6 +47,8 @@
                 ></v-text-field>
             </template>
             </v-data-table>
+            <h3 class="my-8">Total Redeemed: {{redeemedCountVouchers}}</h3>
+
         </template>
 
         <!--Detailed-->
@@ -140,6 +143,8 @@
                 dataGames: [],
                 dataC1: [],
                 dataC2: [],
+                redeemedCountPrize: 0,
+                redeemedCountVouchers: 0,
             }
         },
         created() {
@@ -161,7 +166,8 @@
             s = s.filter(sn => !!sn)
             console.log(v);
             console.log(s);
-            
+            this.redeemedCountPrize = s.length
+
             var range = []; var bool = "";
             for (var i=1901; i<=2580; i++) {
                 if (i == 1901) {
@@ -219,6 +225,7 @@
             })
             console.log(v);
             console.log(s);
+            this.redeemedCountVouchers = s.length
             
             var range = []; var bool = "";
             for (var i=2581; i<=5880; i++) {
