@@ -656,7 +656,7 @@
                     <v-form v-model="validLD" ref="formLD">
                         <v-row class="pa-6 ma-0">
                             <v-col cols="12">
-                                <h1 class="mb-12">Lucky Draw</h1>
+                                <h1 class="mb-12">Roadshow Giveaway</h1>
                                 <v-text-field
                                     v-model="nameLD"
                                     color="#000"
@@ -1015,6 +1015,7 @@
                     n => !!n || 'Field is required',
                 ],
                 matricRulesLD: [
+                    m => String(m)[0] == "0" || "Invalid matriculation number",
                     m => (!m || (!!m && m.length == 8)) || 'Matriculation number must be 8 digits long'
                 ],
                 teleRulesLD: [

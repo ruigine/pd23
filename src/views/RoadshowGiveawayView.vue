@@ -81,6 +81,7 @@
                     n => !!n || 'Field is required',
                 ],
                 matricRules: [
+                    m => String(m)[0] == "0" || "Invalid matriculation number",
                     m => (!m || (!!m && m.length == 8)) || 'Matriculation number must be 8 digits long'
                 ],
                 teleRules: [
