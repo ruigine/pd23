@@ -27,7 +27,20 @@
                 ></v-text-field>
             </template>
             </v-data-table>
-            <h3 class="my-8">Total Redeemed: {{redeemedCountPrize}}</h3>
+            <v-expansion-panels class="pt-6">
+                <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        <b>Total Redeemed</b>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        Monday: {{redeemedCountPrize[0]}}<br/>
+                        Tuesday: {{redeemedCountPrize[1]}}<br/>
+                        Wednesday: {{redeemedCountPrize[2]}}<br/>
+                        Thursday: {{redeemedCountPrize[3]}}
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
+
 
             <h1 class="my-12">Voucher Redemption</h1>
             <v-data-table
@@ -47,7 +60,19 @@
                 ></v-text-field>
             </template>
             </v-data-table>
-            <h3 class="my-8">Total Redeemed: {{redeemedCountVouchers}}</h3>
+            <v-expansion-panels class="pt-6">
+                <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        <b>Total Redeemed</b>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                        Monday: {{redeemedCountVouchers[0]}}<br/>
+                        Tuesday: {{redeemedCountVouchers[1]}}<br/>
+                        Wednesday: {{redeemedCountVouchers[2]}}<br/>
+                        Thursday: {{redeemedCountVouchers[3]}}
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
 
         </template>
 
@@ -143,17 +168,35 @@
                 dataGames: [],
                 dataC1: [],
                 dataC2: [],
-                redeemedCountPrize: 0,
-                redeemedCountVouchers: 0,
+                redeemedCountPrize: [0, 0, 0, 0],
+                redeemedCountVouchers: [0, 0, 0, 0],
             }
         },
         created() {
             //Games
             const gRef = query(collection(db, 'prize'), orderBy("serialNum"));
             onSnapshot(gRef, (querySnapshot) => {
-            var v = {}; var s = [];
+            var v = {}; var s = []; this.redeemedCountPrize = [0, 0, 0, 0];
             querySnapshot.docs.forEach((doc) => {
                 var d = new Date(doc.data().date.seconds*1000);
+
+                // Monday
+                if (d.toDateString() == new Date('2023-01-09').toDateString()) {
+                    this.redeemedCountPrize[0] += doc.data().serialNum.length;
+                }
+                // Tuesday
+                if (d.toDateString() == new Date('2023-01-10').toDateString()) {
+                    this.redeemedCountPrize[1] += doc.data().serialNum.length;
+                }
+                // Wednesday
+                if (d.toDateString() == new Date('2023-01-11').toDateString()) {
+                    this.redeemedCountPrize[2] += doc.data().serialNum.length;
+                }
+                // Thursday
+                if (d.toDateString() == new Date('2023-01-12').toDateString()) {
+                    this.redeemedCountPrize[3] += doc.data().serialNum.length;
+                }
+
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 
                 for (var sn of doc.data().serialNum) {
@@ -166,7 +209,7 @@
             s = s.filter(sn => !!sn)
             console.log(v);
             console.log(s);
-            this.redeemedCountPrize = s.length
+
 
             var range = []; var bool = "";
             for (var i=1901; i<=2580; i++) {
@@ -214,9 +257,27 @@
             //Vouchers
             const vRef = query(collection(db, 'vouchers'), orderBy("serialNum"));
             onSnapshot(vRef, (querySnapshot) => {
-            var v = {}; var s = [];
+            var v = {}; var s = []; this.redeemedCountVouchers = [0, 0, 0, 0];
             querySnapshot.docs.forEach((doc) => {
                 var d = new Date(doc.data().date.seconds*1000);
+
+                // Monday
+                if (d.toDateString() == new Date('2023-01-09').toDateString()) {
+                    this.redeemedCountVouchers[0] += 1;
+                }
+                // Tuesday
+                if (d.toDateString() == new Date('2023-01-10').toDateString()) {
+                    this.redeemedCountVouchers[1] += 1;
+                }
+                // Wednesday
+                if (d.toDateString() == new Date('2023-01-11').toDateString()) {
+                    this.redeemedCountVouchers[2] += 1;
+                }
+                // Thursday
+                if (d.toDateString() == new Date('2023-01-12').toDateString()) {
+                    this.redeemedCountVouchers[3] += 1;
+                }
+
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
 
                 v[Number(doc.data().serialNum)] = { ...doc.data() };
@@ -225,8 +286,8 @@
             })
             console.log(v);
             console.log(s);
-            this.redeemedCountVouchers = s.length
-            
+
+
             var range = []; var bool = "";
             for (var i=2581; i<=5880; i++) {
                 if (i == 2581) {
