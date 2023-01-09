@@ -86,6 +86,7 @@
                 ],
                 teleRules: [
                     s => !!s || 'Field is required',
+                    s => (String(s)[0] == "8" || String(s)[0] == "9") || "Invalid telephone number",
                     s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number'
                 ],
                 successList: [],
