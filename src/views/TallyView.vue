@@ -36,7 +36,8 @@
                         Monday: {{redeemedCountPrize[0]}}<br/>
                         Tuesday: {{redeemedCountPrize[1]}}<br/>
                         Wednesday: {{redeemedCountPrize[2]}}<br/>
-                        Thursday: {{redeemedCountPrize[3]}}
+                        Thursday: {{redeemedCountPrize[3]}}<br/>
+                        Friday: {{redeemedCountPrize[4]}}
                     </v-expansion-panel-content>
                 </v-expansion-panel>
             </v-expansion-panels>
@@ -69,7 +70,8 @@
                         Monday: {{redeemedCountVouchers[0]}}<br/>
                         Tuesday: {{redeemedCountVouchers[1]}}<br/>
                         Wednesday: {{redeemedCountVouchers[2]}}<br/>
-                        Thursday: {{redeemedCountVouchers[3]}}
+                        Thursday: {{redeemedCountVouchers[3]}}<br/>
+                        Friday: {{redeemedCountVouchers[4]}}
                     </v-expansion-panel-content>
                 </v-expansion-panel>
             </v-expansion-panels>
@@ -168,15 +170,15 @@
                 dataGames: [],
                 dataC1: [],
                 dataC2: [],
-                redeemedCountPrize: [0, 0, 0, 0],
-                redeemedCountVouchers: [0, 0, 0, 0],
+                redeemedCountPrize: [0, 0, 0, 0, 0],
+                redeemedCountVouchers: [0, 0, 0, 0, 0],
             }
         },
         created() {
             //Games
             const gRef = query(collection(db, 'prize'), orderBy("serialNum"));
             onSnapshot(gRef, (querySnapshot) => {
-            var v = {}; var s = []; this.redeemedCountPrize = [0, 0, 0, 0];
+            var v = {}; var s = []; this.redeemedCountPrize = [0, 0, 0, 0, 0];
             querySnapshot.docs.forEach((doc) => {
                 var d = new Date(doc.data().date.seconds*1000);
 
@@ -195,6 +197,10 @@
                 // Thursday
                 if (d.toDateString() == new Date('2023-01-12').toDateString()) {
                     this.redeemedCountPrize[3] += doc.data().serialNum.length;
+                }
+                // Friday
+                if (d.toDateString() == new Date('2023-01-13').toDateString()) {
+                    this.redeemedCountPrize[4] += doc.data().serialNum.length;
                 }
 
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
@@ -257,7 +263,7 @@
             //Vouchers
             const vRef = query(collection(db, 'vouchers'), orderBy("serialNum"));
             onSnapshot(vRef, (querySnapshot) => {
-            var v = {}; var s = []; this.redeemedCountVouchers = [0, 0, 0, 0];
+            var v = {}; var s = []; this.redeemedCountVouchers = [0, 0, 0, 0, 0];
             querySnapshot.docs.forEach((doc) => {
                 var d = new Date(doc.data().date.seconds*1000);
 
@@ -276,6 +282,10 @@
                 // Thursday
                 if (d.toDateString() == new Date('2023-01-12').toDateString()) {
                     this.redeemedCountVouchers[3] += 1;
+                }
+                // Friday
+                if (d.toDateString() == new Date('2023-01-13').toDateString()) {
+                    this.redeemedCountVouchers[4] += 1;
                 }
 
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
