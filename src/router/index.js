@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Prize from "../views/PrizeView.vue";
 import HOTO from "../views/HOTOView.vue";
 import RoadshowGiveaway from "../views/RoadshowGiveawayView.vue";
+import HourlyDrop from "../views/HourlyDropView.vue";
 import Login from "../views/LoginView.vue";
 import Voucher from "../views/VoucherView.vue";
 import Tally from "../views/TallyView.vue";
@@ -70,6 +71,12 @@ const routes = [
     path: "/roadshowGiveaway",
     name: "Roadshow Giveaway",
     component: RoadshowGiveaway,
+    beforeEnter: guardMyroute,
+  },
+  {
+    path: "/hourlyDrop",
+    name: "Hourly Drop",
+    component: HourlyDrop,
     beforeEnter: guardMyroute,
   },
   {
