@@ -21,15 +21,27 @@
                         type="number"
                         required
                     ></v-text-field>
-                    <v-select
-                        v-model="prize"
-                        color="#000"
-                        :items="prizes"
-                        label="Prize"
-                        :rules="prizeRules"
-                        multiple
-                        required
-                    ></v-select>
+                    <v-row>
+                        <v-col cols="8">
+                            <v-select
+                                v-model="prize"
+                                color="#000"
+                                :items="prizes"
+                                label="Prize"
+                                :rules="prizeRules"
+                                multiple
+                                required
+                            ></v-select>
+                        </v-col>
+                        <v-col>
+                            <v-switch
+                                v-model="hourly"
+                                label="Hourly Drop"
+                                color="success"
+                                hide-details
+                            ></v-switch>
+                        </v-col>
+                    </v-row>
                     <v-autocomplete
                         v-if="prize.includes('PD23 voucher')"
                         hint="You may enter multiple S/Ns"
@@ -63,14 +75,6 @@
                             <span>Multi-select</span>
                         </v-tooltip>
                     </v-autocomplete>
-                    <v-select
-                        v-model="location"
-                        color="#000"
-                        :items="items"
-                        label="Location"
-                        :rules="locRules"
-                        required
-                    ></v-select>
                     <v-btn v-if="valid" class="mt-6" @click="submit" color="#d4ecd6">Submit</v-btn>
                     <v-btn v-else class="mt-6" disabled>Submit</v-btn>
                 </v-col>
@@ -116,6 +120,8 @@
                 show: false,
                 dialog: false,
                 voucherList: [],
+                hourly: false,
+                teleList: [],
                 valid: false,
                 name: '',
                 nameRules: [
@@ -125,7 +131,8 @@
                 teleRules: [
                     s => !!s || 'Field is required',
                     s => (String(s)[0] == "8" || String(s)[0] == "9") || "Invalid telephone number",
-                    s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number'
+                    s => (!s || (!!s && s.length == 8)) || 'Invalid telephone number',
+                    s => ( !this.hourly || (this.hourly && !this.teleList.includes(s)) ) || "Already Redeemed"
                 ],
                 prevSNo: [],
                 sNo: [],
@@ -133,10 +140,6 @@
                 sNoRules: [
                     s => s.length > 0 || 'Field is required',
                 ],
-                locRules: [
-                    s => !!s || 'Field is required',
-                ],
-                items: ['Koufu', 'SOB', 'Connexion'],
                 prizeRules: [
                     p => p.length > 0 || 'Field is required',
                 ],
@@ -157,45 +160,59 @@
                     'SSOD Sports bag',
                     'The SMU Shop 20% OFF voucher',
                 ],
-                location: null,
                 successList: [],
             }
         },
         created(){
-            const gRef = collection(db, 'prize');
+            const gRef = collection(db, 'dummy');
             onSnapshot(gRef, (snapshot) => {
-            var v = [];
+            var v = []; var t = [];
             snapshot.docs.forEach((doc) => {
                 if (doc.data().serialNum) {
                     v = v.concat(doc.data().serialNum);
                 }
+                if (doc.data().hourly) {
+                    t.push(doc.data().telephone)
+                }
             })
             this.voucherList = v;
             console.log(this.voucherList);
+
+            this.teleList = t;
+            console.log(this.teleList);
+
             this.sNos = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherList.includes( sn ) );
             if (this.sNo.length != 0 && !this.sNos.includes(this.sNo)) {
                 this.prevSNo = this.sNo;
                 this.sNo = [];
             }
 
-            if (this.matricNo && this.sNo && this.location) {
+            if (this.name && this.tele && this.prize) {
                 this.$refs.form.validate()
             }
             });       
         },
+        watch: {
+            hourly() {
+                this.$refs.form.validate()
+            }
+        },
         methods: {
             submit() {
-                const gRef = collection(db, "prize");
+                const gRef = collection(db, "dummy");
                 var temp = {
                     name: this.name,
                     telephone: this.tele,
                     prize: this.prize,
-                    location: this.location,
+                    location: "SMOO Hub",
                     date: firebase.firestore.Timestamp.fromDate(new Date()),
                     email: this.$store.state.user.email
                 }
                 if (this.prize.includes('PD23 voucher')) {
                     temp['serialNum'] = this.sNo
+                }
+                if (this.hourly) {
+                    temp['hourly'] = true
                 }
                 addDoc(gRef, temp)
                 .then((snapshot) => {
@@ -206,7 +223,9 @@
                     if (this.prize.includes('PD23 voucher')) {
                         this.successList.push({ name: "Voucher Serial Number", value: this.prevSNo.join(", ") });
                     }
-                    this.successList.push({ name: "Location", value: this.location });
+                    if (this.hourly) {
+                        this.successList.push({ name: "Hourly Drop?", value: "Yes" });
+                    }
 
                     this.dialog = true;
                     this.$refs.form.reset();
