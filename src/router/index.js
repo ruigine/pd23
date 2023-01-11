@@ -3,7 +3,6 @@ import VueRouter from "vue-router";
 import Prize from "../views/PrizeView.vue";
 import HOTO from "../views/HOTOView.vue";
 import RoadshowGiveaway from "../views/RoadshowGiveawayView.vue";
-import HourlyDrop from "../views/HourlyDropView.vue";
 import Login from "../views/LoginView.vue";
 import Voucher from "../views/VoucherView.vue";
 import Tally from "../views/TallyView.vue";
@@ -22,6 +21,7 @@ function guardMyroute(to, from, next) {
       console.log(user)
 
       var accessArr = [
+        'pd23bigboss@gmail.com',
         'lynette.lim.2022@smu.edu.sg',
         'jkelsie.2021@smu.edu.sg',
         'ziyang.lai.2021@smu.edu.sg',
@@ -36,10 +36,6 @@ function guardMyroute(to, from, next) {
       ]
 
       if (accessArr.includes( (user.email).toLowerCase() )) {
-        if (to.name != "Hourly Drop") {
-          next();
-        }
-      } else if (user.email == 'pd23bigboss@gmail.com') {
         next();
       } else {
         if (to.name == "HOTO" || to.name == "Roadshow Giveaway" || to.name == "Voucher" || to.name == "Prize" || to.name == "Database") {
@@ -74,12 +70,6 @@ const routes = [
     path: "/roadshowGiveaway",
     name: "Roadshow Giveaway",
     component: RoadshowGiveaway,
-    beforeEnter: guardMyroute,
-  },
-  {
-    path: "/hourlyDrop",
-    name: "Hourly Drop",
-    component: HourlyDrop,
     beforeEnter: guardMyroute,
   },
   {
