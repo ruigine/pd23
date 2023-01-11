@@ -22,7 +22,6 @@ function guardMyroute(to, from, next) {
       console.log(user)
 
       var accessArr = [
-        'pd23bigboss@gmail.com',
         'lynette.lim.2022@smu.edu.sg',
         'jkelsie.2021@smu.edu.sg',
         'ziyang.lai.2021@smu.edu.sg',
@@ -37,6 +36,10 @@ function guardMyroute(to, from, next) {
       ]
 
       if (accessArr.includes( (user.email).toLowerCase() )) {
+        if (to.name != "Hourly Drop") {
+          next();
+        }
+      } else if (user.email == 'pd23bigboss@gmail.com') {
         next();
       } else {
         if (to.name == "HOTO" || to.name == "Roadshow Giveaway" || to.name == "Voucher" || to.name == "Prize" || to.name == "Database") {
