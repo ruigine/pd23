@@ -218,35 +218,35 @@
                     labels: [ '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00' ],
                     datasets: [ 
                         {
-                            data: [0, 0, 0, 0, 0, 0, 0] ,
+                            data: [] ,
                             label: 'Monday',
                             borderColor: [
                                 'rgba(255, 99, 132, 0.5)'
                             ],
                         },
                         {
-                            data: [0, 0, 0, 0, 0, 0, 0] ,
+                            data: [] ,
                             label: 'Tuesday',
                             borderColor: [
                                 'rgba(255, 159, 64, 0.5)'
                             ],
                         },
                         {
-                            data: [0, 0, 0, 0, 0, 0, 0] ,
+                            data: [] ,
                             label: 'Wednesday',
                             borderColor: [
                                 'rgba(255, 205, 86, 0.5)'
                             ],
                         },
                         {
-                            data: [0, 0, 0, 0, 0, 0, 0] ,
+                            data: [] ,
                             label: 'Thursday',
                             borderColor: [
                                 'rgba(75, 192, 192, 0.5)'
                             ],
                         },
                         {
-                            data: [0, 0, 0, 0, 0, 0, 0] ,
+                            data: [] ,
                             label: 'Friday',
                             borderColor: [
                                 'rgba(54, 162, 235, 0.5)'
@@ -304,35 +304,35 @@
                     labels: [ '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00' ],
                     datasets: [ 
                         {
-                            data: [0, 0, 0, 0, 0, 0, 0] ,
+                            data: [] ,
                             label: 'Monday',
                             borderColor: [
                                 'rgba(255, 99, 132, 0.5)'
                             ],
                         },
                         {
-                            data: [0, 0, 0, 0, 0, 0, 0] ,
+                            data: [] ,
                             label: 'Tuesday',
                             borderColor: [
                                 'rgba(255, 159, 64, 0.5)'
                             ],
                         },
                         {
-                            data: [0, 0, 0, 0, 0, 0, 0] ,
+                            data: [] ,
                             label: 'Wednesday',
                             borderColor: [
                                 'rgba(255, 205, 86, 0.5)'
                             ],
                         },
                         {
-                            data: [0, 0, 0, 0, 0, 0, 0] ,
+                            data: [] ,
                             label: 'Thursday',
                             borderColor: [
                                 'rgba(75, 192, 192, 0.5)'
                             ],
                         },
                         {
-                            data: [0, 0, 0, 0, 0, 0, 0] ,
+                            data: [] ,
                             label: 'Friday',
                             borderColor: [
                                 'rgba(54, 162, 235, 0.5)'
