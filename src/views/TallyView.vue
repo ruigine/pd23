@@ -396,6 +396,7 @@
                 { text: 'Location', value: 'location' },
                 { text: 'Date', value: 'date' },
                 { text: 'Email', value: 'email' },
+                { text: 'Hourly?', value: 'HD'}
                 ],
                 headersC: [
                 {
@@ -506,6 +507,13 @@
                     if (s.includes(i)) {
                         v[i]["isAvailable"] = "No";
                         v[i]["serialNum"] = i;
+
+                        if (v[i]["hourly"]) {
+                            v[i]["HD"] = "Yes";
+                        } else {
+                            v[i]["HD"] = "No";
+                        }
+
                         this.dataGames.push(v[i]);
                     } else {
                         this.dataGames.push({

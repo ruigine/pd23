@@ -21,14 +21,6 @@
                         type="number"
                         required
                     ></v-text-field>
-                    <v-select
-                        v-model="location"
-                        color="#000"
-                        :items="items"
-                        label="Location"
-                        :rules="locRules"
-                        required
-                    ></v-select>
                     <v-btn v-if="valid" class="mt-6" @click="submit" color="#d4ecd6">Submit</v-btn>
                     <v-btn v-else class="mt-6" disabled>Submit</v-btn>
                 </v-col>
@@ -88,11 +80,6 @@
                     s => (2581 <= Number(s) && Number(s) <= 5880) || 'Invalid voucher S/N',
                     s => this.voucherList.includes(s) == false || 'Voucher has already been redeemed',
                 ],
-                locRules: [
-                    s => !!s || 'Field is required',
-                ],
-                items: ['Koufu', 'SOB', 'Connexion'],
-                location: null,
                 successList: [],
             }
         },
@@ -109,7 +96,7 @@
 
             this.matricList = m;
             console.log(this.matricList);
-            if (this.matricNo && this.sNo && this.location) {
+            if (this.matricNo && this.sNo) {
                 this.$refs.form.validate()
             }
             }); 
@@ -120,7 +107,7 @@
                 addDoc(vRef, {
                     serialNum: this.sNo,
                     matricNum: this.matricNo,
-                    location: this.location,
+                    location: "SMOO Hub",
                     date: firebase.firestore.Timestamp.fromDate(new Date()),
                     email: this.$store.state.user.email
                 })
@@ -128,7 +115,6 @@
                     this.successList = [];
                     this.successList.push({ name: "Voucher Serial Number", value: this.sNo });
                     this.successList.push({ name: "Matriculation Number", value: this.matricNo });
-                    this.successList.push({ name: "Location", value: this.location });
 
                     this.dialog = true;
                     this.$refs.form.reset();

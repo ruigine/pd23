@@ -475,15 +475,27 @@
                                 type="number"
                                 required
                             ></v-text-field>
-                            <v-select
-                                v-model="prize"
-                                color="#000"
-                                :items="prizes"
-                                label="Prize"
-                                :rules="prizeRules"
-                                multiple
-                                required
-                            ></v-select>
+                            <v-row>
+                                <v-col cols="8">
+                                    <v-select
+                                        v-model="prize"
+                                        color="#000"
+                                        :items="prizes"
+                                        label="Prize"
+                                        :rules="prizeRules"
+                                        multiple
+                                        required
+                                    ></v-select>
+                                </v-col>
+                                <v-col>
+                                    <v-switch
+                                        v-model="hourly"
+                                        label="Hourly Drop"
+                                        color="success"
+                                        hide-details
+                                    ></v-switch>
+                                </v-col>
+                            </v-row>
                             <v-autocomplete
                                 v-if="prize.includes('PD23 voucher')"
                                 hint="You may enter multiple S/Ns"
@@ -522,7 +534,7 @@
                                 color="#000"
                                 :items="items"
                                 label="Location"
-                                :rules="locRules"
+                                :rules="locRulesGames"
                                 required
                             ></v-select>
                             <v-text-field
@@ -809,7 +821,7 @@
 </template>
 <script>
     import { db } from "../firebase/firebaseinit";
-    import { doc, collection, getDocs, onSnapshot, addDoc, updateDoc, query, where, orderBy, deleteDoc } from "firebase/firestore";
+    import { doc, collection, getDocs, onSnapshot, addDoc, updateDoc, deleteField, query, where, orderBy, deleteDoc } from "firebase/firestore";
     import firebase from 'firebase/compat/app';
     import 'firebase/compat/auth';
     import 'firebase/compat/firestore';
@@ -883,6 +895,7 @@
                 { text: 'Location', value: 'location' },
                 { text: 'Date', value: 'datestamp' },
                 { text: 'Email', value: 'email' },
+                { text: 'Hourly?', value: 'HD' },
                 { text: 'Deleted Date', value: 'deleteDate' }                ],
                 dataDelGames: null,
                 searchDelHOTO: "",
@@ -951,6 +964,7 @@
                 { text: 'Location', value: 'location' },
                 { text: 'Date', value: 'datestamp' },
                 { text: 'Email', value: 'email' },
+                { text: 'Hourly?', value: 'HD' },
                 { text: 'Actions', value: 'actions', sortable: false, width: '80px' }
                 ],
                 dataVR: [],
@@ -1002,7 +1016,7 @@
                     e => !!e || 'Field is required',
                     e => (e && this.dateOrder()) || 'End date must be after start date',
                 ],
-                items: ['Koufu', 'SOB', 'Connexion'],
+                items: ['Koufu', 'SOB', 'Connexion', 'SMOO Hub'],
                 locationHOTO: null,
                 currHOTO: null,
 
@@ -1049,20 +1063,27 @@
                 currVR: null,
 
                 //Games
+                hourly: false,
                 voucherListGames: [],
+                teleListGames: [],
                 teleGames: '',
                 prevSNoGames: [],
                 sNoGames: [],
                 sNosGames: [],
                 dateGames: null,
                 locationGames: null,
+                locRulesGames: [
+                    l => !!l || 'Field is required',
+                    l => (!this.hourly || (this.hourly && this.locationGames == "SMOO Hub")) || 'Invalid location for hourly drop'
+                ],
                 sNoRulesGames: [
                     s => s.length > 0 || 'Field is required',
                 ],
                 teleRulesGames: [
                     s => !!s || 'Field is required',
                     s => (String(s)[0] == "8" || String(s)[0] == "9") || "Invalid telephone number",
-                    s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number'
+                    s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number',
+                    s => ( !this.hourly || (this.hourly && !this.teleListGames.includes(s)) || s == this.currGames.telephone ) || "Already Redeemed"
                 ],
                 currGames: null,
                 saved: false,
@@ -1141,7 +1162,7 @@
             //Prize
             const gRef = query(collection(db, 'prize'), orderBy('date', 'desc'));
             onSnapshot(gRef, (querySnapshot) => {
-            this.dataGames = []; var s = [];
+            this.dataGames = []; var s = []; var t = [];
             querySnapshot.docs.forEach((doc) => {
                 this.dataGames.push({ ...doc.data(), id: doc.id })
 
@@ -1154,11 +1175,25 @@
                     this.dataGames[this.dataGames.length-1]["sNos"] = (doc.data().serialNum).join(", ");
                 }
 
+                if (doc.data().hourly) {
+                    t.push(doc.data().telephone)
+                }
+
+                if (doc.data().hourly) {
+                    this.dataGames[this.dataGames.length-1]["HD"] = "Yes";
+                } else {
+                    this.dataGames[this.dataGames.length-1]["HD"] = "No";
+                }
+
                 this.dataGames[this.dataGames.length-1]["prizes"] = (doc.data().prize).join(", ");
             })
             console.log(this.dataGames);
             this.voucherListGames = s;
             console.log(this.voucherListGames);
+
+            this.teleListGames = t;
+            console.log(this.teleListGames);
+
             if (this.dialogGames && this.prize.includes('PD23 voucher')) {
                 this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ))
             }
@@ -1168,7 +1203,7 @@
                 this.sNoGames = [];
             }
 
-            if (this.teleGames && this.sNoGames && this.locationGames && !this.saved) {
+            if (this.teleGames && this.name && this.prize && this.locationGames && !this.saved) {
                 this.$refs.formGames.validate()
             } else {
                 this.saved = false;
@@ -1195,9 +1230,17 @@
                 this.expandLD = null;
                 this.expandVR = null;
                 this.expandGames = null;
-            }
+            },
+            hourly() {
+                if (this.$refs.formGames) {
+                    this.$refs.formGames.validate()
+                }
+            },
         },
         methods: {
+            toSMOO() {
+                this.locationGames = "SMOO Hub"
+            },
             //Del
             expand() {
                 if (this.tab == 0) {
@@ -1266,6 +1309,12 @@
 
                             if (doc.data().serialNum) {
                                 this.dataDelGames[this.dataDelGames.length-1]["serialNum"] = (doc.data().serialNum).join(", ");
+                            }
+
+                            if (doc.data().hourly) {
+                                this.dataDelGames[this.dataDelGames.length-1]["HD"] = "Yes";
+                            } else {
+                                this.dataDelGames[this.dataDelGames.length-1]["HD"] = "No";
                             }
 
                             this.dataDelGames[this.dataDelGames.length-1]["prize"] = (doc.data().prize).join(", ");
@@ -1639,6 +1688,12 @@
                     this.sNosGames = (Array.from(Array(2581).keys()).slice(1901)).filter( ( sn ) => !this.voucherListGames.includes( sn ));
                 }
 
+                if (item.hourly) {
+                    this.hourly = item.hourly;
+                } else {
+                    this.hourly = false;
+                }
+
                 var d = new Date(item.date.seconds*1000);
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dateGames = d;
@@ -1647,7 +1702,7 @@
             },
             saveGames() {
                 this.saved = true;
-                const gRef = doc(db, "prize", this.currGames.id);
+                const gRef = doc(db, 'prize', this.currGames.id);
                 var toUp = {
                     name: this.name,
                     telephone: this.teleGames,
@@ -1659,6 +1714,12 @@
                     toUp['serialNum'] = this.sNoGames
                 } else {
                     toUp['serialNum'] = ""
+                }
+                
+                if (this.hourly) {
+                    toUp['hourly'] = this.hourly
+                } else {
+                    toUp['hourly'] = deleteField()
                 }
 
                 var toAdd = {
@@ -1672,6 +1733,9 @@
                 }
                 if (this.currGames.prize.includes('PD23 voucher')) {
                     toAdd['serialNum'] = this.currGames.serialNum
+                }
+                if ('hourly' in this.currGames) {
+                    toAdd['hourly'] = this.currGames.hourly
                 }
 
                 updateDoc(gRef, toUp)
@@ -1689,6 +1753,7 @@
                         if (this.prize.includes('PD23 voucher')) {
                             this.successList.push({ name: "Voucher Serial Number", value: this.prevSNoGames.join(", ") });
                         }
+                        this.successList.push({ name: "Hourly Drop?", value: this.hourly ? "Yes" : "No"});
                         this.successList.push({ name: "Location", value: this.locationGames });
                         this.successList.push({ name: "Date", value: d });
 
@@ -1720,11 +1785,14 @@
                 if (this.delGames.prize.includes('PD23 voucher')) {
                     toDel['serialNum'] = this.delGames.serialNum
                 }
+                if ('hourly' in this.delGames) {
+                    toDel['hourly'] = this.delGames.hourly
+                }
 
                 deleteDoc(doc(db, 'prize', this.delGames.id), {
                 })
                 .then((snapshot) => {
-                    addDoc(collection(db, "deletedPrize"), toDel)
+                    addDoc(collection(db, 'deletedPrize'), toDel)
                     .then((snapshot) => {
                         this.successList = [];
 
@@ -1809,6 +1877,12 @@
 
                                 if (doc.data().serialNum) {
                                     this.dataEdit[this.dataEdit.length-1]["sNos"] = (doc.data().serialNum).join(", ");
+                                }
+
+                                if (doc.data().hourly) {
+                                    this.dataEdit[this.dataEdit.length-1]["HD"] = "Yes";
+                                } else {
+                                    this.dataEdit[this.dataEdit.length-1]["HD"] = "No";
                                 }
 
                                 this.dataEdit[this.dataEdit.length-1]["prizes"] = (doc.data().prize).join(", ");

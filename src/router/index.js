@@ -36,9 +36,11 @@ function guardMyroute(to, from, next) {
       ]
 
       if (accessArr.includes( (user.email).toLowerCase() )) {
-        next();
+        if (to.name != "Roadshow Giveaway") {
+          next();
+        }
       } else {
-        if (to.name == "HOTO" || to.name == "Roadshow Giveaway" || to.name == "Voucher" || to.name == "Prize" || to.name == "Database") {
+        if (to.name == "HOTO" || to.name == "Voucher" || to.name == "Prize" || to.name == "Database") {
           next();
         }
       }      

@@ -89,14 +89,6 @@
                         </v-col>
                     </v-row>
 
-                    <v-select
-                        v-model="location"
-                        color="#000"
-                        :items="items"
-                        label="Location"
-                        :rules="locRules"
-                        required
-                    ></v-select>
                     <v-btn v-if="valid" class="mt-6" @click="submit" color="#d4ecd6">Submit</v-btn>
                     <v-btn v-else class="mt-6" disabled>Submit</v-btn>
                 </v-col>
@@ -167,7 +159,6 @@
                     e => (e && this.dateOrder()) || 'End date must be after start date',
                 ],
                 items: ['Koufu', 'SOB', 'Connexion'],
-                location: null,
                 successList: [],
             }
         },
@@ -225,7 +216,7 @@
             },
             submit() {
                 addDoc(collection(db, 'hoto'), {
-                    location: this.location,
+                    location: "SMOO Hub",
                     serialNumStart: this.sNoStart.replaceAll(",", " ").trim(" ").split("  ").join(", "),
                     serialNumEnd: this.sNoEnd.replaceAll(",", " ").trim(" ").split("  ").join(", "),
                     startTime: firebase.firestore.Timestamp.fromDate(new Date(this.startTime)),
@@ -238,7 +229,6 @@
                     this.successList.push({ name: "Voucher Serial Number at the End", value: this.sNoEnd.replaceAll(",", " ").trim(" ").split("  ").join(", ") });
                     this.successList.push({ name: "Start Date", value: this.startTime.replace("T", " ") });
                     this.successList.push({ name: "End Date", value: this.endTime.replace("T", " ") });
-                    this.successList.push({ name: "Location", value: this.location });
 
                     this.dialog = true;
                     this.$refs.form.reset();
