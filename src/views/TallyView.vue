@@ -42,7 +42,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                                 >
-                                {{sortBy[typeP]}}
+                                {{sortBy[typeP]}} <v-icon>mdi-menu-down</v-icon>
                                 </v-btn>
                             </template>
                             <v-list>
@@ -104,7 +104,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                                 >
-                                {{sortBy[typeV]}}
+                                {{sortBy[typeV]}} <v-icon>mdi-menu-down</v-icon>
                                 </v-btn>
                             </template>
                             <v-list>
