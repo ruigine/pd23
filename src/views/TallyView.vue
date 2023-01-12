@@ -716,7 +716,7 @@
                     }
                     // Thursday
                     if (d.toDateString() == new Date('2023-01-12').toDateString()) {
-                        for (var th=10; th<=16; th++) {
+                        for (var th=10; th<=20; th++) {
                             if (d.getHours() == th) {
                                 this.chartDataV2.datasets[3].data[th-10] += 1
                             }
