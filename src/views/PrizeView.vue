@@ -164,7 +164,7 @@
             }
         },
         created(){
-            const gRef = collection(db, 'dummy');
+            const gRef = collection(db, 'prize');
             onSnapshot(gRef, (snapshot) => {
             var v = []; var t = [];
             snapshot.docs.forEach((doc) => {
@@ -199,7 +199,7 @@
         },
         methods: {
             submit() {
-                const gRef = collection(db, "dummy");
+                const gRef = collection(db, "prize");
                 var temp = {
                     name: this.name,
                     telephone: this.tele,

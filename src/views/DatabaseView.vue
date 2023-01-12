@@ -1160,7 +1160,7 @@
             });
 
             //Prize
-            const gRef = query(collection(db, 'dummy'), orderBy('date', 'desc'));
+            const gRef = query(collection(db, 'prize'), orderBy('date', 'desc'));
             onSnapshot(gRef, (querySnapshot) => {
             this.dataGames = []; var s = []; var t = [];
             querySnapshot.docs.forEach((doc) => {
@@ -1293,7 +1293,7 @@
                     }
                 } else if (this.tab == 2) {
                     if (!this.dataDelGames) {
-                        const gRef = query(collection(db, 'deletedDummy'), orderBy('deleteDate', 'desc'));
+                        const gRef = query(collection(db, 'deletedPrize'), orderBy('deleteDate', 'desc'));
                         onSnapshot(gRef, (querySnapshot) => {
                         this.dataDelGames = [];
                         querySnapshot.docs.forEach((doc) => {
@@ -1702,7 +1702,7 @@
             },
             saveGames() {
                 this.saved = true;
-                const gRef = doc(db, 'dummy', this.currGames.id);
+                const gRef = doc(db, 'prize', this.currGames.id);
                 var toUp = {
                     name: this.name,
                     telephone: this.teleGames,
@@ -1740,7 +1740,7 @@
 
                 updateDoc(gRef, toUp)
                 .then((snapshot) => {
-                    var colRef = collection(doc(db, 'dummy', this.currGames.id), "history");
+                    var colRef = collection(doc(db, 'prize', this.currGames.id), "history");
                     addDoc(colRef, toAdd)
                     .then((snapshot) => {
                         var d = new Date(this.dateGames);
@@ -1789,10 +1789,10 @@
                     toDel['hourly'] = this.delGames.hourly
                 }
 
-                deleteDoc(doc(db, 'dummy', this.delGames.id), {
+                deleteDoc(doc(db, 'prize', this.delGames.id), {
                 })
                 .then((snapshot) => {
-                    addDoc(collection(db, 'deletedDummy'), toDel)
+                    addDoc(collection(db, 'deletedPrize'), toDel)
                     .then((snapshot) => {
                         this.successList = [];
 
@@ -1862,7 +1862,7 @@
                         this.headersEdit = this.headersGames.slice(0, -1);
                         this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
                         
-                        getDocs(collection(doc(db, 'dummy', value.id), "history"))
+                        getDocs(collection(doc(db, 'prize', value.id), "history"))
                         .then((snapshot) => {
                             snapshot.docs.forEach((doc) => {
                                 this.dataEdit.push({ ...doc.data(), id: doc.id })
