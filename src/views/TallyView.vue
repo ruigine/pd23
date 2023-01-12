@@ -197,7 +197,7 @@
                     labels: [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday' ],
                     datasets: [ 
                         {
-                            data: [0, 0, 0, 0, 0] ,
+                            data: [0, 0, 0, 0, 0],
                             label: 'Redeemed',
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
@@ -215,7 +215,7 @@
                 },
                 // P Hour
                 chartDataP2: {
-                    labels: [ '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00' ],
+                    labels: [ '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00',' 17:00', '18:00', '19:00', '20:00', '21:00', '22:00' ],
                     datasets: [ 
                         {
                             data: [] ,
@@ -262,7 +262,7 @@
                     labels: [ 'Koufu', 'SOB', 'Connexion', 'SMOO Hub' ],
                     datasets: [ 
                         {
-                            data: [0, 0, 0, 0] ,
+                            data: [0, 0, 0, 0],
                             label: 'Redeemed',
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
@@ -283,7 +283,7 @@
                     labels: [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday' ],
                     datasets: [ 
                         {
-                            data: [0, 0, 0, 0, 0] ,
+                            data: [0, 0, 0, 0, 0],
                             label: 'Redeemed',
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
@@ -301,7 +301,7 @@
                 },
                 // V Hour
                 chartDataV2: {
-                    labels: [ '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00' ],
+                    labels: [ '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00',' 17:00', '18:00', '19:00', '20:00', '21:00', '22:00' ],
                     datasets: [ 
                         {
                             data: [] ,
@@ -625,11 +625,11 @@
             },
             getGamesHours() {
                 const gRef = query(collection(db, 'prize'), orderBy("date"));
-                this.chartDataP2.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
-                this.chartDataP2.datasets[1].data = [0, 0, 0, 0, 0, 0, 0];
-                this.chartDataP2.datasets[2].data = [0, 0, 0, 0, 0, 0, 0];
-                this.chartDataP2.datasets[3].data = [0, 0, 0, 0, 0, 0, 0];
-                this.chartDataP2.datasets[4].data = [0, 0, 0, 0, 0, 0, 0];
+                this.chartDataP2.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                this.chartDataP2.datasets[1].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                this.chartDataP2.datasets[2].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                this.chartDataP2.datasets[3].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                this.chartDataP2.datasets[4].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                 onSnapshot(gRef, (querySnapshot) => {
                 querySnapshot.docs.forEach((doc) => {
                     if (doc.data().serialNum) {
@@ -669,7 +669,7 @@
                         }
                         // Friday
                         if (d.toDateString() == new Date('2023-01-13').toDateString()) {
-                            for (var f=10; f<=16; f++) {
+                            for (var f=15; f<=22; f++) {
                                 if (d.getHours() == f) {
                                     this.chartDataP2.datasets[4].data[f-10] += doc.data().serialNum.length
                                 }
@@ -681,11 +681,11 @@
             },
             getVoucherHours() {
                 const vRef = query(collection(db, 'vouchers'), orderBy("date"));
-                this.chartDataV2.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
-                this.chartDataV2.datasets[1].data = [0, 0, 0, 0, 0, 0, 0];
-                this.chartDataV2.datasets[2].data = [0, 0, 0, 0, 0, 0, 0];
-                this.chartDataV2.datasets[3].data = [0, 0, 0, 0, 0, 0, 0];
-                this.chartDataV2.datasets[4].data = [0, 0, 0, 0, 0, 0, 0];
+                this.chartDataV2.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                this.chartDataV2.datasets[1].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                this.chartDataV2.datasets[2].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                this.chartDataV2.datasets[3].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                this.chartDataV2.datasets[4].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                 onSnapshot(vRef, (querySnapshot) => {
                 querySnapshot.docs.forEach((doc) => {
                     var d = new Date(doc.data().date.seconds*1000);
@@ -724,7 +724,7 @@
                     }
                     // Friday
                     if (d.toDateString() == new Date('2023-01-13').toDateString()) {
-                        for (var f=10; f<=16; f++) {
+                        for (var f=15; f<=22; f++) {
                             if (d.getHours() == f) {
                                 this.chartDataV2.datasets[4].data[f-10] += 1
                             }
