@@ -1053,7 +1053,7 @@
                 ],
                 sNoRulesVR: [
                     s => !!s || 'Field is required',
-                    s => (2421 <= Number(s) && Number(s) <= 5880) || 'Invalid voucher S/N',
+                    s => (this.$vouchersRange[0] <= Number(s) && Number(s) <= this.$vouchersRange[1]) || 'Invalid voucher S/N',
                     s => (this.voucherListVR.includes(s) == false || s == this.currVR.serialNum) || 'Voucher has already been redeemed',
                 ],
                 locRules: [
