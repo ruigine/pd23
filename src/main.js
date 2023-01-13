@@ -6,6 +6,10 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+// Global Variables
+Vue.prototype.$prizesRange = [1901, 2580];
+Vue.prototype.$vouchersRange = [2581, 5880];
+
 new Vue({
   vuetify,
   router,

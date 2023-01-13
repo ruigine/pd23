@@ -480,8 +480,8 @@
 
 
                 var range = []; var bool = "";
-                for (var i=1901; i<=2580; i++) {
-                    if (i == 1901) {
+                for (var i=this.$prizesRange[0]; i<=this.$prizesRange[1]; i++) {
+                    if (i == this.$prizesRange[0]) {
                         range.push(i);
                         bool = s.includes(i) ? "No" : "Yes";
                     } else {
@@ -495,10 +495,10 @@
                             range = [i];
                             bool = s.includes(i) ? "No" : "Yes";
 
-                            if (i == 2580) {
+                            if (i == this.$prizesRange[1]) {
                                 this.dataC1.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
                             }
-                        } else if (i == 2580) {
+                        } else if (i == this.$prizesRange[1]) {
                             range.push(i);
                             this.dataC1.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
                         }
@@ -583,8 +583,8 @@
 
 
                 var range = []; var bool = "";
-                for (var i=2581; i<=5880; i++) {
-                    if (i == 2581) {
+                for (var i=this.$vouchersRange[0]; i<=this.$vouchersRange[1]; i++) {
+                    if (i == this.$vouchersRange[0]) {
                         range.push(i);
                         bool = s.includes(i) ? "No" : "Yes";
                     } else {
@@ -598,10 +598,10 @@
                             range = [i];
                             bool = s.includes(i) ? "No" : "Yes";
 
-                            if (i == 5880) {
+                            if (i == this.$vouchersRange[1]) {
                                 this.dataC2.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
                             }
-                        } else if (i == 5880) {
+                        } else if (i == this.$vouchersRange[1]) {
                             range.push(i);
                             this.dataC2.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
                         }
