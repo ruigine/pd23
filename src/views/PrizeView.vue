@@ -145,6 +145,7 @@
                 ],
                 prize: [],
                 prizes: [
+                    'Mystery Drop 2x Ima-Sushi $5 Voucher (No min. spend), 2x Self Photo Studio $15 Basic Package voucher, 4x The SMU Shop 20% OFF voucher',
                     'PD23 voucher',
                     '1x Ima-Sushi $5 Voucher (No min. spend)',
                     '2x Ima-Sushi $5 Voucher (No min. spend)',
@@ -161,6 +162,9 @@
                     '3x The SMU Shop 20% OFF voucher',
                     '4x The SMU Shop 20% OFF voucher',
                     '5x The SMU Shop 20% OFF voucher',
+                    'Apple Magic Mouse',
+                    'Breakout Clearing Kit',
+                    'iPad Air (5 Gen) | WiFi | 64GB | Space Grey'
                 ],
                 successList: [],
             }
