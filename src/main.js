@@ -7,8 +7,8 @@ import store from './store'
 Vue.config.productionTip = false
 
 // Global Variables
-Vue.prototype.$prizesRange = [1901, 5880];
-Vue.prototype.$vouchersRange = [1901, 5880];
+Vue.prototype.$prizesRange = [1901, 6000];
+Vue.prototype.$vouchersRange = [1901, 6000];
 
 new Vue({
   vuetify,
