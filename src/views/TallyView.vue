@@ -10,27 +10,28 @@
 
         <!--Condensed-->
         <template v-if="condensed">
-            <h1 class="my-12">Prize Redemption</h1>
             <v-data-table
                 :headers="headersC"
-                :items="dataC1"
+                :items="dataC"
                 class="elevation-1"
-                :search="searchInput"
+                :search="searchInputC"
                 multi-sort
             >
             <template v-slot:top>
                 <v-text-field
-                v-model="searchInput"
+                v-model="searchInputC"
                 color="#000"
                 label="Search..."
                 class="mx-4"
                 ></v-text-field>
             </template>
             </v-data-table>
+
+            <!-- PR -->
             <v-expansion-panels class="pt-6">
                 <v-expansion-panel>
                     <v-expansion-panel-header>
-                        <b>Total Redeemed: {{totalP}}</b>
+                        <b>Prize Redemption — Total Redeemed: {{totalP}}</b>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         Amount Redeemed by
@@ -70,29 +71,11 @@
                 </v-expansion-panel>
             </v-expansion-panels>
 
-
-            <h1 class="my-12">Voucher Redemption</h1>
-            <v-data-table
-                v-if="condensed"
-                :headers="headersC"
-                :items="dataC2"
-                class="elevation-1"
-                :search="searchInput"
-                multi-sort
-            >
-            <template v-slot:top>
-                <v-text-field
-                v-model="searchInput"
-                color="#000"
-                label="Search..."
-                class="mx-4"
-                ></v-text-field>
-            </template>
-            </v-data-table>
+            <!-- VR -->
             <v-expansion-panels class="pt-6">
                 <v-expansion-panel>
                     <v-expansion-panel-header>
-                        <b>Total Redeemed: {{totalV}}</b>
+                        <b>Voucher Redemption — Total Redeemed: {{totalV}}</b>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         Amount Redeemed by
@@ -131,40 +114,20 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
             </v-expansion-panels>
-
         </template>
 
         <!--Detailed-->
         <template v-else>
-            <h1 class="my-12">Prize Redemption</h1>
             <v-data-table
-                :headers="headersGames"
-                :items="dataGames"
+                :headers="headers"
+                :items="data"
                 class="elevation-1"
-                :search="searchInputGames"
+                :search="searchInput"
                 multi-sort
             >
             <template v-slot:top>
                 <v-text-field
-                v-model="searchInputGames"
-                color="#000"
-                label="Search..."
-                class="mx-4"
-                ></v-text-field>
-            </template>
-            </v-data-table>
-
-            <h1 class="my-12">Voucher Redemption</h1>
-            <v-data-table
-                :headers="headersVR"
-                :items="dataVR"
-                class="elevation-1"
-                :search="searchInputVR"
-                multi-sort
-            >
-            <template v-slot:top>
-                <v-text-field
-                v-model="searchInputVR"
+                v-model="searchInput"
                 color="#000"
                 label="Search..."
                 class="mx-4"
@@ -367,9 +330,8 @@
 
                 condensed: true,
                 searchInput: "",
-                searchInputVR: "",
-                searchInputGames: "",
-                headersVR: [
+                searchInputC: "",
+                headers: [
                 {
                     text: 'S/N',
                     align: 'start',
@@ -377,20 +339,9 @@
                     value: 'serialNum',
                 },
                 { text: 'Available', value: 'isAvailable' },
-                { text: 'Matriculation No.', value: 'matricNum' },
-                { text: 'Location', value: 'location' },
-                { text: 'Date', value: 'date' },
-                { text: 'Email', value: 'email' }
-                ],
-                headersGames: [
-                {
-                    text: 'S/N',
-                    align: 'start',
-                    sortable: true,
-                    value: 'serialNum',
-                },
-                { text: 'Available', value: 'isAvailable' },
+                { text: 'Redemption Method', value: 'method' },
                 { text: 'Name', value: 'name' },
+                { text: 'Matriculation No.', value: 'matricNum' },
                 { text: 'Telephone', value: 'telephone' },
                 { text: 'Prize', value: 'prize' },
                 { text: 'Location', value: 'location' },
@@ -407,20 +358,18 @@
                 },
                 { text: 'Available', value: 'isAvailable' }
                 ],
-                dataVR: [],
-                dataGames: [],
-                dataC1: [],
-                dataC2: [],
+                data: [],
+                dataC: [],
             }
         },
         created() {
-            this.getGames();
-            this.getVouchers();
+            this.getAll();
             this.getGamesHours();
             this.getVoucherHours();
         },
         methods: {
-            getGames() {
+            getAll() {
+                //PR
                 const gRef = query(collection(db, 'prize'), orderBy("serialNum"));
                 onSnapshot(gRef, (querySnapshot) => {
                 var v = {}; var s = []; this.chartDataP1.datasets[0].data = [0, 0, 0, 0, 0]; this.chartDataP3.datasets[0].data = [0, 0, 0, 0]; this.totalP = 0;
@@ -470,157 +419,116 @@
                     for (var sn of doc.data().serialNum) {
                         v[sn] = { ...doc.data() };
                         v[sn]["date"] = d;
+                        v[sn]["method"] = "Prize Redemption";
                     }
                     
                     s = s.concat(doc.data().serialNum);
                 })
-                s = s.filter(sn => !!sn)
-                console.log(v);
-                console.log(s);
+                    s = s.filter(sn => !!sn)
 
+                    //VR
+                    const vRef = query(collection(db, 'vouchers'), orderBy("serialNum"));
+                    onSnapshot(vRef, (querySnapshot) => {
+                    this.chartDataV1.datasets[0].data = [0, 0, 0, 0, 0]; this.chartDataV3.datasets[0].data = [0, 0, 0, 0]; this.totalV = 0;
+                    querySnapshot.docs.forEach((doc) => {
+                        var d = new Date(doc.data().date.seconds*1000);
+                        this.totalV += 1;
 
-                var range = []; var bool = "";
-                for (var i=this.$prizesRange[0]; i<=this.$prizesRange[1]; i++) {
-                    if (i == this.$prizesRange[0]) {
-                        range.push(i);
-                        bool = s.includes(i) ? "No" : "Yes";
-                    } else {
-                        if ((s.includes(i) ? "No" : "Yes") != bool) {
-                            range.push(i-1);
-                            if (range[0] == range[1]) {
-                                this.dataC1.push({ serialNum: range[0], isAvailable: bool });
-                            } else {
-                                this.dataC1.push({ serialNum: range.join("-"), isAvailable: (s.includes(i-1) ? "No" : "Yes") });
+                        // Date
+                            // Monday
+                            if (d.toDateString() == new Date('2023-01-09').toDateString()) {
+                                this.chartDataV1.datasets[0].data[0] += 1;
                             }
-                            range = [i];
-                            bool = s.includes(i) ? "No" : "Yes";
-
-                            if (i == this.$prizesRange[1]) {
-                                this.dataC1.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
+                            // Tuesday
+                            if (d.toDateString() == new Date('2023-01-10').toDateString()) {
+                                this.chartDataV1.datasets[0].data[1] += 1;
                             }
-                        } else if (i == this.$prizesRange[1]) {
+                            // Wednesday
+                            if (d.toDateString() == new Date('2023-01-11').toDateString()) {
+                                this.chartDataV1.datasets[0].data[2] += 1;
+                            }
+                            // Thursday
+                            if (d.toDateString() == new Date('2023-01-12').toDateString()) {
+                                this.chartDataV1.datasets[0].data[3] += 1;
+                            }
+                            // Friday
+                            if (d.toDateString() == new Date('2023-01-13').toDateString()) {
+                                this.chartDataV1.datasets[0].data[4] += 1;
+                            }
+
+                        // Location
+                            if (doc.data().location == "Koufu") {
+                                this.chartDataV3.datasets[0].data[0] += 1;
+                            }
+                            if (doc.data().location == "SOB") {
+                                this.chartDataV3.datasets[0].data[1] += 1;
+                            }
+                            if (doc.data().location == "Connexion") {
+                                this.chartDataV3.datasets[0].data[2] += 1;
+                            }
+                            if (doc.data().location == "SMOO Hub") {
+                                this.chartDataV3.datasets[0].data[3] += 1;
+                            }
+
+                        d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
+
+                        v[Number(doc.data().serialNum)] = { ...doc.data() };
+                        v[Number(doc.data().serialNum)]["date"] = d;
+                        v[Number(doc.data().serialNum)]["method"] = "Voucher Redemption";
+                        s.push(Number(doc.data().serialNum));
+                    })
+                    console.log(v);
+                    console.log(s);
+
+
+                    var range = []; var bool = "";
+                    for (var i=this.$prizesRange[0]; i<=this.$prizesRange[1]; i++) {
+                        if (i == this.$prizesRange[0]) {
                             range.push(i);
-                            this.dataC1.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
-                        }
-                    }
-
-                    if (s.includes(i)) {
-                        v[i]["isAvailable"] = "No";
-                        v[i]["serialNum"] = i;
-
-                        if (v[i]["hourly"]) {
-                            v[i]["HD"] = "Yes";
+                            bool = s.includes(i) ? "No" : "Yes";
                         } else {
-                            v[i]["HD"] = "No";
+                            if ((s.includes(i) ? "No" : "Yes") != bool) {
+                                range.push(i-1);
+                                if (range[0] == range[1]) {
+                                    this.dataC.push({ serialNum: range[0], isAvailable: bool });
+                                } else {
+                                    this.dataC.push({ serialNum: range.join("-"), isAvailable: (s.includes(i-1) ? "No" : "Yes") });
+                                }
+                                range = [i];
+                                bool = s.includes(i) ? "No" : "Yes";
+
+                                if (i == this.$prizesRange[1]) {
+                                    this.dataC.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
+                                }
+                            } else if (i == this.$prizesRange[1]) {
+                                range.push(i);
+                                this.dataC.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
+                            }
                         }
 
-                        this.dataGames.push(v[i]);
-                    } else {
-                        this.dataGames.push({
-                            isAvailable: "Yes",
-                            serialNum: i,
-                            telephone: "",
-                            location: "",
-                            date: "",
-                            email: ""
-                        })
-                    }
-                }
-                });
-            },
-            getVouchers() {
-                const vRef = query(collection(db, 'vouchers'), orderBy("serialNum"));
-                onSnapshot(vRef, (querySnapshot) => {
-                var v = {}; var s = []; this.chartDataV1.datasets[0].data = [0, 0, 0, 0, 0]; this.chartDataV3.datasets[0].data = [0, 0, 0, 0]; this.totalV = 0;
-                querySnapshot.docs.forEach((doc) => {
-                    var d = new Date(doc.data().date.seconds*1000);
-                    this.totalV += 1;
+                        if (s.includes(i)) {
+                            v[i]["isAvailable"] = "No";
+                            v[i]["serialNum"] = i;
 
-                    // Date
-                        // Monday
-                        if (d.toDateString() == new Date('2023-01-09').toDateString()) {
-                            this.chartDataV1.datasets[0].data[0] += 1;
-                        }
-                        // Tuesday
-                        if (d.toDateString() == new Date('2023-01-10').toDateString()) {
-                            this.chartDataV1.datasets[0].data[1] += 1;
-                        }
-                        // Wednesday
-                        if (d.toDateString() == new Date('2023-01-11').toDateString()) {
-                            this.chartDataV1.datasets[0].data[2] += 1;
-                        }
-                        // Thursday
-                        if (d.toDateString() == new Date('2023-01-12').toDateString()) {
-                            this.chartDataV1.datasets[0].data[3] += 1;
-                        }
-                        // Friday
-                        if (d.toDateString() == new Date('2023-01-13').toDateString()) {
-                            this.chartDataV1.datasets[0].data[4] += 1;
-                        }
-
-                    // Location
-                        if (doc.data().location == "Koufu") {
-                            this.chartDataV3.datasets[0].data[0] += 1;
-                        }
-                        if (doc.data().location == "SOB") {
-                            this.chartDataV3.datasets[0].data[1] += 1;
-                        }
-                        if (doc.data().location == "Connexion") {
-                            this.chartDataV3.datasets[0].data[2] += 1;
-                        }
-                        if (doc.data().location == "SMOO Hub") {
-                            this.chartDataV3.datasets[0].data[3] += 1;
-                        }
-
-                    d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-
-                    v[Number(doc.data().serialNum)] = { ...doc.data() };
-                    v[Number(doc.data().serialNum)]["date"] = d;
-                    s.push(Number(doc.data().serialNum));
-                })
-                console.log(v);
-                console.log(s);
-
-
-                var range = []; var bool = "";
-                for (var i=this.$vouchersRange[0]; i<=this.$vouchersRange[1]; i++) {
-                    if (i == this.$vouchersRange[0]) {
-                        range.push(i);
-                        bool = s.includes(i) ? "No" : "Yes";
-                    } else {
-                        if ((s.includes(i) ? "No" : "Yes") != bool) {
-                            range.push(i-1);
-                            if (range[0] == range[1]) {
-                                this.dataC2.push({ serialNum: range[0], isAvailable: bool });
+                            if (v[i]["hourly"]) {
+                                v[i]["HD"] = "Yes";
                             } else {
-                                this.dataC2.push({ serialNum: range.join("-"), isAvailable: (s.includes(i-1) ? "No" : "Yes") });
+                                v[i]["HD"] = "No";
                             }
-                            range = [i];
-                            bool = s.includes(i) ? "No" : "Yes";
 
-                            if (i == this.$vouchersRange[1]) {
-                                this.dataC2.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
-                            }
-                        } else if (i == this.$vouchersRange[1]) {
-                            range.push(i);
-                            this.dataC2.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
+                            this.data.push(v[i]);
+                        } else {
+                            this.data.push({
+                                isAvailable: "Yes",
+                                serialNum: i,
+                                telephone: "",
+                                location: "",
+                                date: "",
+                                email: ""
+                            })
                         }
                     }
-
-                    if (s.includes(i)) {
-                        v[i]["isAvailable"] = "No";
-                        this.dataVR.push(v[i]);
-                    } else {
-                        this.dataVR.push({
-                            isAvailable: "Yes",
-                            serialNum: i,
-                            matricNum: "",
-                            location: "",
-                            date: "",
-                            email: ""
-                        })
-                    }
-                }
+                    })
                 });
             },
             getGamesHours() {
