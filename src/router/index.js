@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Prize from "../views/PrizeView.vue";
 import HOTO from "../views/HOTOView.vue";
-import RoadshowGiveaway from "../views/RoadshowGiveawayView.vue";
 import Login from "../views/LoginView.vue";
 import Voucher from "../views/VoucherView.vue";
 import Tally from "../views/TallyView.vue";
@@ -42,12 +41,6 @@ const routes = [
     path: "/hoto",
     name: "HOTO",
     component: HOTO,
-    beforeEnter: guardMyroute,
-  },
-  {
-    path: "/roadshowGiveaway",
-    name: "Roadshow Giveaway",
-    component: RoadshowGiveaway,
     beforeEnter: guardMyroute,
   },
   {

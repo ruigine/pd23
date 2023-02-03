@@ -4,7 +4,6 @@
             <v-tab><h1>HOTO</h1></v-tab>
             <v-tab><h1>Voucher Redemption</h1></v-tab>
             <v-tab><h1>Prize Redemption</h1></v-tab>   
-            <v-tab><h1>Roadshow Giveaway</h1></v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="tab" class="px-1">
@@ -589,166 +588,7 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-
-
-        <!--LD-->
-            <v-tab-item>
-                <v-data-table
-                    :headers="headersLD"
-                    :items="dataLD"
-                    class="elevation-1"
-                    :search="searchLD"
-                    @click:row="history"
-                    multi-sort
-                >
-                    <template v-slot:top>
-                        <v-text-field
-                        v-model="searchLD"
-                        color="#000"
-                        label="Search..."
-                        class="mx-4"
-                        ></v-text-field>
-                    </template>
-
-                    <template v-slot:[`item.actions`]="{ item }">
-                        <v-icon
-                            small
-                            class="mr-2 outlined"
-                            @click="editLD(item)"
-                            color="primary"
-                        >
-                            mdi-pencil
-                        </v-icon>
-                        <v-icon
-                            small
-                            @click="deleteLD(item)"
-                            class="outlined"
-                            color="red"
-                        >
-                            mdi-delete
-                        </v-icon>
-                    </template>
-                </v-data-table>
-
-                <v-btn class="mt-12 mb-6" @click="expand" color="#fff">Deleted Lucky Draw entries</v-btn>
-                <v-expansion-panels flat class="mb-1" v-model="expandLD">
-                    <v-expansion-panel>
-                        <v-expansion-panel-content>
-                            <v-data-table
-                                :headers="headersDelLD"
-                                :items="dataDelLD"
-                                class="elevation-1"
-                                :search="searchDelLD"
-                                multi-sort
-                            >
-                                <template v-slot:top>
-                                    <v-text-field
-                                    v-model="searchDelLD"
-                                    color="#000"
-                                    label="Search..."
-                                    class="mx-4"
-                                    ></v-text-field>
-                                </template>
-
-                                <template slot="no-data">
-                                    No delete history.
-                                </template>
-                            </v-data-table>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
-            </v-tab-item>
-            
-            <!--Edit LD dialog-->
-            <v-dialog
-                max-width="600"
-                v-model="dialogLD"
-            >
-                <v-card>
-                    <v-form v-model="validLD" ref="formLD">
-                        <v-row class="pa-6 ma-0">
-                            <v-col cols="12">
-                                <h1 class="mb-12">Roadshow Giveaway</h1>
-                                <v-text-field
-                                    v-model="nameLD"
-                                    color="#000"
-                                    :rules="nameRulesLD"
-                                    label="Name"
-                                    type="text"
-                                    required
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="matricNoLD"
-                                    color="#000"
-                                    :rules="matricRulesLD"
-                                    :counter="8"
-                                    label="Matriculation Number (if student)"
-                                    type="number"
-                                    required
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="teleLD"
-                                    color="#000"
-                                    :rules="teleRulesLD"
-                                    :counter="8"
-                                    label="Telephone"
-                                    type="number"
-                                    required
-                                ></v-text-field>
-                                 <v-text-field
-                                    type="datetime-local"
-                                    color="#000"
-                                    v-model="dateLD"
-                                    label="Date"
-                                    :rules="dateRules"
-                                ></v-text-field>
-                            </v-col>
-                        </v-row>
-                    </v-form>
-
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="dialogLD = !dialogLD"
-                        >
-                            Cancel
-                        </v-btn>
-                        <v-btn
-                            v-if="validLD"
-                            color="blue darken-1"
-                            text
-                            @click="saveLD"
-                        >
-                            Save
-                        </v-btn>
-                        <v-btn
-                            v-else
-                            color="blue darken-1"
-                            text
-                            disabled
-                        >
-                            Save
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-
-            <!--Delete LD-->
-            <v-dialog v-model="dialogDeleteLD" max-width="500px">
-                <v-card>
-                    <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-                    <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="dialogDeleteLD = !dialogDeleteLD">Cancel</v-btn>
-                    <v-btn color="blue darken-1" text @click="deleteConfirmLD">OK</v-btn>
-                    <v-spacer></v-spacer>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
         </v-tabs-items>
-
 
         <!--Universal Success Dialog-->
         <v-dialog
@@ -896,7 +736,8 @@
                 { text: 'Date', value: 'datestamp' },
                 { text: 'Email', value: 'email' },
                 { text: 'Hourly?', value: 'HD' },
-                { text: 'Deleted Date', value: 'deleteDate' }                ],
+                { text: 'Deleted Date', value: 'deleteDate' }
+                ],
                 dataDelGames: null,
                 searchDelHOTO: "",
                 searchDelLD: "",
@@ -1019,25 +860,6 @@
                 items: ['Koufu', 'SOB', 'Connexion', 'SMOO Hub'],
                 locationHOTO: null,
                 currHOTO: null,
-
-                //LD
-                matricNoLD: '',
-                teleLD: '',
-                nameLD: '',
-                dateLD: null,
-                nameRulesLD: [
-                    n => !!n || 'Field is required',
-                ],
-                matricRulesLD: [
-                    m => String(m)[0] == "0" || "Invalid matriculation number",
-                    m => (!m || (!!m && m.length == 8)) || 'Matriculation number must be 8 digits long'
-                ],
-                teleRulesLD: [
-                    s => !!s || 'Field is required',
-                    s => (String(s)[0] == "8" || String(s)[0] == "9") || "Invalid telephone number",
-                    s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number'
-                ],
-                currLD: null,
 
                 //VR
                 voucherListVR: [],
@@ -1211,20 +1033,6 @@
                 this.saved = false;
             }
             });
-
-            //LD
-            const lRef = query(collection(db, 'roadshow'), orderBy('date', 'desc'));
-            onSnapshot(lRef, (querySnapshot) => {
-            this.dataLD = [];
-            querySnapshot.docs.forEach((doc) => {
-                this.dataLD.push({ ...doc.data(), id: doc.id })
-                
-                var d = new Date(doc.data().date.seconds*1000);
-                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                this.dataLD[this.dataLD.length-1]["datestamp"] = d;
-            })
-            console.log(this.dataLD);
-            });
         },
         watch: {
             tab() {
@@ -1326,28 +1134,6 @@
                         });
                     } else {
                         this.expandGames = this.expandGames == 0 ? null: 0;
-                    }
-                } else if (this.tab == 3) {
-                    if (!this.dataDelLD) {
-                        const lRef = query(collection(db, 'deletedRoadshow'), orderBy('deleteDate', 'desc'));
-                        onSnapshot(lRef, (querySnapshot) => {
-                        this.dataDelLD = [];
-                        querySnapshot.docs.forEach((doc) => {
-                            this.dataDelLD.push({ ...doc.data(), id: doc.id })
-                            
-                            var d = new Date(doc.data().date.seconds*1000);
-                            d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                            this.dataDelLD[this.dataDelLD.length-1]["datestamp"] = d;
-
-                            var dD = new Date(doc.data().deleteDate.seconds*1000);
-                            dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
-                            this.dataDelLD[this.dataDelLD.length-1]["deleteDate"] = dD;
-                        })
-                        console.log(this.dataDelLD);
-                        this.expandLD = this.expandLD == 0 ? null: 0;
-                        });
-                    } else {
-                        this.expandLD = this.expandLD == 0 ? null: 0;
                     }
                 }
             },
@@ -1479,106 +1265,6 @@
                         this.successList = [];
 
                         this.dialogDeleteHOTO = false;
-                        this.success = true;
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-            },
-
-            //LD
-            editLD(item) {
-                this.nameLD = item.name;
-                this.matricNoLD = item.matricNum;
-                this.teleLD = item.telephone
-                this.currLD = item;
-                console.log(item.date)
-                var d = new Date(item.date.seconds*1000);
-                d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                this.dateLD = d;
-
-                this.dialogLD = true;
-            },
-            saveLD() {
-                this.saved = true;
-                const lRef = doc(db, "roadshow", this.currLD.id);
-                var toUp = {
-                    name: this.nameLD,
-                    telephone: this.teleLD,
-                    date: firebase.firestore.Timestamp.fromDate(new Date(this.dateLD)),
-                }
-                if (this.matricNoLD && this.matricNoLD.length != 0) {
-                    toUp['matricNum'] = this.matricNoLD
-                } else {
-                    toUp['matricNum'] = ""
-                }
-
-                var toAdd = {
-                    name: this.currLD.name,
-                    telephone: this.currLD.telephone,
-                    date: this.currLD.date,
-                    email: this.currLD.email,
-                    editDate: firebase.firestore.Timestamp.fromDate(new Date()),
-                }
-                if (this.currLD.matricNum && this.currLD.matricNum.length != 0) {
-                    toAdd['matricNum'] = this.currLD.matricNum
-                }
-
-                updateDoc(lRef, toUp)
-                .then((snapshot) => {
-                    var colRef = collection(doc(db, 'roadshow', this.currLD.id), "history");
-                    addDoc(colRef, toAdd)
-                    .then((snapshot) => {
-                        var d = new Date(this.dateLD);
-                        d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                        
-                        this.successList = [];
-                        this.successList.push({ name: "Name", value: this.nameLD });
-                        if (this.matricNoLD && this.matricNoLD.length != 0) {
-                            this.successList.push({ name: "Matriculation Number", value: this.matricNoLD });
-                        }
-                        this.successList.push({ name: "Telephone", value: this.teleLD });
-                        this.successList.push({ name: "Date", value: d });
-
-                        this.dialogLD = false;
-                        this.success = true;
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-            },
-            deleteLD(item) {
-                this.dialogDeleteLD = true;
-                this.delLD = item;
-            },
-            deleteConfirmLD() {
-                var toDel = {
-                    name: this.delLD.name,
-                    telephone: this.delLD.telephone,
-                    date: this.delLD.date,
-                    email: this.delLD.email,
-                    deleteDate: firebase.firestore.Timestamp.fromDate(new Date()),
-                }
-                if (this.delLD && this.delLD.length != 0) {
-                    toDel['matricNum'] = this.delLD.matricNum
-                }
-
-                deleteDoc(doc(db, 'roadshow', this.delLD.id), {
-                })
-                .then((snapshot) => {
-                    addDoc(collection(db, "deletedRoadshow"), toDel)
-                    .then((snapshot) => {
-                        this.successList = [];
-
-                        this.dialogDeleteLD = false;
                         this.success = true;
                     })
                     .catch(err => {
@@ -1888,27 +1574,6 @@
                                 }
 
                                 this.dataEdit[this.dataEdit.length-1]["prizes"] = (doc.data().prize).join(", ");
-                            })
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
-                    } else if (this.tab == 3) {
-                        this.headersEdit = this.headersLD.slice(0, -1);
-                        this.headersEdit.push({ text: 'Date of Edit', value: 'editDate' });
-                        
-                        getDocs(collection(doc(db, 'roadshow', value.id), "history"))
-                        .then((snapshot) => {
-                            snapshot.docs.forEach((doc) => {
-                                this.dataEdit.push({ ...doc.data(), id: doc.id })
-
-                                var d = new Date(doc.data().date.seconds*1000);
-                                d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
-                                this.dataEdit[this.dataEdit.length-1]["datestamp"] = d;
-
-                                var editD = new Date(doc.data().editDate.seconds*1000);
-                                editD = [String(editD.getDate()).padStart(2, '0'), String(editD.getMonth()+1).padStart(2, '0'), String(editD.getFullYear())].join("/") + " " + [String(editD.getHours()).padStart(2, '0'), String(editD.getMinutes()).padStart(2, '0')].join(":");
-                                this.dataEdit[this.dataEdit.length-1]["editDate"] = editD;
                             })
                         })
                         .catch(err => {
