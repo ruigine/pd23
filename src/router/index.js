@@ -19,6 +19,7 @@ function guardMyroute(to, from, next) {
       next("/login");
     } else {
       console.log(user)
+      next();
     }
   });
   // var isAuthenticated = auth.currentUser;
