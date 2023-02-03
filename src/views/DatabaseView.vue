@@ -878,7 +878,6 @@
                 ],
                 sNoRulesVR: [
                     s => !!s || 'Field is required',
-                    s => (this.voucherListVR.includes(s) == false || s == this.currVR.serialNum) || 'Voucher has already been redeemed',
                 ],
                 locRules: [
                     s => !!s || 'Field is required',

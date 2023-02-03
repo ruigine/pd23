@@ -80,7 +80,6 @@
                 ],
                 sNoRules: [
                     s => !!s || 'Field is required',
-                    s => this.voucherList.includes(s) == false || 'Voucher has already been redeemed',
                 ],
                 successList: [],
             }
