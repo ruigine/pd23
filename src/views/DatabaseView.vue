@@ -309,14 +309,16 @@
                                     type="number"
                                     required
                                 ></v-text-field>
-                                <v-text-field
+                                <v-autocomplete
                                     v-model="sNoVR"
+                                    no-data-text="Invalid voucher S/N"
+                                    :items="sNosVR"
                                     color="#000"
                                     :rules="sNoRulesVR"
                                     label="Voucher Serial Number"
-                                    type="number"
+                                    chips
                                     required
-                                ></v-text-field>
+                                ></v-autocomplete>
                                 <v-select
                                     v-model="locationVR"
                                     color="#000"
@@ -866,6 +868,7 @@
                 matricListVR: [],
                 matricNoVR: '',
                 sNoVR: '',
+                sNosVR: [],
                 dateVR: null,
                 matricRulesVR: [
                     m => !!m || 'Field is required',
@@ -875,7 +878,6 @@
                 ],
                 sNoRulesVR: [
                     s => !!s || 'Field is required',
-                    s => (this.$vouchersRange[0] <= Number(s) && Number(s) <= this.$vouchersRange[1]) || 'Invalid voucher S/N',
                     s => (this.voucherListVR.includes(s) == false || s == this.currVR.serialNum) || 'Voucher has already been redeemed',
                 ],
                 locRules: [
@@ -961,6 +963,8 @@
             console.log(this.dataVR);
             this.voucherListVR = v;
             console.log(this.voucherListVR);
+
+            this.sNosVR = (Array.from(Array(this.$vouchersRange[1]+1).keys()).slice(this.$vouchersRange[0])).filter( ( sn ) => !this.voucherListVR.includes( sn ) || this.currVR.serialNum.includes( sn ))
 
             this.matricListVR = m;
             console.log(this.matricListVR);
@@ -1267,9 +1271,16 @@
             //VR
             editVR(item) {
                 this.matricNoVR = item.matricNum;
-                this.sNoVR = item.serialNum;
                 this.currVR = item;
                 this.locationVR = item.location;
+
+                if (item.serialNum) {
+                    this.sNoVR = item.serialNum;
+                    this.sNosVR = (Array.from(Array(this.$vouchersRange[1]+1).keys()).slice(this.$vouchersRange[0])).filter( ( sn ) => !this.voucherListVR.includes( sn ) || this.currVR.serialNum == sn);
+                } else {
+                    this.sNoVR = [];
+                    this.sNosVR = (Array.from(Array(this.$vouchersRange[1]+1).keys()).slice(this.$vouchersRange[0])).filter( ( sn ) => !this.voucherListVR.includes( sn ));
+                }
 
                 var d = new Date(item.date.seconds*1000);
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");

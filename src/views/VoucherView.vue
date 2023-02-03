@@ -13,14 +13,16 @@
                         type="number"
                         required
                     ></v-text-field>
-                    <v-text-field
+                    <v-autocomplete
                         v-model="sNo"
+                        no-data-text="Invalid voucher S/N"
+                        :items="sNos"
                         color="#000"
                         :rules="sNoRules"
                         label="Voucher Serial Number"
-                        type="number"
+                        chips
                         required
-                    ></v-text-field>
+                    ></v-autocomplete>
                     <v-btn v-if="valid" class="mt-6" @click="submit" color="#d4ecd6">Submit</v-btn>
                     <v-btn v-else class="mt-6" disabled>Submit</v-btn>
                 </v-col>
@@ -69,6 +71,7 @@
                 valid: false,
                 matricNo: '',
                 sNo: '',
+                sNos: [],
                 matricRules: [
                     m => !!m || 'Field is required',
                     m => String(m)[0] == "0" || "Invalid matriculation number",
@@ -77,7 +80,6 @@
                 ],
                 sNoRules: [
                     s => !!s || 'Field is required',
-                    s => (this.$vouchersRange[0] <= Number(s) && Number(s) <= this.$vouchersRange[1]) || 'Invalid voucher S/N',
                     s => this.voucherList.includes(s) == false || 'Voucher has already been redeemed',
                 ],
                 successList: [],
@@ -93,6 +95,8 @@
             })
             this.voucherList = v;
             console.log(this.voucherList);
+
+            this.sNos = (Array.from(Array(this.$vouchersRange[1]+1).keys()).slice(this.$vouchersRange[0])).filter( ( sn ) => !this.voucherList.includes( sn ) );
 
             this.matricList = m;
             console.log(this.matricList);
