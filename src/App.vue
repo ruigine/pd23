@@ -42,28 +42,6 @@
       <v-list
         dense
         nav
-        v-else-if="accessArr.includes($store.state.user.email)"
-      >
-        <v-list-item
-          v-for="item in items2"
-          :key="item.title"
-          :to="item.path"
-          @click="logout(item.title)"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-
-      <v-list
-        dense
-        nav
         v-else
       >
         <v-list-item
@@ -119,30 +97,9 @@
           { title: 'HOTO', icon: 'mdi-account-switch', path: '/hoto'},
           { title: 'Voucher Redemption', icon: 'mdi-wallet-giftcard', path: '/voucher'},
           { title: 'Prize Redemption', icon: 'mdi-controller', path: '/prize'},
-          { title: 'Logout', icon: 'mdi-logout', path: ''},
-        ],
-        items2: [
-          { title: 'Database', icon: 'mdi-notebook', path: '/database'},
-          { title: 'HOTO', icon: 'mdi-account-switch', path: '/hoto'},
-          { title: 'Voucher Redemption', icon: 'mdi-wallet-giftcard', path: '/voucher'},
-          { title: 'Prize Redemption', icon: 'mdi-controller', path: '/prize'},
           { title: 'Tally', icon: 'mdi-tally-mark-5', path: '/tally' },
           { title: 'Logout', icon: 'mdi-logout', path: ''},
         ],
-        accessArr: [
-          'pd23bigboss@gmail.com',
-          'lynette.lim.2022@smu.edu.sg',
-          'jkelsie.2021@smu.edu.sg',
-          'ziyang.lai.2021@smu.edu.sg',
-          'joanne.ng.2021@smu.edu.sg',
-          'fangqi.lim.2021@smu.edu.sg',
-          'prachikale.2020@smu.edu.sg',
-          'shauna.teo.2022@smu.edu.sg',
-          'kelly.neo.2019@smu.edu.sg',
-          'tzelin.loo.2021@smu.edu.sg',
-          'wanzhen.lim.2021@smu.edu.sg',
-          'michaelong.2021@smu.edu.sg'
-        ]
       }
     },
     methods: {
