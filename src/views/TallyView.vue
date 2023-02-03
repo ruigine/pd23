@@ -482,7 +482,7 @@
 
 
                     var range = []; var bool = "";
-                    for (var i=this.$prizesRange[0]; i<=this.$prizesRange[1]; i++) {
+                    for (var i=this.$prizesRange[0]; i<=this.$vouchersRange[1]; i++) {
                         if (i == this.$prizesRange[0]) {
                             range.push(i);
                             bool = s.includes(i) ? "No" : "Yes";
@@ -497,10 +497,10 @@
                                 range = [i];
                                 bool = s.includes(i) ? "No" : "Yes";
 
-                                if (i == this.$prizesRange[1]) {
+                                if (i == this.$vouchersRange[1]) {
                                     this.dataC.push({ serialNum: i, isAvailable: (s.includes(i) ? "No" : "Yes") });
                                 }
-                            } else if (i == this.$prizesRange[1]) {
+                            } else if (i == this.$vouchersRange[1]) {
                                 range.push(i);
                                 this.dataC.push({ serialNum: range.join("-"), isAvailable: s.includes(i-1) ? "No" : "Yes" });
                             }
