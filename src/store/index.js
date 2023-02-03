@@ -26,15 +26,8 @@ export default new Vuex.Store({
     // actions to commit mutations to push to state
     async authenticate({ commit }, payload) {
       // const { email, password } = details;
-      if ((auth.currentUser.email).endsWith("smu.edu.sg") || auth.currentUser.email == "pd23bigboss@gmail.com") {
-        commit("SET_USER", auth.currentUser);
-        console.log(auth.currentUser);
-      } else {
-        await signOut(auth);
-
-        commit("CLEAR_USER");
-        router.push("/login");
-      }
+      commit("SET_USER", auth.currentUser);
+      console.log(auth.currentUser);
     },
 
     async logout({ commit }) {
