@@ -164,7 +164,8 @@
                     '5x The SMU Shop 20% OFF voucher',
                     'Apple Magic Mouse',
                     'Breakout Clearing Kit',
-                    'iPad Air (5 Gen) | WiFi | 64GB | Space Grey'
+                    'iPad Air (5 Gen) | WiFi | 64GB | Space Grey',
+                    'Breakout Clearing Kit'
                 ],
                 successList: [],
             }
