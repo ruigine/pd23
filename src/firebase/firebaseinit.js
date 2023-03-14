@@ -13,7 +13,7 @@ exports.handler = async () => {
     appId: process.env.APP_ID,
     measurementId: process.env.MEASUREMENT_ID
   };
-  
+  console.log(process.env.API_KEY)
   // initialize firebase app
   const app = initializeApp(firebaseConfig);
 
