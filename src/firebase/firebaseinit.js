@@ -4,13 +4,13 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDI334sOziCBt5PCEZFcl3KhTBQMrnN1R8",
-  authDomain: "pd23-demo.firebaseapp.com",
-  projectId: "pd23-demo",
-  storageBucket: "pd23-demo.appspot.com",
-  messagingSenderId: "428041542235",
-  appId: "1:428041542235:web:5e203bac0792af8a29fd7e",
-  measurementId: "G-9TGHMD2RZ1"
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID
 };
 
 
