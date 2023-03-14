@@ -4,12 +4,13 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyC_4lrd9Z34mYf6azqlJQYyR-vmQnguzDk",
-  authDomain: "pd23-voucher-website.firebaseapp.com",
-  projectId: "pd23-voucher-website",
-  storageBucket: "pd23-voucher-website.appspot.com",
-  messagingSenderId: "407141157212",
-  appId: "1:407141157212:web:8e5be5c2776d6dcdea5999",
+  apiKey: "AIzaSyDI334sOziCBt5PCEZFcl3KhTBQMrnN1R8",
+  authDomain: "pd23-demo.firebaseapp.com",
+  projectId: "pd23-demo",
+  storageBucket: "pd23-demo.appspot.com",
+  messagingSenderId: "428041542235",
+  appId: "1:428041542235:web:5e203bac0792af8a29fd7e",
+  measurementId: "G-9TGHMD2RZ1"
 };
 
 
