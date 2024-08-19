@@ -959,9 +959,8 @@
                 m.push(doc.data().matricNum);
             })
             this.voucherListVR = v;
-
-
-            this.sNosVR = (Array.from(Array(this.$vouchersRange[1]+1).keys()).slice(this.$vouchersRange[0])).filter( ( sn ) => !this.voucherListVR.includes( sn ) || this.currVR.serialNum.includes( sn ))
+            
+            this.sNosVR = (Array.from(Array(this.$vouchersRange[1]+1).keys()).slice(this.$vouchersRange[0])).filter( ( sn ) => !this.voucherListVR.includes( sn ) || (this.currVR !== null && this.currVR.serialNum == sn))
 
             this.matricListVR = m;
             if (this.matricNoVR && this.sNoVR && this.locationVR && !this.saved) {
