@@ -1195,7 +1195,7 @@
             this.voucherListGames = s;
 
             this.teleListGames = t;
-            console.log(this.prize)
+            
             if (this.dialogGames && this.prize.includes('PD23 voucher')) {
                 this.sNosGames = (Array.from(Array(this.$prizesRange[1]+1).keys()).slice(this.$prizesRange[0])).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ))
             }
