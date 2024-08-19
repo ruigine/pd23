@@ -18,8 +18,6 @@ function guardMyroute(to, from, next) {
       // logging out user
       next("/login");
     } else {
-      console.log(user)
-
       var accessArr = [
         'pd23bigboss@gmail.com',
         'lynette.lim.2022@smu.edu.sg',
