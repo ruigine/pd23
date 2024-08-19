@@ -17,7 +17,6 @@ function guardMyroute(to, from, next) {
       // logging out user
       next("/login");
     } else {
-      console.log(user)
       next();
     }
   });

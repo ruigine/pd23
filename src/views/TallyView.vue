@@ -477,8 +477,6 @@
                         v[Number(doc.data().serialNum)]["method"] = "Voucher Redemption";
                         s.push(Number(doc.data().serialNum));
                     })
-                    console.log(v);
-                    console.log(s);
 
 
                     var range = []; var bool = "";

@@ -27,7 +27,6 @@ export default new Vuex.Store({
     async authenticate({ commit }, payload) {
       // const { email, password } = details;
       commit("SET_USER", auth.currentUser);
-      console.log(auth.currentUser);
     },
 
     async logout({ commit }) {
