@@ -3,26 +3,33 @@
         <v-form v-model="valid" ref="form">
             <v-row class="box" align="center">
                 <v-col cols="12">
-                    <h1 class="mb-12">Voucher Redemption</h1>
+                    <h1 class="mb-12">Roadshow Giveaway</h1>
+                    <v-text-field
+                        v-model="name"
+                        color="#000"
+                        :rules="nameRules"
+                        label="Name"
+                        type="text"
+                        required
+                    ></v-text-field>
                     <v-text-field
                         v-model="matricNo"
                         color="#000"
                         :rules="matricRules"
                         :counter="8"
-                        label="Matriculation Number"
+                        label="Matriculation Number (if student)"
                         type="number"
                         required
                     ></v-text-field>
-                    <v-autocomplete
-                        v-model="sNo"
-                        no-data-text="Invalid voucher S/N"
-                        :items="sNos"
+                    <v-text-field
+                        v-model="tele"
                         color="#000"
-                        :rules="sNoRules"
-                        label="Voucher Serial Number"
-                        chips
+                        :rules="teleRules"
+                        :counter="8"
+                        label="Telephone"
+                        type="number"
                         required
-                    ></v-autocomplete>
+                    ></v-text-field>
                     <v-btn v-if="valid" class="mt-6" @click="submit" color="#d4ecd6">Submit</v-btn>
                     <v-btn v-else class="mt-6" disabled>Submit</v-btn>
                 </v-col>
@@ -66,56 +73,46 @@
         data(){
             return {
                 dialog: false,
-                voucherList: [],
-                matricList: [],
                 valid: false,
                 matricNo: '',
-                sNo: '',
-                sNos: [],
-                matricRules: [
-                    m => !!m || 'Field is required',
-                    m => String(m)[0] == "0" || "Invalid matriculation number",
-                    m => (m && m.length == 8) || 'Matriculation number must be 8 digits long',
-                    m => this.matricList.includes(m) == false || 'Matriculation number is already in database',
+                tele: '',
+                name: '',
+                nameRules: [
+                    n => !!n || 'Field is required',
                 ],
-                sNoRules: [
+                matricRules: [
+                    m => String(m)[0] == "0" || "Invalid matriculation number",
+                    m => (!m || (!!m && m.length == 8)) || 'Matriculation number must be 8 digits long'
+                ],
+                teleRules: [
                     s => !!s || 'Field is required',
+                    s => (String(s)[0] == "8" || String(s)[0] == "9") || "Invalid telephone number",
+                    s=> (!s || (!!s && s.length == 8)) || 'Invalid telephone number'
                 ],
                 successList: [],
             }
         },
-        created(){
-            const vRef = collection(db, 'vouchers');
-            onSnapshot(vRef, (snapshot) => {
-            var v = []; var m = [];
-            snapshot.docs.forEach((doc) => {
-                v.push(doc.data().serialNum);
-                m.push(doc.data().matricNum);
-            })
-            this.voucherList = v;
 
-            this.sNos = (Array.from(Array(this.$vouchersRange[1]+1).keys()).slice(this.$vouchersRange[0])).filter( ( sn ) => !this.voucherList.includes( sn ) );
-
-            this.matricList = m;
-            if (this.matricNo && this.sNo) {
-                this.$refs.form.validate()
-            }
-            }); 
-        },
         methods: {
             submit() {
-                const vRef = collection(db, "vouchers");
-                addDoc(vRef, {
-                    serialNum: this.sNo,
-                    matricNum: this.matricNo,
-                    location: "SMOO Hub",
+                const vRef = collection(db, "roadshow");
+                var temp = {
+                    name: this.name,
+                    telephone: this.tele,
                     date: firebase.firestore.Timestamp.fromDate(new Date()),
                     email: this.$store.state.user.email
-                })
+                }
+                if (this.matricNo && this.matricNo.length != 0) {
+                    temp['matricNum'] = this.matricNo
+                }
+                addDoc(vRef, temp)
                 .then((snapshot) => {
                     this.successList = [];
-                    this.successList.push({ name: "Voucher Serial Number", value: this.sNo });
-                    this.successList.push({ name: "Matriculation Number", value: this.matricNo });
+                    this.successList.push({ name: "Name", value: this.name });
+                    if (this.matricNo && this.matricNo.length != 0) {
+                        this.successList.push({ name: "Matriculation Number", value: this.matricNo });
+                    }
+                    this.successList.push({ name: "Telephone", value: this.tele });
 
                     this.dialog = true;
                     this.$refs.form.reset();
