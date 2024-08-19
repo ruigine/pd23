@@ -310,14 +310,16 @@
                                     type="number"
                                     required
                                 ></v-text-field>
-                                <v-text-field
+                                <v-autocomplete
                                     v-model="sNoVR"
+                                    no-data-text="Invalid voucher S/N"
+                                    :items="sNosVR"
                                     color="#000"
                                     :rules="sNoRulesVR"
                                     label="Voucher Serial Number"
-                                    type="number"
+                                    chips
                                     required
-                                ></v-text-field>
+                                ></v-autocomplete>
                                 <v-select
                                     v-model="locationVR"
                                     color="#000"
@@ -896,7 +898,8 @@
                 { text: 'Date', value: 'datestamp' },
                 { text: 'Email', value: 'email' },
                 { text: 'Hourly?', value: 'HD' },
-                { text: 'Deleted Date', value: 'deleteDate' }                ],
+                { text: 'Deleted Date', value: 'deleteDate' }
+                ],
                 dataDelGames: null,
                 searchDelHOTO: "",
                 searchDelLD: "",
@@ -1044,6 +1047,7 @@
                 matricListVR: [],
                 matricNoVR: '',
                 sNoVR: '',
+                sNosVR: [],
                 dateVR: null,
                 matricRulesVR: [
                     m => !!m || 'Field is required',
@@ -1053,8 +1057,6 @@
                 ],
                 sNoRulesVR: [
                     s => !!s || 'Field is required',
-                    s => (this.$vouchersRange[0] <= Number(s) && Number(s) <= this.$vouchersRange[1]) || 'Invalid voucher S/N',
-                    s => (this.voucherListVR.includes(s) == false || s == this.currVR.serialNum) || 'Voucher has already been redeemed',
                 ],
                 locRules: [
                     s => !!s || 'Field is required',
@@ -1131,7 +1133,6 @@
                 eD = [String(eD.getDate()).padStart(2, '0'), String(eD.getMonth()+1).padStart(2, '0'), String(eD.getFullYear())].join("/") + " " + [String(eD.getHours()).padStart(2, '0'), String(eD.getMinutes()).padStart(2, '0')].join(":");
                 this.dataHOTO[this.dataHOTO.length-1]["eDate"] = eD;
             })
-            console.log(this.dataHOTO)
             });
 
             //VR
@@ -1148,13 +1149,15 @@
                 v.push(doc.data().serialNum);
                 m.push(doc.data().matricNum);
             })
-            console.log(this.dataVR);
             this.voucherListVR = v;
-            console.log(this.voucherListVR);
+            
+            this.sNosVR = (Array.from(Array(this.$vouchersRange[1]+1).keys()).slice(this.$vouchersRange[0])).filter( ( sn ) => !this.voucherListVR.includes( sn ) || (this.currVR !== null && this.currVR.serialNum == sn))
 
             this.matricListVR = m;
-            console.log(this.matricListVR);
             if (this.matricNoVR && this.sNoVR && this.locationVR && !this.saved) {
+                if(!this.sNosVR.includes(this.sNoVR)) {
+                    this.sNoVR = null;
+                }
                 this.$refs.formVR.validate();
             } else {
                 this.saved = false;
@@ -1189,25 +1192,22 @@
 
                 this.dataGames[this.dataGames.length-1]["prizes"] = (doc.data().prize).join(", ");
             })
-            console.log(this.dataGames);
             this.voucherListGames = s;
-            console.log(this.voucherListGames);
 
             this.teleListGames = t;
-            console.log(this.teleListGames);
-
+            console.log(this.prize)
             if (this.dialogGames && this.prize.includes('PD23 voucher')) {
                 this.sNosGames = (Array.from(Array(this.$prizesRange[1]+1).keys()).slice(this.$prizesRange[0])).filter( ( sn ) => !this.voucherListGames.includes( sn ) || this.currGames.serialNum.includes( sn ))
             }
 
-            if (this.sNoGames.length != 0 && !this.sNosGames.includes(this.sNoGames)) {
-                this.prevSNoGames = this.sNoGames;
-                this.sNoGames = [];
-            }
-
             if (this.teleGames && this.name && this.prize && this.locationGames && !this.saved) {
+                this.sNoGames = this.sNoGames.filter(sn => this.sNosGames.includes(sn));
                 this.$refs.formGames.validate()
             } else {
+                if (this.sNoGames.length != 0 && !this.sNosGames.includes(this.sNoGames)) {
+                    this.prevSNoGames = this.sNoGames;
+                    this.sNoGames = [];
+                }
                 this.saved = false;
             }
             });
@@ -1223,7 +1223,6 @@
                 d = [String(d.getDate()).padStart(2, '0'), String(d.getMonth()+1).padStart(2, '0'), String(d.getFullYear())].join("/") + " " + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dataLD[this.dataLD.length-1]["datestamp"] = d;
             })
-            console.log(this.dataLD);
             });
         },
         watch: {
@@ -1265,7 +1264,6 @@
                             dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
                             this.dataDelHOTO[this.dataDelHOTO.length-1]["deleteDate"] = dD;
                         })
-                        console.log(this.dataDelHOTO);
                         this.expandHOTO = this.expandHOTO == 0 ? null: 0;
                         });
                     } else {
@@ -1287,7 +1285,6 @@
                             dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
                             this.dataDelVR[this.dataDelVR.length-1]["deleteDate"] = dD;
                         })
-                        console.log(this.dataDelVR);
                         this.expandVR = this.expandVR == 0 ? null: 0;
                         });
                     } else {
@@ -1321,7 +1318,6 @@
 
                             this.dataDelGames[this.dataDelGames.length-1]["prize"] = (doc.data().prize).join(", ");
                         })
-                        console.log(this.dataDelGames);
                         this.expandGames = this.expandGames == 0 ? null: 0;
                         });
                     } else {
@@ -1343,7 +1339,6 @@
                             dD = [String(dD.getDate()).padStart(2, '0'), String(dD.getMonth()+1).padStart(2, '0'), String(dD.getFullYear())].join("/") + " " + [String(dD.getHours()).padStart(2, '0'), String(dD.getMinutes()).padStart(2, '0')].join(":");
                             this.dataDelLD[this.dataDelLD.length-1]["deleteDate"] = dD;
                         })
-                        console.log(this.dataDelLD);
                         this.expandLD = this.expandLD == 0 ? null: 0;
                         });
                     } else {
@@ -1496,7 +1491,6 @@
                 this.matricNoLD = item.matricNum;
                 this.teleLD = item.telephone
                 this.currLD = item;
-                console.log(item.date)
                 var d = new Date(item.date.seconds*1000);
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");
                 this.dateLD = d;
@@ -1593,9 +1587,16 @@
             //VR
             editVR(item) {
                 this.matricNoVR = item.matricNum;
-                this.sNoVR = item.serialNum;
                 this.currVR = item;
                 this.locationVR = item.location;
+                
+                if (item.serialNum) {
+                    this.sNoVR = item.serialNum;
+                    this.sNosVR = (Array.from(Array(this.$vouchersRange[1]+1).keys()).slice(this.$vouchersRange[0])).filter( ( sn ) => !this.voucherListVR.includes( sn ) || this.currVR.serialNum == sn);
+                } else {
+                    this.sNoVR = [];
+                    this.sNosVR = (Array.from(Array(this.$vouchersRange[1]+1).keys()).slice(this.$vouchersRange[0])).filter( ( sn ) => !this.voucherListVR.includes( sn ));
+                }
 
                 var d = new Date(item.date.seconds*1000);
                 d = [String(d.getFullYear()), String(d.getMonth()+1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join("-") + "T" + [String(d.getHours()).padStart(2, '0'), String(d.getMinutes()).padStart(2, '0')].join(":");

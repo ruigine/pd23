@@ -28,7 +28,6 @@ export default new Vuex.Store({
       // const { email, password } = details;
       if ((auth.currentUser.email).endsWith("smu.edu.sg") || auth.currentUser.email == "pd23bigboss@gmail.com") {
         commit("SET_USER", auth.currentUser);
-        console.log(auth.currentUser);
       } else {
         await signOut(auth);
 

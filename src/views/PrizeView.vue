@@ -183,10 +183,8 @@
                 }
             })
             this.voucherList = v;
-            console.log(this.voucherList);
 
             this.teleList = t;
-            console.log(this.teleList);
 
             this.sNos = (Array.from(Array(this.$prizesRange[1]+1).keys()).slice(this.$prizesRange[0])).filter( ( sn ) => !this.voucherList.includes( sn ) );
             if (this.sNo.length != 0 && !this.sNos.includes(this.sNo)) {

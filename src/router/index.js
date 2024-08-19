@@ -55,6 +55,10 @@ function guardMyroute(to, from, next) {
 
 const routes = [
   {
+    path: "/",
+    beforeEnter: guardMyroute,
+  },
+  {
     path: "/prize",
     name: "Prize",
     component: Prize,
